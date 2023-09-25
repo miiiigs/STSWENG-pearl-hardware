@@ -33,6 +33,8 @@ const userSchema = new Schema({
         type: Date
     },
 
+    
+
 });
 
 export const User = mongoose.model('User', userSchema);
