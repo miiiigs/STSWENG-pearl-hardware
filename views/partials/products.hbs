@@ -1,0 +1,25 @@
+<section class="products container">
+    <div class="heading">
+        <h2>Products</h2>
+    </div>
+    
+    <div class="products-content">
+        {{#each product_list}}
+        <div class="box">
+            <div class="shop-items">
+                <img class="shop-item-image" src={{this.productpic}}>
+                <div class="box-text">
+                    <div class="title-price">
+                        <span class="shop-item-title">{{this.name}}</span>
+                        <div class="shop-item-details">
+                            <span class="shop-item-price">Php100.00</span>
+                        </div>
+                    </div>
+                    <i class='bx bx-cart-alt'></i>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+
+    </div>
+</section>
