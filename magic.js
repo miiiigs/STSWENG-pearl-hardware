@@ -40,7 +40,7 @@ function createProducts(){
         type: "Welding",
         quantity: "10",
         price: 60.00,
-        productpic: "./uploads/silicone_gun.jpg"
+        productpic: "./uploads/soldering_paste.jpg"
     }));
 
     for (let i = 0; i < products.length; i++) {
