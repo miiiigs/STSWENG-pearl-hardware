@@ -33,6 +33,11 @@ const userSchema = new Schema({
         type: Date
     },
 
+    cart: {
+        type: Array,
+        required: false
+    }
+
     
 
 });
