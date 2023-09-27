@@ -11,6 +11,7 @@ const controller = {
                 product_list.push({
                     name: resp[i].name,
                     type: resp[i].type,
+                    price: resp[i].price,
                     quantity: resp[i].quantity,
                     productpic: resp[i].productpic,
                 });
