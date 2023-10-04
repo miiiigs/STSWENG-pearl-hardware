@@ -14,6 +14,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 //GETS
 router.get(`/`, controller.getIndex);
 
+
 //POSTS
 router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
     if(await User.findOne({email: value}).exec()){
@@ -21,5 +22,6 @@ router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body
     }
  }), body('password').notEmpty(), controller.register);
 
+router.post('/login', controller.login);
 
 export default router;

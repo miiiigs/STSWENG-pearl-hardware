@@ -5,6 +5,11 @@ const regEmail = document.querySelector('#regemail');
 const regPassword = document.querySelector('#regpassword');
 const errorDisplay = document.querySelector("#errors");
 
+const loginSubmit = document.querySelector('#logsubmit');
+const logEmail = document.querySelector('#logemail');
+const logPassword = document.querySelector('#logpassword');
+const logErrorDisplay = document.querySelector('#login_errors');
+
 registerSubmit.addEventListener('click', async (e) => {
     e.preventDefault();
 
@@ -57,6 +62,44 @@ function checkInputs() { //this function disables the register submit button unt
         registerSubmit.style.color = "red";
     }
 }
+
+loginSubmit.addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    console.log("Login button was clicked");
+    if(logEmail.value === "" || logPassword.value === ""){
+        logErrorDisplay.textContent = "Invalid input";
+        logErrorDisplay.style.color = "red";
+    }
+    else{
+        const email = logEmail.value;
+        const password = logPassword.value;
+
+        const jString = JSON.stringify({email, password});
+
+        const response = await fetch('/login', {
+            method: "POST",
+            body: jString,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        if(response.status == 200){ //registers user and clears input fields
+            logErrorDisplay.textContent = "Login Success!";
+            logErrorDisplay.style.color = "green";
+            logEmail.value = "";
+            logPassword.value = "";
+        }
+        else if(response.status == 500){ 
+            logErrorDisplay.textContent = "Invalid email or password";
+            logErrorDisplay.style.color = "red";
+            console.log("login error!");
+        }
+    }
+    
+
+})
 
 checkInputs() //call the function when first loading the page
 
