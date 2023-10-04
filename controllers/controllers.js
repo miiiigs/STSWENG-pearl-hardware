@@ -90,7 +90,21 @@ const controller = {
             console.error(err);
             res.sendStatus(500);
         }
-    }
+    },
+
+    login: async function(req, res) {
+        console.log("hello");
+        console.log(req.body);
+
+        const existingUser = await User.findOne({email: req.body.email}); 
+
+        if(existingUser && await bcrypt.compare(req.body.password, existingUser.password)) {
+            return res.sendStatus(200);
+        }
+        console.log("Invalid email or password");
+        res.sendStatus(500);
+        
+    },
  
 }
 

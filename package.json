@@ -14,7 +14,7 @@
     "postcss": "^8.4.30"
   },
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon server.js"
   },
   "devDependencies": {
     "tailwindcss": "^3.3.3"
