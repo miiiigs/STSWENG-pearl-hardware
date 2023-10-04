@@ -15,7 +15,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.get(`/`, controller.getIndex);
 
 //POSTS
-router.post('/register',body('name').notEmpty().isAlphanumeric(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
+router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
     if(await User.findOne({email: value}).exec()){
         return Promise.reject('Email already exists!')
     }
