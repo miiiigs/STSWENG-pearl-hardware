@@ -2,6 +2,9 @@ import db from '../model/db.js';
 import { Product } from '../model/productSchema.js';
 import { User } from '../model/userSchema.js';
 import {body, validationResult} from 'express-validator';
+import bcrypt from 'bcrypt';
+
+const SALT_WORK_FACTOR = 10;
 
 const controller = {
 
@@ -68,10 +71,13 @@ const controller = {
         console.log(req.body);
         const {name, email, password} = req.body
 
+        const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
+        const hash = await bcrypt.hash(password, salt);
+
         const newUser = new User({
             name: name,
             email: email,
-            password: password //will need to hash this later
+            password: hash
         });
 
         try{
