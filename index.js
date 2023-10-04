@@ -20,7 +20,7 @@ app.engine("hbs", exphbs.engine({extname: 'hbs', defaultLayout: 'main'}));
 app.set("view engine", "hbs");
 app.set("views", "./views");
 
-app.use ( express.static(`public`) );
+app.use (express.static(`public`) );
 app.use ( '/uploads', express.static(path.join(dirname(fileURLToPath(import.meta.url)), 'uploads')));
 app.use ( express.urlencoded({ extended: true }));
 app.use ( bodyParser.urlencoded({ extended: true }));
