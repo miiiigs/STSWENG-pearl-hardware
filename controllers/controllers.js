@@ -69,13 +69,14 @@ const controller = {
 
         console.log("Register request received");
         console.log(req.body);
-        const {name, email, password} = req.body
+        const {fname,lname, email, password} = req.body
 
         const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
         const hash = await bcrypt.hash(password, salt);
 
         const newUser = new User({
-            name: name,
+            firstName: fname,
+            lastName: lname,
             email: email,
             password: hash
         });
