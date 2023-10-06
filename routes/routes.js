@@ -24,6 +24,6 @@ router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body
 
 router.post('/login', controller.login);
 
-router.post('/searchProducts', controller.searchProducts);
+router.get('/searchProducts', controller.searchProducts);
 
 export default router;
