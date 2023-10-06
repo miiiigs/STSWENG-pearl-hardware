@@ -4,6 +4,16 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
 
+    firstName: {
+        type: String,
+        required:true
+    },
+
+    lastName: {
+        type: String,
+        required: true
+    },
+
     password: {
         type: String, 
         required:true
@@ -13,9 +23,6 @@ const userSchema = new Schema({
         required: true, 
         unique: true
     },
-    firstname: String,
-
-    lastname: String,
     
     dateCreated: {
         type: Date, 
@@ -27,18 +34,11 @@ const userSchema = new Schema({
         default: './images/assets/default_user.png'   
     },
 
-    bio: String,
-    
-    birthday: {
-        type: Date
-    },
-
     cart: {
         type: Array,
         required: false
     }
 
-    
 
 });
 
