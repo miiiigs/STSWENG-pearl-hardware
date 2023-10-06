@@ -1,0 +1,38 @@
+<!-- So if you see this...you can access the results using the variable `product_list_search`, then render that data. -->
+
+<section class="products container">
+    <div class="heading">
+        <h2>Search Products</h2>
+    </div>
+    
+	<div name="search_box">
+		<form id="search_products_query_box" action="/searchProducts" method="post">
+		<input type="text" placeholder="Search for product" name="product_query" id="product_query" required style="border: 1px solid; border-radius: 16px;">
+		<button type="submit" id="submitSearch">Search</button>
+		</form>
+	</div>
+	
+    <div class="products-content">
+		{{#if product_list_search}}
+			{{#each product_list_search}}
+			<div class="box">
+				<div class="shop-items">
+					<img class="shop-item-image" src={{this.productpic}}>
+					<div class="box-text">
+						<div class="title-price">
+							<span class="shop-item-title">{{this.name}}</span>
+							<div class="shop-item-details">
+								<span class="shop-item-price">Php {{this.price}}</span>
+							</div>
+						</div>
+						<i class='bx bx-cart-alt'></i>
+					</div>
+				</div>
+			</div>
+			{{/each}}
+		{{else}}
+			<p style="color:gray">Search for an item in the box above!</p>
+		{{/if}}
+
+    </div>
+</section>
