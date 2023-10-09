@@ -13,8 +13,8 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 //GETS
 router.get(`/`, controller.getIndex);
-
-
+router.get('/sortProducts', controller.sortProducts);
+router.get('/searchProducts', controller.searchProducts);
 //POSTS
 router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
     if(await User.findOne({email: value}).exec()){
@@ -24,6 +24,6 @@ router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body
 
 router.post('/login', controller.login);
 
-router.get('/searchProducts', controller.searchProducts);
+
 
 export default router;

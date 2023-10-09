@@ -1,9 +1,8 @@
 <h1>Product Sorter</h1>
   <form action="/sort" method="post">
-    <input type="radio" name="sort" value="def"> Default
-    <input type="radio" name="sort" value="price_asc"> Price (low to high)
-    <input type="radio" name="sort" value="price_desc"> Price (high to low)
-    <input type="radio" name="sort" value="name_asc"> Name (A to Z)
-    <input type="radio" name="sort" value="name_desc"> Name (Z to A)
-    <input type="submit" value="Sort">
+    <input type="radio" name="sort" onchange="getSort(this)" value="def"> Default
+    <input type="radio" name="sort" onchange="getSort(this)" value="price_asc"> Price (low to high)
+    <input type="radio" name="sort" onchange="getSort(this)" value="price_desc"> Price (high to low)
+    <input type="radio" name="sort" onchange="getSort(this)" value="name_asc"> Name (A to Z)
+    <input type="radio" name="sort" onchange="getSort(this)" value="name_desc"> Name (Z to A)
   </form>
