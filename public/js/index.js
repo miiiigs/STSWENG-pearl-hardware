@@ -107,3 +107,15 @@ regFName.addEventListener('input', checkInputs); //everytime the user inputs a f
 regLName.addEventListener('input', checkInputs)
 regEmail.addEventListener('input', checkInputs);
 regPassword.addEventListener('input', checkInputs);
+
+async function getSort(sortButton) {
+    
+    const sortValue = sortButton.value;
+    console.log(sortValue);
+    const jString = JSON.stringify({sortValue});
+    const response = await fetch('/?sortBy=' + sortValue, {
+        method: 'GET',
+    });
+    window.location.href = '/?sortBy=' + sortValue;
+
+}
