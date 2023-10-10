@@ -1,14 +1,19 @@
 /** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./views/*.hbs",
-    "./views/layouts/*.hbs",
-    "./views/partials/*.hbs",
-    './src/**/*.{html,js}'
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}
-
+module.exports = {
+    content: ['./views/**/*.hbs'],
+    theme: {
+      extend: {},
+      colors: {
+  
+        'maincolor': '#0980D3',
+        'secondary': '#001A69',
+        'white': '#FFFFFF',
+      },
+  
+  
+      fontFamily: {
+        'Inknut': ['Inknut Antiqua', 'serif'],
+      },
+    },
+    plugins: [],
+  }
