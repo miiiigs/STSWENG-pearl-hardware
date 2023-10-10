@@ -11,10 +11,11 @@
     "mongoose": "^7.5.3",
     "node": "^20.7.0",
     "nodemon": "^3.0.1",
-    "postcss": "^8.4.30"
+    "postcss": "^8.4.31"
   },
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "dev": "npx tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch"
   },
   "devDependencies": {
     "tailwindcss": "^3.3.3"
