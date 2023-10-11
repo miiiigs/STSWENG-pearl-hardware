@@ -1,20 +1,16 @@
-<!DOCTYPE html>
-<html lang="en-us">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body {
-            margin: 0;
+        .logincontainer {
+            margin: 0px;
             font-family: Arial, sans-serif;
-            background: url('LOGINBG.png') no-repeat center center fixed;
-            background-size: cover;
+            background: url('../uploads/cover.png') no-repeat center center fixed;
+            background-size:auto;
+            border: 1px solid black;
             background-color: #f0f0f0; /* Fallback color in case the image is not available */
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            width: auto;
         }
 
         .login-container {
@@ -69,25 +65,22 @@
             color: #0980D3;
         }
     </style>
-</head>
 
-<body>
 
-    <div class="login-container">
-        <div class="login-title">LOGIN</div>
-        <div class="input-container">
-            <input type="text" placeholder="Username">
+
+    <div class="logincontainer">
+        <div class="login-container">
+            <div class="login-title">LOGIN</div>
+            <div class="input-container">
+                <input type="text" placeholder="Username">
+            </div>
+            <div class="input-container">
+                <input type="password" placeholder="Password">
+            </div>
+            <div class="forgot-password">
+                <a href="#">Forgot password?</a>
+            </div>
+            <button class="login-button">Login</button>
+            <div class="signup-link">Not Registered? Sign Up</div>
         </div>
-        <div class="input-container">
-            <input type="password" placeholder="Password">
-        </div>
-        <div class="forgot-password">
-            <a href="#">Forgot password?</a>
-        </div>
-        <button class="login-button">Login</button>
-        <div class="signup-link">Not Registered? Sign Up</div>
     </div>
-
-</body>
-
-</html>
