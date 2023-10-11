@@ -1,50 +1,53 @@
-
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Coustard:wght@400;900&family=Inika&family=Inknut+Antiqua&family=Press+Start+2P&display=swap');
 
 
 * {
-    font-family: "Poppins", sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    scroll-behavior: smooth;
-    scroll-padding-top: 2rem;
-    list-style: none;
-    text-decoration: none;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  scroll-padding-top: 2rem;
+  list-style: none;
+  text-decoration: none;
 }
 
 :root {
-    --main-color: #7c38c98e;
-    --light-color: #7b6e85;
-    --text-color: #2e2e2e;
-    --hover-color: #462072cb;
-    --bg-color: #fff;
+  --main-color: #7c38c98e;
+  --light-color: #7b6e85;
+  --text-color: #2e2e2e;
+  --hover-color: #462072cb;
+  --bg-color: #fff;
 }
 
 
 
 /* Product Display */
 img {
-    width: 100%;
-  }
-  section {
-    padding: 4rem 0 3rem;
-  }
-  body {
-    color: var(--text-color);
-  }
+  width: 100%;
+}
+
+section {
+  padding: 4rem 0 3rem;
+}
+
+body {
+  color: var(--text-color);
+}
 
 .container {
-    max-width: 968px;
-    margin: auto;
-    width: 90%;
-  }
+  max-width: 968px;
+  margin: auto;
+  width: 90%;
+}
 
 .products-content {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, auto));
   gap: 2rem;
 }
+
 .box {
   padding: 10px;
   background: #f1f1f1;
@@ -52,12 +55,14 @@ img {
   display: grid;
   row-gap: 0.5rem;
 }
+
 .box img {
   width: 200px;
   height: 200px;
   object-fit: contain;
   object-position: center;
 }
+
 .box-text {
   display: flex;
   align-items: center;
@@ -67,13 +72,16 @@ img {
   padding: 10px;
   border-radius: 0.5rem;
 }
+
 .title-price h3 {
   font-size: 1rem;
   font-weight: 600;
 }
+
 .title-price span {
   font-weight: 500;
 }
+
 .box-text .bx {
   padding: 10px;
   font-size: 20px;
@@ -81,6 +89,7 @@ img {
   color: var(--bg-color);
   border-radius: 5rem;
 }
+
 .box-text .bx:hover {
   background: var(--main-color);
 }
@@ -93,7 +102,7 @@ img {
   overflow: hidden;
   outline: none;
   padding: 10px;
-  
+
 }
 
 .box-text button:hover {
@@ -104,17 +113,18 @@ img {
   overflow: hidden;
   outline: none;
   padding: 10px;
-} 
+}
 
 
 
 @media (max-width: 1020px) {
-    .container {
-      margin: 0 auto;
-      width: 90%;
-    }
-    .home-img::after {
-      height: 170px;
-      width: 450px; 
-    }
+  .container {
+    margin: 0 auto;
+    width: 90%;
   }
+
+  .home-img::after {
+    height: 170px;
+    width: 450px;
+  }
+}
