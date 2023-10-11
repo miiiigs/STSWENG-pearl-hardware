@@ -42,7 +42,6 @@ const controller = {
             }
             
             res.render("index", {
-                script: './js/index.js',
                 product_list: product_list
             });
         } catch{
@@ -143,7 +142,6 @@ const controller = {
                 product_list.sort((a, b) => a.price-b.price);
                 console.log(product_list);
                 res.render("hehe", {
-                    script: './js/index.js',
                     product_list: product_list
                 });
                 break;
