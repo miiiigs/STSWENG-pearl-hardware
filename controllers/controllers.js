@@ -49,6 +49,16 @@ const controller = {
         }       
     },
 
+    getLogin: async function(req, res) {
+        try{
+            
+            
+            res.render("login", {
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
     getUserProfile: async function(req, res) {
         try{
             

@@ -570,6 +570,10 @@ video {
   }
 }
 
+.fixed{
+  position: fixed;
+}
+
 .absolute{
   position: absolute;
 }
@@ -623,17 +627,45 @@ video {
   margin-left: auto;
 }
 
+
+.mr-2{
+  margin-right: 0.5rem;
+}
+
+.mt-12{
+  margin-top: 3rem;
+}
+
 .mt-6{
   margin-top: 1.5rem;
+}
+
+
+.mb-10{
+  margin-bottom: 2.5rem;
+}
+
+.mt-10{
+  margin-top: 2.5rem;
+}
+
+.mb-20{
+  margin-bottom: 5rem;
 }
 
 .inline-block{
   display: inline-block;
 }
 
+.inline-block{
+  display: inline-block;
+}
+
+
 .flex{
   display: flex;
 }
+
 
 .h-14{
   height: 3.5rem;
@@ -641,10 +673,45 @@ video {
 
 .h-16{
   height: 4rem;
+
+.h-1{
+  height: 0.25rem;
+}
+
+.h-1\/2{
+  height: 50%;
+}
+
+.h-14{
+  height: 3.5rem;
 }
 
 .h-20{
   height: 5rem;
+}
+
+.h-40{
+  height: 10rem;
+
+.h-16{
+  height: 4rem;
+}
+
+.h-20{
+  height: 5rem;
+
+}
+
+.h-5{
+  height: 1.25rem;
+}
+
+.h-6{
+  height: 1.5rem;
+}
+
+.h-60{
+  height: 15rem;
 }
 
 .h-9{
@@ -657,6 +724,43 @@ video {
 
 .h-\[65px\]{
   height: 65px;
+}
+
+
+.w-48{
+  width: 12rem;
+}
+
+.w-5{
+  width: 1.25rem;
+}
+
+.w-6{
+  width: 1.5rem;
+}
+
+
+.h-\[404px\]{
+  height: 404px;
+}
+
+.h-\[65px\]{
+  height: 65px;
+
+.w-60{
+  width: 15rem;
+
+
+.h-full{
+  height: 100%;
+}
+
+.h-screen{
+  height: 100vh;
+}
+
+.w-40{
+  width: 10rem;
 }
 
 .h-full{
@@ -719,6 +823,24 @@ video {
   max-width: 80rem;
 }
 
+
+.-translate-x-1\/2{
+  --tw-translate-x: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.-translate-y-1\/2{
+  --tw-translate-y: -50%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.transform{
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
+.cursor-pointer{
+  cursor: pointer;
+
 .max-w-full{
   max-width: 100%;
 }
@@ -763,6 +885,24 @@ video {
   margin-left: calc(2.5rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
+.space-x-20 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-x-reverse: 0;
+  margin-right: calc(5rem * var(--tw-space-x-reverse));
+  margin-left: calc(5rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-x-3 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.75rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
+}
+
+.space-y-7 > :not([hidden]) ~ :not([hidden]){
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.75rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(1.75rem * var(--tw-space-y-reverse));
+}
+
 .rounded-full{
   border-radius: 9999px;
 }
@@ -779,6 +919,10 @@ video {
   border-width: 1px;
 }
 
+.border-none{
+  border-style: none;
+}
+
 .bg-maincolor{
   --tw-bg-opacity: 1;
   background-color: rgb(9 128 211 / var(--tw-bg-opacity));
@@ -792,6 +936,28 @@ video {
 .bg-opacity-80{
   --tw-bg-opacity: 0.8;
 }
+
+.bg-gradient-to-r{
+  background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+.bg-cover{
+  background-size: cover;
+}
+
+.bg-fixed{
+  background-attachment: fixed;
+}
+
+.bg-center{
+  background-position: center;
+}
+
+.object-cover{
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
 
 .bg-\[url\(\'\/img\/hero-pattern\.svg\'\)\]{
   background-image: url('/img/hero-pattern.svg');
@@ -814,17 +980,40 @@ video {
   padding: 1.25rem;
 }
 
+.p-10{
+  padding: 2.5rem;
+}
+
+.p-20{
+  padding: 5rem;
+}
+
 .px-2{
   padding-left: 0.5rem;
   padding-right: 0.5rem;
+}
+
+
+.py-10{
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+}
+
+.font-Inika{
+  font-family: Inika, serif;
+}
+
+.text-center{
+  text-align: center;
 }
 
 .font-Inknut{
   font-family: Inknut Antiqua, serif;
 }
 
-.font-\[\'Inika\'\]{
-  font-family: 'Inika';
+.text-2xl{
+  font-size: 1.5rem;
+  line-height: 2rem;
 }
 
 .text-2xl{
@@ -844,6 +1033,10 @@ video {
 
 .font-normal{
   font-weight: 400;
+}
+
+.font-bold{
+  font-weight: 700;
 }
 
 .text-secondary{
