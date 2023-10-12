@@ -59,6 +59,16 @@ const controller = {
             res.sendStatus(400);   
         }       
     },
+    getUserProfile: async function(req, res) {
+        try{
+            
+            res.render("userprofile", {
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+
 
     register: async function(req, res) {
 
