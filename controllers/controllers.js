@@ -53,8 +53,27 @@ const controller = {
             }
             
             res.render("index", {
-                script: './js/index.js',
                 product_list: product_list
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+
+    getLogin: async function(req, res) {
+        try{
+            
+            
+            res.render("login", {
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+    getUserProfile: async function(req, res) {
+        try{
+            
+            res.render("userprofile", {
             });
         } catch{
             res.sendStatus(400);   
@@ -154,7 +173,6 @@ const controller = {
                 product_list.sort((a, b) => a.price-b.price);
                 console.log(product_list);
                 res.render("hehe", {
-                    script: './js/index.js',
                     product_list: product_list
                 });
                 break;
