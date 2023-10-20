@@ -63,6 +63,18 @@ function checkInputs() { //this function disables the register submit button unt
     }
 }
 
+function checkInputsLog() { //this function disables the register submit button until all fields have values
+    if(logEmail.value.trim() !== '' && logPassword.value.trim() !== ''){
+        loginSubmit.disabled = false;
+        loginSubmit.textContent = "Submit";
+        loginSubmit.style.color = "black";
+    }else{
+        loginSubmit.disabled = true;
+        loginSubmit.textContent = "Fill out all inputs!";
+        loginSubmit.style.color = "red";
+    }
+}
+
 loginSubmit.addEventListener('click', async (e) => {
     e.preventDefault();
 
@@ -101,12 +113,16 @@ loginSubmit.addEventListener('click', async (e) => {
 
 })
 
-checkInputs() //call the function when first loading the page
+checkInputs() //call the functions when first loading the page
+checkInputsLog(); 
 
 regFName.addEventListener('input', checkInputs); //everytime the user inputs a field it checks if all the fields are filled out
 regLName.addEventListener('input', checkInputs)
 regEmail.addEventListener('input', checkInputs);
 regPassword.addEventListener('input', checkInputs);
+
+logEmail.addEventListener('input', checkInputsLog);
+logPassword.addEventListener('input', checkInputsLog);
 
 async function getSort(sortButton) {
     
@@ -119,3 +135,4 @@ async function getSort(sortButton) {
     window.location.href = '/?sortBy=' + sortValue;
 
 }
+

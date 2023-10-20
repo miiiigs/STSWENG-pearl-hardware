@@ -24,7 +24,7 @@ router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body
     }
  }), body('password').notEmpty(), controller.register);
 
-router.post('/login', controller.login);
+router.post('/login', body('email').notEmpty().normalizeEmail().isEmail(), body('password').notEmpty(), controller.login);
 
 
 
