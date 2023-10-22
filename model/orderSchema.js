@@ -16,5 +16,15 @@ const orderSchema = new mongoose.Schema({
     status:{
         type: mongoose.SchemaTypes.String,
         required: true
+    },
+    amount: {
+        type: mongoose.SchemaTypes.Number,
+        required: true
+    },
+    paymongoID: {
+        type: mongoose.SchemaTypes.String,
+        required: true
     }
 })
+
+export const Order = mongoose.model('Order', orderSchema);

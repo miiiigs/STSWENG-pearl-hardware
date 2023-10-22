@@ -1,6 +1,7 @@
 import db from '../model/db.js';
 import { Product } from '../model/productSchema.js';
 import { User } from '../model/userSchema.js';
+import { Order } from '../model/orderSchema.js';
 import {body, validationResult} from 'express-validator';
 import bcrypt from 'bcrypt';
 
@@ -212,6 +213,129 @@ const controller = {
         }
     },
     */
+
+    checkout: async function(req, res) {
+        try{
+            res.render("checkout", {
+                script: './js/checkout.js'
+            })
+            
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+
+    //NOTE READ: WHEN BEING REDIRECTED AFTER SUCCESSFUL PAYMENT DO NOT CLICK AWAY FROM WEBSITE REDIRECT BACK FOR THE STATUS TO BE UPDATED
+    
+    postCheckout: async function(req, res) { //gets all the items in the cart using its mongodb id then adds them all up for a total to be redirected and paid in paymongo website using paymongo api
+        //console.log(req.body);      
+        const {items, amount} = req.body
+        const paymongoAPIkey = "sk_test_w5Y6STecLuzzZifC23r2HRnZ"
+
+        let total = 0; //the total amount the user has to pay
+
+        const itemsCheckout = [] //an array containing the _id of the products the user added in the cart
+        const itemsNames = [] //an array containing the product names the user added to their cart
+
+        for(let i = 0; i < items.length; i++){ //this for loop loops through the itemsCheckout array and for each one finds it in the product schema and creates an item checkout object needed in the api call
+            const item = await Product.findById(items[i]).exec();
+            itemsCheckout.push({
+                currency: 'PHP',
+                images: ['https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fsearch%2Fimages%3Fk%3Dsample&psig=AOvVaw0AFGkt28PQn4zNlauG_NGx&ust=1698039665576000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCKiesur4iIIDFQAAAAAdAAAAABAE'],
+                amount: item.price * 100,
+                description: 'description',
+                name: item.name,
+                quantity: parseInt(amount[i])
+              })
+              itemsNames.push(item.name)
+              total += item.price * parseInt(amount[i]);
+        }
+
+        try{
+            const order = new Order({
+                userID: 123,
+                items: itemsNames,
+                date: Date.now(),
+                status: 'Awaiting payment',
+                amount: total,
+                paymongoID: -1 //paymongoID of -1 means there is no record of a transaction in paymongo in other words it is to be ignored as the user did not even go to the checkout page of paymongo
+            })
+
+            const result = await order.save(); //save order to database
+            //console.log(result);
+
+            const options = {
+                method: 'POST',
+                headers: {accept: 'application/json', 'Content-Type': 'application/json', 'Authorization': `Basic ${btoa(paymongoAPIkey)}`},
+                body: JSON.stringify({
+                    data: {
+                      attributes: {
+                        billing: {name: 'Sample name', email: 'email@email.com', phone: '9000000000'},
+                        send_email_receipt: false,
+                        show_description: false,
+                        show_line_items: true,
+                        cancel_url: 'http:/localhost:3000/',
+                        description: 'description',
+                        line_items: itemsCheckout,
+                        payment_method_types: ['card', 'gcash'],
+                        reference_number: result._id, //store the order _id in database as the reference number
+                        success_url: 'http://localhost:3000/checkoutSuccess/' + result._id
+                      }
+                    }
+                  })
+              };
+
+            fetch('https://api.paymongo.com/v1/checkout_sessions', options) //this api call is to create a checkout session in paymongo
+            .then(response => response.json())
+            .then(async response => {
+
+                //console.log(response.data.id)
+                const addPaymongoID = await Order.findByIdAndUpdate(response.data.attributes.reference_number, {paymongoID : response.data.id}); //after redirecting to paymongo the paymongoID is updated using the paymongo generated id
+
+                res.status(200);
+                res.send(response.data.attributes.checkout_url.toString());
+        })
+        .catch(err => console.error(err));
+        } catch (err){
+            console.log("Placing order failed!");
+            console.error(err);
+            res.sendStatus(500);
+        }
+    },
+
+    checkoutSuccess: async function(req, res) { //this is to update the order in the database, as of now only 2 status' exist (Awaiting payment, succeeded)
+        const paymongoAPIkey = "sk_test_w5Y6STecLuzzZifC23r2HRnZ"
+
+        const options = {method: 'GET', headers: {accept: 'application/json', 'Content-Type': 'application/json', 'Authorization': `Basic ${btoa(paymongoAPIkey)}`}};
+
+        const ID = req.params.orderID;
+        //console.log("Order ID: ", ID);
+        
+        const order = await Order.findById(ID);
+
+        fetch('https://api.paymongo.com/v1/checkout_sessions/' + order.paymongoID , options) //this api call is to retrieved the checkout information in paymongo
+        .then(response => response.json())
+        .then(async response => { //console.log(response)
+            try{
+                const result = await Order.findByIdAndUpdate(ID, { status: response.data.attributes.payment_intent.attributes.status}); //update the status of the order in database using the status in paymongo
+                
+            }catch (err){
+                console.log("Fetching order failed!");
+                console.error(err);
+                res.sendStatus(500);
+            }
+        })
+        .catch(err => console.error(err));
+
+        try{
+            res.render("checkoutSuccess", {
+                
+            })
+            
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
 
 }
 
