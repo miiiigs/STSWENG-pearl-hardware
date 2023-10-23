@@ -16,6 +16,9 @@ router.get(`/`, controller.getIndex);
 router.get(`/login`, controller.getLogin);
 router.get('/sortProducts', controller.sortProducts);
 router.get('/searchProducts', controller.searchProducts);
+router.get('/userprofile', controller.getUserProfile);
+router.get('/checkout', controller.checkout);
+router.get('/checkoutSuccess/:orderID', controller.checkoutSuccess);
 //POSTS
 router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
     if(await User.findOne({email: value}).exec()){
@@ -23,7 +26,8 @@ router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body
     }
  }), body('password').notEmpty(), controller.register);
 
-router.post('/login', controller.login);
+router.post('/login', body('email').notEmpty().normalizeEmail().isEmail(), body('password').notEmpty(), controller.login);
+router.post('/postCheckout', controller.postCheckout);
 
 
 
