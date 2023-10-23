@@ -1,3 +1,4 @@
+
 const registerSubmit = document.querySelector('#regsubmit');
 const regFName = document.querySelector('#regfname');
 const regLName = document.querySelector('#reglname');
@@ -135,4 +136,3 @@ async function getSort(sortButton) {
     window.location.href = '/?sortBy=' + sortValue;
 
 }
-
