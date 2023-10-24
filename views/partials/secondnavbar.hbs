@@ -1,20 +1,46 @@
-<div class="bg-maincolor max-w-full mx-5 rounded-lg px-5 mt-6 h-14">
+<div class="bg-maincolor mx-5 px-5 mt-6 w-[98%] h-14 shrink-0 rounded-[10px_10px_0px_0px]">
 
     <div class="mx-5 max-w-full px-2 sm:px-6 lg:px-8">
         <div class="relative flex ">
-            <div class="flex space-x-14 text-white ">
-                <a href="/" action="GET" class=" font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isHomePage}} bg-white text-maincolor{{/if}}"><img class="w-5" src="../uploads/home.png" /></a>
-                <a href="/allProducts" action="GET" class="font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isAllProductsPage}} bg-white text-maincolor{{/if}}">All Products</a>
-                <a href="#" class=" font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isWeldingPage}} bg-white text-maincolor{{/if}} ">Welding</a>
-                <a href="#" class=" font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isSafetyPage}} bg-white text-maincolor{{/if}}">Safety</a>
-                <a href="#" class="font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isCleaningPage}} bg-white text-maincolor{{/if}}">Cleaning</a>
-                <a href="#" class=" font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if iIndustrialPage}} bg-white text-maincolor{{/if}}">Industrial</a>
-                <a href="#" class=" font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isBrassPage}} bg-white text-maincolor{{/if}}">Brass Fittings</a>
-            </div>
+            <div class="flex space-x-14 text-white mt-2 px-4 py-3 pt-0">
+                <form action="/" method="GET">
+                    <button type="submit" class="w-11 h-12 hover:bg-white hover:pt-2 hover:text-maincolor hover:pt-0 font-Inika rounded-t-2xl flex items-center justify-center {{#if isHomePage}}h-12 bg-white text-maincolor {{/if}}">
+                        <img class="w-5" src="../uploads/home.png" alt="Home Icon" />
+                    </button>
+                </form>
 
+                <form action="/allProducts" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
+                        All Products
+                    </button>
+                </form>
 
-            <div class="flex ml-auto">
-                <a href="#" class="text-white font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 flex flex-row"><img class="w-5 mr-2" src="../uploads/cart.png"/> My Cart</a>
+                <button class="w-32 h-12 bg-sky-600 hover:bg-white hover:pt-2 hover:text-maincolor hover:pt-0 rounded-tl-lg rounded-tr-lg text-white text-2xl font-Inika">
+                    Welding
+                </button>
+                
+                <button class="w-32 h-12 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
+                    Safety
+                </button>
+
+                <button class="w-32 h-12 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
+                    Cleaning
+                </button>
+                
+                <button class="w-32 h-12 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
+                    Industrial
+                </button>
+
+                <button class="w-auto h-12 px-4 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
+                    Brass Fittings
+                </button>
+
+                <button class="w-auto h-12 px-4 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
+                    <div class="flex flex-row items-center">
+                        <img class="w-5 mr-2" src="../uploads/cart.png" alt="Cart Icon" />
+                            My Cart
+                    </div>
+                </button>
             </div>
 
 
