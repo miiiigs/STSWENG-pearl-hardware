@@ -1,20 +1,20 @@
-<div class="bg-maincolor max-w-full mx-5 rounded-lg p-5 mt-6 h-14">
+<div class="bg-maincolor max-w-full mx-5 rounded-lg px-5 mt-6 h-14">
 
     <div class="mx-5 max-w-full px-2 sm:px-6 lg:px-8">
-        <div class="relative flex  items-center">
-            <div class="flex space-x-20">
-                <a href="#" class="text-white font-Inika">All Products</a>
-                <a href="#" class="text-white font-Inika">Welding</a>
-                <a href="#" class="text-white font-Inika">Safety</a>
-                <a href="#" class="text-white font-Inika">Cleaning</a>
-                <a href="#" class="text-white font-Inika">Industrial</a>
-                <a href="#" class="text-white font-Inika">Brass Fittings</a>
+        <div class="relative flex ">
+            <div class="flex space-x-14 text-white ">
+                <a href="/" action="GET" class=" font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isHomePage}} bg-white text-maincolor{{/if}}"><img class="w-5" src="../uploads/home.png" /></a>
+                <a href="/allProducts" action="GET" class="font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isAllProductsPage}} bg-white text-maincolor{{/if}}">All Products</a>
+                <a href="#" class=" font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isWeldingPage}} bg-white text-maincolor{{/if}} ">Welding</a>
+                <a href="#" class=" font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isSafetyPage}} bg-white text-maincolor{{/if}}">Safety</a>
+                <a href="#" class="font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isCleaningPage}} bg-white text-maincolor{{/if}}">Cleaning</a>
+                <a href="#" class=" font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if iIndustrialPage}} bg-white text-maincolor{{/if}}">Industrial</a>
+                <a href="#" class=" font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 {{#if isBrassPage}} bg-white text-maincolor{{/if}}">Brass Fittings</a>
             </div>
 
 
             <div class="flex ml-auto">
-                <img class="w-5 h-5 mr-2" src="../uploads/cart.png" />
-                <a href="#" class="text-white font-Inika">My Cart</a>
+                <a href="#" class="text-white font-Inika rounded-t-2xl pb-4 px-4 pt-2 m-2 flex flex-row"><img class="w-5 mr-2" src="../uploads/cart.png"/> My Cart</a>
             </div>
 
 
