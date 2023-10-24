@@ -109,6 +109,7 @@ const controller = {
             res.render("all_products", {
                 product_list: product_list,
                 isAllProductsPage: true,
+                script: './js/sort.js',
             });
         } catch{
             res.sendStatus(400);   
