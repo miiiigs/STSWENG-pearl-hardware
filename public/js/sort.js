@@ -8,7 +8,6 @@ window.onload = function() {
 const sortSelect = document.querySelector('#sort');
 sortSelect.addEventListener('change', async (e) => {
     e.preventDefault();
-    console.log("hello!");
     var sortValue = sortSelect.value;
     const response = await fetch('/allProducts?sortBy=' + sortValue, {
         method: 'GET',
