@@ -582,6 +582,10 @@ video {
   position: relative;
 }
 
+.sticky{
+  position: sticky;
+}
+
 .left-0{
   left: 0px;
 }
@@ -668,6 +672,10 @@ video {
 
 .top-\[9px\]{
   top: 9px;
+}
+
+.z-10{
+  z-index: 10;
 }
 
 .m-2{
@@ -1110,6 +1118,14 @@ video {
 
 .bg-\[url\(\'\.\.\/uploads\/cover\.png\'\)\]{
   background-image: url('../uploads/cover.png');
+}
+
+.bg-fixed{
+  background-attachment: fixed;
+}
+
+.bg-scroll{
+  background-attachment: scroll;
 }
 
 .object-cover{
