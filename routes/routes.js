@@ -14,11 +14,14 @@ router.use(bodyParser.urlencoded({ extended: true }));
 //GETS
 router.get(`/`, controller.getIndex);
 router.get(`/login`, controller.getLogin);
+router.get('/registerPage', controller.getRegister);
 router.get('/sortProducts', controller.sortProducts);
 router.get('/searchProducts', controller.searchProducts);
 router.get('/userprofile', controller.getUserProfile);
 router.get('/checkout', controller.checkout);
 router.get('/checkoutSuccess/:orderID', controller.checkoutSuccess);
+router.get('/getUser', controller.getUser)
+
 //POSTS
 router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
     if(await User.findOne({email: value}).exec()){
