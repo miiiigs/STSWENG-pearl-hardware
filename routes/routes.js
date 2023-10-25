@@ -13,7 +13,7 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 //GETS
 router.get(`/`, controller.getIndex);
-router.get(`/allProducts`, controller.getAllProducts);
+router.get(`/category/:category`, controller.getCategory);
 router.get(`/login`, controller.getLogin);
 router.get('/registerPage', controller.getRegister);
 router.get('/sortProducts', controller.sortProducts);
