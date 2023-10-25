@@ -63,12 +63,39 @@ const controller = {
         }       
     },
 
-    getAllProducts: async function(req, res) {
+    getCategory: async function(req, res) {
+
+        const category = req.params.category;
+        console.log(category);
+
         try{
             
             //getProducts function
             var product_list = [];
-            const resp = await Product.find({});
+            let resp;
+            switch(category){
+                case 'allproducts':
+                    resp = await Product.find({});
+                    break;
+                case 'welding':
+                    resp = await Product.find({type: 'Welding'});
+                    break;
+                case 'safety':
+                    resp = await Product.find({type: 'Safety'});
+                    break;
+                case 'cleaning':
+                    resp = await Product.find({type: 'Cleaning'});
+                    break;
+                case 'industrial':
+                    resp = await Product.find({type: 'Industrial'});
+                    break;
+                case 'brassfittings':
+                    resp = await Product.find({type: 'Brass Fittings'});
+                    break;
+            }
+
+            console.log(resp.length)
+    
             for(let i = 0; i < resp.length; i++) {
                 product_list.push({
                     name: resp[i].name,
@@ -105,8 +132,8 @@ const controller = {
             
             res.render("all_products", {
                 product_list: product_list,
-                isAllProductsPage: true,
-                script: './js/sort.js',
+                category: category,
+                script: '/./js/sort.js',
 
             });
         } catch{

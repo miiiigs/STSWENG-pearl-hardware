@@ -38,7 +38,19 @@ const port = process.env.SERVER_PORT;
 import { fileURLToPath }        from 'url';
 import { dirname, join }        from 'path';
 
-app.engine("hbs", exphbs.engine({extname: 'hbs', defaultLayout: 'main'}));
+//app.engine("hbs", exphbs.engine({extname: 'hbs', defaultLayout: 'main'}));
+
+const hbs = exphbs.create({ //A new handlebar extension instantiation that includes helpers
+    defaultLayout: 'main',
+    extname: 'hbs',
+
+    helpers:{
+        eq: function(a,b){ //this helper is used to compare to values in a handle bar to use: {{#if (eq value1 value2)}}
+            return a==b;
+        },
+    }
+})
+app.engine("hbs", hbs.engine);
 app.set("view engine", "hbs");
 app.set("views", "./views");
 
