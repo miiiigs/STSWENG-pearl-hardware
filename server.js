@@ -6,15 +6,37 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import tailwind from 'tailwindcss';
 import { config } from 'dotenv';
+
+import session, { Cookie } from 'express-session';
+import { default as connectMongoDBSession } from 'connect-mongodb-session'
+const MongoDBStore = connectMongoDBSession(session);
+
 config();
 
+const app = express();
+
+const mongodb = process.env.MONGODB_URI;
+const dbname = process.env.DB_NAME
+const store = new MongoDBStore({
+    uri: mongodb + dbname,
+    collection: 'sessions',
+});
+
+store.on('error', function(error) {
+    console.log(error);
+});
+
+app.use(session({ //initially a non persistent session is created for a user when they first visit the website and stores it in db sessions, if a user checks remember me when logging in the session will become a persistent session lasting for 3 weeks
+    secret: 'ABCDEFG',
+    resave: false,
+    saveUninitialized: true,
+    store: store,
+}));
 
 const port = process.env.SERVER_PORT;
 
 import { fileURLToPath }        from 'url';
 import { dirname, join }        from 'path';
-
-const app = express();
 
 app.engine("hbs", exphbs.engine({extname: 'hbs', defaultLayout: 'main'}));
 app.set("view engine", "hbs");
