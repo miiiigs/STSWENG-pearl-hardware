@@ -261,9 +261,7 @@ const controller = {
 		
 		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {_id:0, __v:0}).lean();
 		
-		console.log(result);
-		console.log("So if you see this...you can access the results using the variable `product_list_search`, then render that data.");
-		res.render("index", {product_list_search: result});
+		res.render("search_results", {product_list: result});
     },
 
     sortProducts: async function(req, res){
