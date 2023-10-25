@@ -4,8 +4,14 @@
 -->
 {{> navbar}}
 
-<div class="main">
-    {{> title}}
+<div class="flex flex-col mb-16">
+    <div class="flex flex-row">
+        {{> title}}
+        <div class="ml-auto my-auto mr-16">
+            {{> search_products}}
+        </div>
+        
+    </div>
     {{> secondnavbar}}
     {{> content}}
 
