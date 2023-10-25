@@ -1,3 +1,4 @@
+
 <div class="sticky top-0 z-10 bg-maincolor mx-5 px-5 mt-6 w-[98%] h-14 shrink-0 rounded-[10px_10px_0px_0px]">
 
     <div class="mx-5 max-w-full px-2 sm:px-6 lg:px-8">
@@ -35,12 +36,14 @@
                     Brass Fittings
                 </button>
 
-                <button class="w-auto h-12 px-4 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
-                    <div class="flex flex-row items-center">
-                        <img class="w-5 mr-2" src="../uploads/cart.png" alt="Cart Icon" />
-                            My Cart
-                    </div>
-                </button>
+                <form action="/cart" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika ml-auto mr-5">
+                        <div class="flex flex-row items-center">
+                            <img class="w-5 mr-2" src="../uploads/cart.png" alt="Cart Icon" />
+                                My Cart
+                        </div>
+                    </button>
+                </form>
             </div>
 
 
