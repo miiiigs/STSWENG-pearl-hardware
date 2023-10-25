@@ -1,31 +1,14 @@
-<!-- 
-    ALL PRODUCTS
-
--->
-{{> navbar}}
-
-<div class="flex flex-col mb-16">
-    <div>
-        {{> title}}
+<div>
+    <div class="absolute mt-28">
+    </div>
+    <div class="container mx-auto px-4 py-8">
+        
+        <div class="flex flex-row ">
+            <div class=" m-5 py-1 pl-2 border-b-2 border-b-maincolor font-Inika text-2xl w-48 ">All Products</div>
+            {{> sort}}
+        </div>
+        
+        {{> products}}
         
     </div>
-    {{> secondnavbar}}
-    <div>
-        <div class="absolute mt-28">
-        </div>
-        <div class="container mx-auto px-4 py-8">
-            
-            <div class="flex flex-row ">
-                <div class=" m-5 py-1 pl-2 border-b-2 border-b-maincolor font-Inika text-2xl w-48 ">All Products</div>
-                {{> sort}}
-            </div>
-            
-            {{> products}}
-            
-        </div>
-    </div>
-    
-
-
-
 </div>

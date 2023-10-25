@@ -55,7 +55,7 @@ const controller = {
             
             res.render("index", {
                 product_list: product_list,
-                script: './js/index.js'
+                script: './js/index.js',
                 isHomePage: true,
             });
         } catch{
@@ -89,19 +89,15 @@ const controller = {
                         break;
                     case 'price_asc':
                         product_list.sort((a, b) => a.price-b.price);
-                        console.log(product_list);
                         break;
                     case 'price_desc':
                         product_list.sort((a, b) => b.price-a.price);
-                        console.log(product_list);
                         break;
                     case 'name_asc':
                         product_list.sort((a,b) => a.name.localeCompare(b.name));
-                        console.log(product_list);
                         break;
                     case 'name_desc':
                         product_list.sort((a,b) => b.name.localeCompare(a.name));
-                        console.log(product_list);
                         break;         
                 }   
             }
@@ -252,14 +248,12 @@ const controller = {
                 break;
             case 'price_asc':
                 product_list.sort((a, b) => a.price-b.price);
-                console.log(product_list);
                 res.render("hehe", {
                     product_list: product_list
                 });
                 break;
             case 'price_desc':
                 product_list.sort((a, b) => a.price-b.price);
-                console.log(product_list);
                 res.render("hehe", {
                     script: './js/index.js',
                     product_list: product_list
