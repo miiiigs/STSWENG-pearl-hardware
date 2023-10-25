@@ -12,7 +12,7 @@ const controller = {
 
     getIndex: async function(req, res) {
         try{
-            
+            console.log("USER ID"+req.session.userID);
             //getProducts function
             var product_list = [];
             const resp = await Product.find({});
@@ -55,6 +55,7 @@ const controller = {
             
             res.render("index", {
                 product_list: product_list,
+                script: './js/index.js'
                 isHomePage: true,
             });
         } catch{
@@ -110,6 +111,7 @@ const controller = {
                 product_list: product_list,
                 isAllProductsPage: true,
                 script: './js/sort.js',
+
             });
         } catch{
             res.sendStatus(400);   
@@ -117,15 +119,25 @@ const controller = {
     },
 
     getLogin: async function(req, res) {
-        try{
-            
-            
+        try{           
             res.render("login", {
+                script: './js/login.js'
             });
         } catch{
             res.sendStatus(400);   
         }       
     },
+
+    getRegister: async function(req, res) {
+        try{
+            res.render("register", {
+                script: './js/register.js'
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+
     getUserProfile: async function(req, res) {
         try{
             
@@ -177,17 +189,30 @@ const controller = {
     },
 
     login: async function(req, res) {
-        console.log("hello");
+        //console.log("hello");
         console.log(req.body);
 
         const existingUser = await User.findOne({email: req.body.email}); 
 
         if(existingUser && await bcrypt.compare(req.body.password, existingUser.password)) {
+            console.log("login successful");
+
+            req.session.userID = existingUser._id;
             return res.sendStatus(200);
         }
         console.log("Invalid email or password");
         res.sendStatus(500);
         
+    },
+
+    getUser: async function(req,res){
+        if(req.session.userID){
+            console.log("USER ID"+ req.session.userID);
+            res.status(200).send(req.session.userID.toString());
+        }else{
+            res.sendStatus(400);
+            console.log("Failed to get current user");
+        }
     },
 	
 	//searchProducts
@@ -391,6 +416,8 @@ const controller = {
             res.sendStatus(400);   
         }       
     },
+
+
 
 }
 
