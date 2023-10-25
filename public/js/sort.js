@@ -33,12 +33,14 @@ const sortSelect = document.querySelector('#sort');
 sortSelect.addEventListener('change', async (e) => {
     e.preventDefault();
     var sortValue = sortSelect.value;
-    const response = await fetch('/allProducts?sortBy=' + sortValue, {
+    const currentURL = window.location.pathname;
+    console.log('.' + currentURL + '?sortBy=' + sortValue);
+    const response = await fetch('/.' + currentURL + '?sortBy=' + sortValue, {
         method: 'GET',
     });
     
 
-    window.location.href = '/allProducts?sortBy=' + sortValue;
+    window.location.href = '/.' + currentURL + '?sortBy=' + sortValue;
 
     
 });
