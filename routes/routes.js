@@ -21,7 +21,8 @@ router.get('/searchProducts', controller.searchProducts);
 router.get('/userprofile', controller.getUserProfile);
 router.get('/checkout', controller.checkout);
 router.get('/checkoutSuccess/:orderID', controller.checkoutSuccess);
-router.get('/getUser', controller.getUser)
+router.get('/getUser', controller.getUser);
+router.get('/cart', controller.getCart);
 
 //POSTS
 router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
