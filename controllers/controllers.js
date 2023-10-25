@@ -114,6 +114,18 @@ const controller = {
         }       
     },
 
+    
+
+    getCart: async function(req, res) {
+        try{           
+            res.render("add_to_cart", {
+                
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+
     getLogin: async function(req, res) {
         try{           
             res.render("login", {
