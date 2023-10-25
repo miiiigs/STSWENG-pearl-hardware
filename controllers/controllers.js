@@ -56,6 +56,62 @@ const controller = {
             res.render("index", {
                 product_list: product_list,
                 script: './js/index.js'
+                isHomePage: true,
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+
+    getAllProducts: async function(req, res) {
+        try{
+            
+            //getProducts function
+            var product_list = [];
+            const resp = await Product.find({});
+            for(let i = 0; i < resp.length; i++) {
+                product_list.push({
+                    name: resp[i].name,
+                    type: resp[i].type,
+                    price: resp[i].price,
+                    quantity: resp[i].quantity,
+                    productpic: resp[i].productpic,
+                });
+            }
+            
+            // sortProducts function
+            const sortValue = req.query.sortBy;
+            console.log(sortValue);
+            if(sortValue !== undefined){
+                switch(sortValue){
+                    case 'def':
+                        
+                        break;
+                    case 'price_asc':
+                        product_list.sort((a, b) => a.price-b.price);
+                        console.log(product_list);
+                        break;
+                    case 'price_desc':
+                        product_list.sort((a, b) => b.price-a.price);
+                        console.log(product_list);
+                        break;
+                    case 'name_asc':
+                        product_list.sort((a,b) => a.name.localeCompare(b.name));
+                        console.log(product_list);
+                        break;
+                    case 'name_desc':
+                        product_list.sort((a,b) => b.name.localeCompare(a.name));
+                        console.log(product_list);
+                        break;         
+                }   
+            }
+
+            
+            res.render("all_products", {
+                product_list: product_list,
+                isAllProductsPage: true,
+                script: './js/sort.js',
+
             });
         } catch{
             res.sendStatus(400);   

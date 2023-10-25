@@ -21,17 +21,3 @@ async function initializeUserStatus(){
 
 initializeUserStatus();
 
-
-/*
-async function getSort(sortButton) {
-    
-    const sortValue = sortButton.value;
-    console.log(sortValue);
-    const jString = JSON.stringify({sortValue});
-    const response = await fetch('/?sortBy=' + sortValue, {
-        method: 'GET',
-    });
-    window.location.href = '/?sortBy=' + sortValue;
-
-}
-*/

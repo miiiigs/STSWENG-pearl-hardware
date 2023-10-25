@@ -1,19 +1,46 @@
-<div class="bg-maincolor max-w-7xl mx-auto rounded-lg p-5 mt-6 h-14">
+<div class="sticky top-0 z-10 bg-maincolor mx-5 px-5 mt-6 w-[98%] h-14 shrink-0 rounded-[10px_10px_0px_0px]">
 
-    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div class="relative flex  items-center">
-            <div class="flex space-x-20">
-                <a href="#" class="text-white font-Inika">Welding</a>
-                <a href="#" class="text-white font-Inika">Safety</a>
-                <a href="#" class="text-white font-Inika">Cleaning</a>
-                <a href="#" class="text-white font-Inika">Industrial</a>
-                <a href="#" class="text-white font-Inika">Brass Fittings</a>
-            </div>
+    <div class="mx-5 max-w-full px-2 sm:px-6 lg:px-8">
+        <div class="relative flex ">
+            <div class="flex space-x-14 text-white mt-2 px-4 py-3 pt-0">
+                <form action="/" method="GET">
+                    <button type="submit" class="w-11 h-12 hover:bg-white hover:pt-2 hover:text-maincolor hover:pt-0 font-Inika rounded-t-2xl flex items-center justify-center {{#if isHomePage}}h-12 bg-white text-maincolor {{/if}}">
+                        <img class="w-5" src="../uploads/home.png" alt="Home Icon" />
+                    </button>
+                </form>
 
+                <form action="/allProducts" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if isAllProductsPage}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                        All Products
+                    </button>
+                </form>
 
-            <div class="flex ml-auto">
-                <img class="w-5 h-5 mr-2" src="../uploads/cart.png" />
-                <a href="#" class="text-white font-Inika">My Cart</a>
+                <button class="w-32 h-12 bg-sky-600 hover:bg-white hover:pt-2 hover:text-maincolor hover:pt-0 rounded-tl-lg rounded-tr-lg text-white text-2xl font-Inika">
+                    Welding
+                </button>
+                
+                <button class="w-32 h-12 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
+                    Safety
+                </button>
+
+                <button class="w-32 h-12 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
+                    Cleaning
+                </button>
+                
+                <button class="w-32 h-12 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
+                    Industrial
+                </button>
+
+                <button class="w-auto h-12 px-4 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
+                    Brass Fittings
+                </button>
+
+                <button class="w-auto h-12 px-4 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Inika">
+                    <div class="flex flex-row items-center">
+                        <img class="w-5 mr-2" src="../uploads/cart.png" alt="Cart Icon" />
+                            My Cart
+                    </div>
+                </button>
             </div>
 
 
