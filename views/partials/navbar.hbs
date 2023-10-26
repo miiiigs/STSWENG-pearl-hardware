@@ -2,9 +2,12 @@
     <div class=" max-w-full px-2 sm:px-6 lg:px-8">
         <div class="relative flex h-16 items-center justify-between">
             <div class="flex space-x-10">
-                <a href="/login" class="text-white font-Inika" id="regLog">Register/Login</a>
-                <a href="/profile" class="text-white font-Inika" id="myAccount">My Account</a>
-
+				{{#if session.userID}}
+					<a href="/userprofile" class="text-white font-Inika">{{session.fName}}</a>
+					<a href="/logout" class="text-white font-Inika">Logout</a>
+				{{else}}
+					<a href="/login" class="text-white font-Inika" id="regLog">Register/Login</a>
+				{{/if}}
             </div>
 
             <div class="flex ml-auto">
