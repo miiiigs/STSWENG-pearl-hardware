@@ -63,39 +63,12 @@ const controller = {
         }       
     },
 
-    getCategory: async function(req, res) {
-
-        const category = req.params.category;
-        console.log(category);
-
+    getAllProducts: async function(req, res) {
         try{
             
             //getProducts function
             var product_list = [];
-            let resp;
-            switch(category){
-                case 'allproducts':
-                    resp = await Product.find({});
-                    break;
-                case 'welding':
-                    resp = await Product.find({type: 'Welding'});
-                    break;
-                case 'safety':
-                    resp = await Product.find({type: 'Safety'});
-                    break;
-                case 'cleaning':
-                    resp = await Product.find({type: 'Cleaning'});
-                    break;
-                case 'industrial':
-                    resp = await Product.find({type: 'Industrial'});
-                    break;
-                case 'brassfittings':
-                    resp = await Product.find({type: 'Brass Fittings'});
-                    break;
-            }
-
-            console.log(resp.length)
-    
+            const resp = await Product.find({});
             for(let i = 0; i < resp.length; i++) {
                 product_list.push({
                     name: resp[i].name,
@@ -103,6 +76,7 @@ const controller = {
                     price: resp[i].price,
                     quantity: resp[i].quantity,
                     productpic: resp[i].productpic,
+					p_id: resp[i]._id
                 });
             }
             
@@ -132,21 +106,9 @@ const controller = {
             
             res.render("all_products", {
                 product_list: product_list,
-                category: category,
-                script: '/./js/sort.js',
+                isAllProductsPage: true,
+                script: './js/sort.js',
 
-            });
-        } catch{
-            res.sendStatus(400);   
-        }       
-    },
-
-    
-
-    getCart: async function(req, res) {
-        try{           
-            res.render("add_to_cart", {
-                
             });
         } catch{
             res.sendStatus(400);   
@@ -233,16 +195,23 @@ const controller = {
             console.log("login successful");
 
             req.session.userID = existingUser._id;
+			req.session.fName = existingUser.firstName;
             return res.sendStatus(200);
         }
         console.log("Invalid email or password");
         res.sendStatus(500);
         
     },
+	
+	logout: async function(req,res){
+		console.log("Logging out!");
+		req.session.destroy();
+		res.redirect('/');
+	},
 
     getUser: async function(req,res){
         if(req.session.userID){
-            console.log("USER ID"+ req.session.userID);
+            console.log("USER ID: "+ req.session.userID);
             res.status(200).send(req.session.userID.toString());
         }else{
             res.sendStatus(400);
@@ -259,11 +228,97 @@ const controller = {
 		
 		console.log("Searching for " + query);
 		
-		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {_id:0, __v:0}).lean();
+		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {__v:0}).lean();
 		
-		res.render("search_results", {product_list: result});
+		console.log(result);
+		console.log("So if you see this...you can access the results using the variable `product_list_search`, then render that data.");
+		res.render("index", {product_list_search: result});
     },
-
+	
+	//getCart
+	//gets the cart of the current user.
+	getCart: async function(req,res){
+		console.log("getting " + req.session.userID  + "(" + req.session.fName + ")'s cart");
+		
+		const result = await User.find({_id: req.session.userID},{cart: 1});
+		//console.log(result[0].cart);
+		//console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
+		res.render("add_to_cart",{cart_result: result[0].cart});
+	},	
+	
+	//addToCart
+	//will add to cart using the product ID (mongodb ID)
+	addToCart: async function(req, res){
+		console.log("Adding to cart");
+		console.log(req.body);
+		console.log("Attempting to add: " + req.body.id);
+		
+		//const query = "ObjectId('" + req.body.p_id + "')";
+		const query = req.body.id;
+		const temp= await Product.find({_id: query},{__v: 0});
+		const product_result = temp[0];
+		const quant = req.body.quant;
+		const id = req.session.userID + ":" + query;
+		await User.updateOne(
+			{_id: req.session.userID},
+			{
+				$push: {
+					cart: {product: product_result, quantity: quant, uniqueID: id}
+				}
+			}
+		);
+		console.log(product_result);
+		//console.log(user_cart[0].cart);
+		
+		//user_cart[0].cart.push(product_result);
+		console.log("DId it work?");
+		console.log("Should have added " + product_result.name + " to " + req.session.fName + "'s cart");
+		res.redirect("/cart");
+	},
+	
+	//getProduct
+	//using the product ID in the query, it will send the data to products.hbs to render
+	//the webpage for that specific product
+	getProduct: async function (req,res){
+		console.log("getting product!");
+		var query = req.query.id;
+		try{
+			const product_result = await Product.find({_id: query}, {__v: 0}).lean();
+			//console.log(product_result);
+			return res.render("product",{product: product_result[0]});
+		}
+		catch{};
+		res.render("product");
+		
+	},
+	
+	//removeFromCart
+	//removes product from user cart using productID embedded in the link
+	removeFromCart: async function (req, res){
+		console.log("removing product from cart");
+		var query = req.query;
+		console.log(query);
+		
+		const product_result = await Product.find({_id: query.id}, {__v: 0});
+		/*const result = await User.find(
+			{ _id: req.session.userID, cart:{ $elemMatch: {uniqueID: query.uid }}},
+			{__v: 0}
+		);
+		
+		console.log(result);*/
+		
+		await User.updateOne(
+			{ _id: req.session.userID, cart:{ $elemMatch: {uniqueID: query.uid }}},
+			{ $pull: {
+				cart: {uniqueID: query.uid}
+				}
+			}
+		);
+		
+		console.log("yes?");
+		res.redirect("/cart");	
+	},
+	
     sortProducts: async function(req, res){
 		console.log("Searching for a product!");
 		
@@ -347,8 +402,6 @@ const controller = {
 
         const itemsCheckout = [] //an array containing the _id of the products the user added in the cart
         const itemsNames = [] //an array containing the product names the user added to their cart
-        const user = await User.findById(req.session.userID).exec();
-        //console.log(user);
 
         for(let i = 0; i < items.length; i++){ //this for loop loops through the itemsCheckout array and for each one finds it in the product schema and creates an item checkout object needed in the api call
             const item = await Product.findById(items[i]).exec();
@@ -366,10 +419,7 @@ const controller = {
 
         try{
             const order = new Order({
-                userID: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
+                userID: 123,
                 items: itemsNames,
                 date: Date.now(),
                 status: 'Awaiting payment',
@@ -386,7 +436,7 @@ const controller = {
                 body: JSON.stringify({
                     data: {
                       attributes: {
-                        billing: {name: user.firstName + ' ' + user.lastName, email: user.email, phone: '9000000000'},
+                        billing: {name: 'Sample name', email: 'email@email.com', phone: '9000000000'},
                         send_email_receipt: false,
                         show_description: false,
                         show_line_items: true,
@@ -452,9 +502,6 @@ const controller = {
             res.sendStatus(400);   
         }       
     },
-
-
-
 }
 
 export default controller;
