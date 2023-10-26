@@ -63,12 +63,39 @@ const controller = {
         }       
     },
 
-    getAllProducts: async function(req, res) {
+    getCategory: async function(req, res) {
+
+        const category = req.params.category;
+        console.log(category);
+
         try{
             
             //getProducts function
             var product_list = [];
-            const resp = await Product.find({});
+            let resp;
+            switch(category){
+                case 'allproducts':
+                    resp = await Product.find({});
+                    break;
+                case 'welding':
+                    resp = await Product.find({type: 'Welding'});
+                    break;
+                case 'safety':
+                    resp = await Product.find({type: 'Safety'});
+                    break;
+                case 'cleaning':
+                    resp = await Product.find({type: 'Cleaning'});
+                    break;
+                case 'industrial':
+                    resp = await Product.find({type: 'Industrial'});
+                    break;
+                case 'brassfittings':
+                    resp = await Product.find({type: 'Brass Fittings'});
+                    break;
+            }
+
+            console.log(resp.length)
+    
             for(let i = 0; i < resp.length; i++) {
                 product_list.push({
                     name: resp[i].name,
@@ -76,7 +103,6 @@ const controller = {
                     price: resp[i].price,
                     quantity: resp[i].quantity,
                     productpic: resp[i].productpic,
-					p_id: resp[i]._id
                 });
             }
             
@@ -106,9 +132,21 @@ const controller = {
             
             res.render("all_products", {
                 product_list: product_list,
-                isAllProductsPage: true,
-                script: './js/sort.js',
+                category: category,
+                script: '/./js/sort.js',
 
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+
+    
+
+    getCart: async function(req, res) {
+        try{           
+            res.render("add_to_cart", {
+                
             });
         } catch{
             res.sendStatus(400);   
@@ -195,32 +233,23 @@ const controller = {
             console.log("login successful");
 
             req.session.userID = existingUser._id;
-			req.session.fName = existingUser.firstName;
             return res.sendStatus(200);
         }
         console.log("Invalid email or password");
         res.sendStatus(500);
         
     },
-	
-	logout: async function(req,res){
-		console.log("Logging out!");
-		req.session.destroy();
-		res.redirect('/');
-	},
 
     getUser: async function(req,res){
         if(req.session.userID){
-            console.log("USER ID: "+ req.session.userID);
+            console.log("USER ID"+ req.session.userID);
             res.status(200).send(req.session.userID.toString());
         }else{
             res.sendStatus(400);
             console.log("Failed to get current user");
         }
     },
-	
 	//searchProducts
-	//So if you see this...you can access the results using the variable `product_list_search`, then render that data.
 	searchProducts: async function(req,res){
 		console.log("Searching for a product!");
 		
@@ -228,11 +257,9 @@ const controller = {
 		
 		console.log("Searching for " + query);
 		
-		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {__v:0}).lean();
+		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {_id:0, __v:0}).lean();
 		
-		console.log(result);
-		console.log("So if you see this...you can access the results using the variable `product_list_search`, then render that data.");
-		res.render("index", {product_list_search: result});
+		res.render("search_results", {product_list: result});
     },
 	
 	//getCart
@@ -291,34 +318,7 @@ const controller = {
 		res.render("product");
 		
 	},
-	
-	//removeFromCart
-	//removes product from user cart using productID embedded in the link
-	removeFromCart: async function (req, res){
-		console.log("removing product from cart");
-		var query = req.query;
-		console.log(query);
-		
-		const product_result = await Product.find({_id: query.id}, {__v: 0});
-		/*const result = await User.find(
-			{ _id: req.session.userID, cart:{ $elemMatch: {uniqueID: query.uid }}},
-			{__v: 0}
-		);
-		
-		console.log(result);*/
-		
-		await User.updateOne(
-			{ _id: req.session.userID, cart:{ $elemMatch: {uniqueID: query.uid }}},
-			{ $pull: {
-				cart: {uniqueID: query.uid}
-				}
-			}
-		);
-		
-		console.log("yes?");
-		res.redirect("/cart");	
-	},
-	
+
     sortProducts: async function(req, res){
 		console.log("Searching for a product!");
 		
@@ -402,6 +402,8 @@ const controller = {
 
         const itemsCheckout = [] //an array containing the _id of the products the user added in the cart
         const itemsNames = [] //an array containing the product names the user added to their cart
+        const user = await User.findById(req.session.userID).exec();
+        //console.log(user);
 
         for(let i = 0; i < items.length; i++){ //this for loop loops through the itemsCheckout array and for each one finds it in the product schema and creates an item checkout object needed in the api call
             const item = await Product.findById(items[i]).exec();
@@ -419,7 +421,10 @@ const controller = {
 
         try{
             const order = new Order({
-                userID: 123,
+                userID: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
                 items: itemsNames,
                 date: Date.now(),
                 status: 'Awaiting payment',
@@ -436,7 +441,7 @@ const controller = {
                 body: JSON.stringify({
                     data: {
                       attributes: {
-                        billing: {name: 'Sample name', email: 'email@email.com', phone: '9000000000'},
+                        billing: {name: user.firstName + ' ' + user.lastName, email: user.email, phone: '9000000000'},
                         send_email_receipt: false,
                         show_description: false,
                         show_line_items: true,
@@ -502,6 +507,9 @@ const controller = {
             res.sendStatus(400);   
         }       
     },
+
+
+
 }
 
 export default controller;
