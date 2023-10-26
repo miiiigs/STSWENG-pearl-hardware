@@ -23,6 +23,7 @@ const controller = {
                     price: resp[i].price,
                     quantity: resp[i].quantity,
                     productpic: resp[i].productpic,
+					p_id: resp[i]._id
                 });
             }
             
@@ -103,6 +104,7 @@ const controller = {
                     price: resp[i].price,
                     quantity: resp[i].quantity,
                     productpic: resp[i].productpic,
+					p_id: resp[i]._id
                 });
             }
             
@@ -233,13 +235,20 @@ const controller = {
             console.log("login successful");
 
             req.session.userID = existingUser._id;
+			req.session.fName = existingUser.firstName;
             return res.sendStatus(200);
         }
         console.log("Invalid email or password");
         res.sendStatus(500);
         
     },
-
+	
+	logout: async function(req,res){
+		console.log("Logging out!");
+		req.session.destroy();
+		res.redirect('/');
+	},
+	
     getUser: async function(req,res){
         if(req.session.userID){
             console.log("USER ID"+ req.session.userID);
@@ -257,8 +266,7 @@ const controller = {
 		
 		console.log("Searching for " + query);
 		
-		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {_id:0, __v:0}).lean();
-		
+		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {__v:0}).lean();
 		res.render("search_results", {product_list: result});
     },
 	
@@ -300,7 +308,7 @@ const controller = {
 		//user_cart[0].cart.push(product_result);
 		console.log("DId it work?");
 		console.log("Should have added " + product_result.name + " to " + req.session.fName + "'s cart");
-		res.redirect("/cart");
+		res.redirect("/cart?");
 	},
 	
 	//getProduct
@@ -318,6 +326,33 @@ const controller = {
 		res.render("product");
 		
 	},
+	
+	//removeFromCart
+	//removes product from user cart using productID embedded in the link
+	removeFromCart: async function (req, res){
+		console.log("removing product from cart");
+		var query = req.query;
+		console.log(query);
+		
+		const product_result = await Product.find({_id: query.id}, {__v: 0});
+		/*const result = await User.find(
+			{ _id: req.session.userID, cart:{ $elemMatch: {uniqueID: query.uid }}},
+			{__v: 0}
+		);
+		
+		console.log(result);*/
+		
+		await User.updateOne(
+			{ _id: req.session.userID, cart:{ $elemMatch: {uniqueID: query.uid }}},
+			{ $pull: {
+				cart: {uniqueID: query.uid}
+				}
+			}
+		);
+		
+		console.log("yes?");
+		res.redirect("/cart");	
+	},
 
     sortProducts: async function(req, res){
 		console.log("Searching for a product!");
@@ -332,6 +367,7 @@ const controller = {
                 price: resp[i].price,
                 quantity: resp[i].quantity,
                 productpic: resp[i].productpic,
+				p_id: resp[i]._id
             });
         }
         switch(query){
