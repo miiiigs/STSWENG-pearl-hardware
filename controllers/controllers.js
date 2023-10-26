@@ -347,6 +347,8 @@ const controller = {
 
         const itemsCheckout = [] //an array containing the _id of the products the user added in the cart
         const itemsNames = [] //an array containing the product names the user added to their cart
+        const user = await User.findById(req.session.userID).exec();
+        //console.log(user);
 
         for(let i = 0; i < items.length; i++){ //this for loop loops through the itemsCheckout array and for each one finds it in the product schema and creates an item checkout object needed in the api call
             const item = await Product.findById(items[i]).exec();
@@ -364,7 +366,10 @@ const controller = {
 
         try{
             const order = new Order({
-                userID: 123,
+                userID: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
                 items: itemsNames,
                 date: Date.now(),
                 status: 'Awaiting payment',
@@ -381,7 +386,7 @@ const controller = {
                 body: JSON.stringify({
                     data: {
                       attributes: {
-                        billing: {name: 'Sample name', email: 'email@email.com', phone: '9000000000'},
+                        billing: {name: user.firstName + ' ' + user.lastName, email: user.email, phone: '9000000000'},
                         send_email_receipt: false,
                         show_description: false,
                         show_line_items: true,
