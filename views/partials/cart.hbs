@@ -2,55 +2,28 @@
     
     <div class=" m-5 py-1 pl-2 border-b-2 border-b-maincolor font-Inika text-2xl w-48 ">Shopping Cart</div>
 
-    <!-- cart item 1 -->
-    <div class="flex flex-col bg-tertiary p-5 mx-5">
-        <div class="flex flex-row">
-            <div class="w-60 mx-10">
-                <img src="./uploads/temp.png"  class=" w-full">
-                <h2 class="text-xl font-semibold mt-2 text-center">Product Name</h2>
-            </div>
-            <div class="bg-dirty-white mx-10 w-full grid grid-cols-4 gap-4">
-                        <div class="m-auto"> Product Brand</div>
-                        <div class="m-auto"> P150.00</div>
-                        <div class="m-auto"> 2x </div>
-                        <div class="m-auto"> Remove </div>
-            </div>
-        </div>
-        
-
-        <div class=" bg-maincolor w-32 py-3 text-center ml-auto mr-10 text-white">
-            P6969.00
-        </div>
-    </div>
-    
-    <!-- cart item 2 -->
-    <div class="flex flex-col bg-tertiary p-5 mx-5">
-        <div class="flex flex-row">
-            <div class="w-60 mx-10">
-                <img src="./uploads/temp.png"  class=" w-full">
-                <h2 class="text-xl font-semibold mt-2 text-center">Product Name</h2>
-            </div>
-            <div class="bg-dirty-white mx-10 w-full grid grid-cols-4 gap-4">
-                        <div class="m-auto"> Product Brand</div>
-                        <div class="m-auto"> P150.00</div>
-                        <div class="m-auto"> 2x </div>
-                        <div class="m-auto"> Remove </div>
-            </div>
-        </div>
-        
-
-        <div class=" bg-maincolor w-32 py-3 text-center ml-auto mr-10 text-white">
-            P6969.00
-        </div>
-    </div>
-
+	{{#if cart_result}}
+		{{#each cart_result}}
+		<div class="flex flex-col bg-tertiary p-5 mx-5">
+			<div class="flex flex-row">
+				<div class="w-60 mx-10">
+					<img src="./uploads/temp.png"  class=" w-full">
+					<h2 class="text-xl font-semibold mt-2 text-center">{{this.product.name}}</h2>
+				</div>
+				<div class="bg-dirty-white mx-10 w-full grid grid-cols-4 gap-4">
+							<div class="m-auto"> Kelan pa tayo nagka product brand??? wala sa schema natin!!</div>
+							<div class="m-auto"> P{{this.product.price}}</div>
+							<div class="m-auto"> {{this.quantity}}x </div>
+							<div class="m-auto"> <a href="/remove-from-cart?id={{this.product._id}}&quantity={{this.quantity}}&uid={{this.uniqueID}}"> <u>Remove</u> </a> </div>
+				</div>
+			</div>
+			<div class=" bg-maincolor w-32 py-3 text-center ml-auto mr-10 text-white" fun="row-price">
+				P{{multiply this.product.price this.quantity }}
+			</div>
+		</div>
+		{{/each}}
+	{{else}}
+		<p>Add things to your cart!</p>
+	{{/if}}
     <button class=" bg-maincolor w-80 py-5 text-white mx-auto" type="submit">Checkout   INSERTtotal     </button>
-    
-    
 </div>
-        
-
-        
-
-
-    
