@@ -348,7 +348,7 @@ const controller = {
         const itemsCheckout = [] //an array containing the _id of the products the user added in the cart
         const itemsNames = [] //an array containing the product names the user added to their cart
         const user = await User.findById(req.session.userID).exec();
-        console.log(user);
+        //console.log(user);
 
         for(let i = 0; i < items.length; i++){ //this for loop loops through the itemsCheckout array and for each one finds it in the product schema and creates an item checkout object needed in the api call
             const item = await Product.findById(items[i]).exec();
