@@ -1,9 +1,11 @@
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 ">
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 ">	
     {{#each product_list}}
-    <div class="bg-tertiary rounded shadow p-4">
-        <img class="h-44 w-44 mx-auto object-cover" src={{this.productpic}} alt="Product Image">
-        <h2 class="text-xl font-semibold mt-2 text-center">{{this.name}}</h2>
-        <p class="text-center mt-1">Php {{this.price}}</p>
-    </div>
+	<a href="/product?name={{this.name}}&id={{#if this.p_id}}{{this.p_id}}{{else}}{{this._id}}{{/if}}">
+		<div class="bg-tertiary rounded shadow p-4">
+			<img class="h-44 w-44 mx-auto object-cover" src="./uploads/temp.png" alt="Product Image">
+			<h2 class="text-xl font-semibold mt-2 text-center">{{this.name}}</h2>
+			<p class="text-center mt-1">Php {{this.price}}</p>	
+		</div>
+	</a>
     {{/each}}
 </div>

@@ -33,6 +33,13 @@ app.use(session({ //initially a non persistent session is created for a user whe
     store: store,
 }));
 
+//session code for handlebars
+app.use(function(req,res, next){
+	res.locals.session = req.session;
+	//console.log(res.locals.session);
+	next();
+});
+
 const port = process.env.SERVER_PORT;
 
 import { fileURLToPath }        from 'url';
@@ -43,11 +50,11 @@ import { dirname, join }        from 'path';
 const hbs = exphbs.create({ //A new handlebar extension instantiation that includes helpers
     defaultLayout: 'main',
     extname: 'hbs',
-
     helpers:{
         eq: function(a,b){ //this helper is used to compare to values in a handle bar to use: {{#if (eq value1 value2)}}
             return a==b;
         },
+        multiply: function(a, b) {return a * b;},
     }
 })
 app.engine("hbs", hbs.engine);

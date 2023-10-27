@@ -23,6 +23,9 @@ router.get('/checkout', controller.checkout);
 router.get('/checkoutSuccess/:orderID', controller.checkoutSuccess);
 router.get('/getUser', controller.getUser);
 router.get('/cart', controller.getCart);
+router.get('/logout', controller.logout);
+router.get('/product', controller.getProduct);
+router.get('/remove-from-cart',controller.removeFromCart);
 
 //POSTS
 router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
@@ -33,7 +36,6 @@ router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body
 
 router.post('/login', body('email').notEmpty().normalizeEmail().isEmail(), body('password').notEmpty(), controller.login);
 router.post('/postCheckout', controller.postCheckout);
-
-
+router.post('/add-to-cart', controller.addToCart);
 
 export default router;

@@ -23,6 +23,7 @@ const controller = {
                     price: resp[i].price,
                     quantity: resp[i].quantity,
                     productpic: resp[i].productpic,
+					p_id: resp[i]._id
                 });
             }
             
@@ -103,6 +104,7 @@ const controller = {
                     price: resp[i].price,
                     quantity: resp[i].quantity,
                     productpic: resp[i].productpic,
+					p_id: resp[i]._id
                 });
             }
             
@@ -233,13 +235,20 @@ const controller = {
             console.log("login successful");
 
             req.session.userID = existingUser._id;
+			req.session.fName = existingUser.firstName;
             return res.sendStatus(200);
         }
         console.log("Invalid email or password");
         res.sendStatus(500);
         
     },
-
+	
+	logout: async function(req,res){
+		console.log("Logging out!");
+		req.session.destroy();
+		res.redirect('/');
+	},
+	
     getUser: async function(req,res){
         if(req.session.userID){
             console.log("USER ID"+ req.session.userID);
@@ -249,9 +258,7 @@ const controller = {
             console.log("Failed to get current user");
         }
     },
-	
 	//searchProducts
-	//So if you see this...you can access the results using the variable `product_list_search`, then render that data.
 	searchProducts: async function(req,res){
 		console.log("Searching for a product!");
 		
@@ -259,10 +266,93 @@ const controller = {
 		
 		console.log("Searching for " + query);
 		
-		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {_id:0, __v:0}).lean();
-		
+		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {__v:0}).lean();
 		res.render("search_results", {product_list: result});
     },
+	
+	//getCart
+	//gets the cart of the current user.
+	getCart: async function(req,res){
+		console.log("getting " + req.session.userID  + "(" + req.session.fName + ")'s cart");
+		
+		const result = await User.find({_id: req.session.userID},{cart: 1});
+		//console.log(result[0].cart);
+		//console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
+		res.render("add_to_cart",{cart_result: result[0].cart});
+	},	
+	
+	//addToCart
+	//will add to cart using the product ID (mongodb ID)
+	addToCart: async function(req, res){
+		console.log("Adding to cart");
+		console.log(req.body);
+		console.log("Attempting to add: " + req.body.id);
+		
+		//const query = "ObjectId('" + req.body.p_id + "')";
+		const query = req.body.id;
+		const temp= await Product.find({_id: query},{__v: 0});
+		const product_result = temp[0];
+		const quant = req.body.quant;
+		const id = req.session.userID + ":" + query;
+		await User.updateOne(
+			{_id: req.session.userID},
+			{
+				$push: {
+					cart: {product: product_result, quantity: quant, uniqueID: id}
+				}
+			}
+		);
+		console.log(product_result);
+		//console.log(user_cart[0].cart);
+		
+		//user_cart[0].cart.push(product_result);
+		console.log("DId it work?");
+		console.log("Should have added " + product_result.name + " to " + req.session.fName + "'s cart");
+		res.redirect("/cart?");
+	},
+	
+	//getProduct
+	//using the product ID in the query, it will send the data to products.hbs to render
+	//the webpage for that specific product
+	getProduct: async function (req,res){
+		console.log("getting product!");
+		var query = req.query.id;
+		try{
+			const product_result = await Product.find({_id: query}, {__v: 0}).lean();
+			//console.log(product_result);
+			return res.render("product",{product: product_result[0]});
+		}
+		catch{};
+		res.render("product");
+		
+	},
+	
+	//removeFromCart
+	//removes product from user cart using productID embedded in the link
+	removeFromCart: async function (req, res){
+		console.log("removing product from cart");
+		var query = req.query;
+		console.log(query);
+		
+		const product_result = await Product.find({_id: query.id}, {__v: 0});
+		/*const result = await User.find(
+			{ _id: req.session.userID, cart:{ $elemMatch: {uniqueID: query.uid }}},
+			{__v: 0}
+		);
+		
+		console.log(result);*/
+		
+		await User.updateOne(
+			{ _id: req.session.userID, cart:{ $elemMatch: {uniqueID: query.uid }}},
+			{ $pull: {
+				cart: {uniqueID: query.uid}
+				}
+			}
+		);
+		
+		console.log("yes?");
+		res.redirect("/cart");	
+	},
 
     sortProducts: async function(req, res){
 		console.log("Searching for a product!");
@@ -277,6 +367,7 @@ const controller = {
                 price: resp[i].price,
                 quantity: resp[i].quantity,
                 productpic: resp[i].productpic,
+				p_id: resp[i]._id
             });
         }
         switch(query){
