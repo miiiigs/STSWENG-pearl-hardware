@@ -684,6 +684,11 @@ video {
   margin-right: 0.5rem;
 }
 
+.my-60{
+  margin-top: 15rem;
+  margin-bottom: 15rem;
+}
+
 .mb-16{
   margin-bottom: 4rem;
 }
@@ -742,6 +747,14 @@ video {
 
 .mt-7{
   margin-top: 1.75rem;
+}
+
+.mr-40{
+  margin-right: 10rem;
+}
+
+.ml-4{
+  margin-left: 1rem;
 }
 
 .inline-block{
@@ -1241,6 +1254,22 @@ video {
 
 .pb-4{
   padding-bottom: 1rem;
+}
+
+.pr-40{
+  padding-right: 10rem;
+}
+
+.pr-20{
+  padding-right: 5rem;
+}
+
+.pl-10{
+  padding-left: 2.5rem;
+}
+
+.pr-10{
+  padding-right: 2.5rem;
 }
 
 .text-center{
