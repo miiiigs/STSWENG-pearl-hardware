@@ -171,7 +171,8 @@ const controller = {
             });
         } catch{
             res.sendStatus(400);   
-        }       
+        }
+        
     },
 
     getProductDesc: async function (req, res) {
@@ -205,6 +206,18 @@ const controller = {
         }       
     },
 
+    getAdmin: async function(req, res) {
+        try{
+            
+            res.render("admin", {
+                layout: 'adminMain'
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+
+    
 
     register: async function(req, res) {
 
