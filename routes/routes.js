@@ -13,15 +13,21 @@ router.use(bodyParser.urlencoded({ extended: true }));
 
 //GETS
 router.get(`/`, controller.getIndex);
-router.get(`/category/:category`, controller.getCategory);
+
+//  user handling
 router.get(`/login`, controller.getLogin);
-router.get('/registerPage', controller.getRegister);
+router.get('/register', controller.getRegister);
+
+
+router.get(`/category/:category`, controller.getCategory);
+
 router.get('/sortProducts', controller.sortProducts);
 router.get('/searchProducts', controller.searchProducts);
 router.get('/userprofile', controller.getUserProfile);
 router.get('/checkout', controller.checkout);
 router.get('/checkoutSuccess/:orderID', controller.checkoutSuccess);
 router.get('/getUser', controller.getUser);
+router.get('/productDesc', controller.getProductDesc);
 router.get('/cart', controller.getCart);
 router.get('/logout', controller.logout);
 router.get('/product', controller.getProduct);
