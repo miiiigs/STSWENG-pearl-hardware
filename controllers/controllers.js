@@ -521,15 +521,16 @@ const controller = {
                 email: user.email,
                 items: itemsNames,
                 date: Date.now(),
-                status: 'Awaiting payment',
-                amount: total,
+                status: 'awaiting payment',
+                amount: parseFloat(total.toFixed(2)),
                 paymongoID: -1, //paymongoID of -1 means there is no record of a transaction in paymongo in other words it is to be ignored as the user did not even go to the checkout page of paymongo
                 line1: user.line1,
                 line2: user.line2,
                 city: user.city,
                 state: user.state,
                 postalCode: user.postalCode,
-                country: user.country
+                country: user.country,
+                isCancelled: false
             })
 
             const result = await order.save(); //save order to database
@@ -621,6 +622,127 @@ const controller = {
         } catch{
             res.sendStatus(400);   
         }       
+    },
+
+    getAdminCategory: async function(req, res) {
+
+        const category = req.params.category;
+        //console.log(category);
+
+        try{
+            
+            //getProducts function
+            var order_list = [];
+            let resp;
+            switch(category){
+                case 'allorders':
+                    resp = await Order.find({isCancelled: false});
+                    break;
+                case 'awaitingpayment':
+                    resp = await Order.find({status: 'awaiting payment', isCancelled: false});
+                    break;
+                case 'paymentsuccess':
+                    resp = await Order.find({status: 'succeeded', isCancelled: false});
+                    break;
+                case 'orderpacked':
+                    resp = await Order.find({status: 'order packed', isCancelled: false});
+                    break;
+                case 'intransit':
+                    resp = await Order.find({status: 'in transit', isCancelled: false});
+                    break;
+                case 'delivered':
+                    resp = await Order.find({status: 'delivered', isCancelled: false});
+                    break;
+                case 'cancelled':
+                    resp = await Order.find({isCancelled: true});
+                    break;
+            }
+
+            //console.log(resp.length)
+    
+            for(let i = 0; i < resp.length; i++) {
+                order_list.push({
+                    userID: resp[i].userID,
+                    firstName: resp[i].firstName,
+                    lastName: resp[i].lastName,
+                    email: resp[i].email,
+                    date: resp[i].date.toISOString().slice(0,10),
+					status: resp[i].status,
+                    amount: resp[i].amount,
+                    paymongoID: resp[i].paymongoID,
+                    orderID: resp[i]._id,
+                    isCancelled: resp[i].isCancelled.toString()
+                });
+            }
+            
+            // sortProducts function
+            const sortValue = req.query.sortBy;
+            console.log(sortValue);
+            if(sortValue !== undefined){
+                switch(sortValue){
+                    case 'def':
+                        
+                        break;
+                    case 'price_asc':
+                        product_list.sort((a, b) => a.price-b.price);
+                        break;
+                    case 'price_desc':
+                        product_list.sort((a, b) => b.price-a.price);
+                        break;
+                    case 'name_asc':
+                        product_list.sort((a,b) => a.name.localeCompare(b.name));
+                        break;
+                    case 'name_desc':
+                        product_list.sort((a,b) => b.name.localeCompare(a.name));
+                        break;         
+                }   
+            }
+
+            
+            res.render("admin", {
+                layout: 'adminMain',
+                order_list: order_list,
+                category: category,
+                script: '/./js/adminOrders.js',
+
+            });
+        } catch{
+            res.sendStatus(400);   
+        }
+        
+    },
+
+    cancelChange: async function(req, res){
+
+        const {id} = req.body;
+        //console.log(id)
+        
+        try{
+            const findOrder = await Order.findById(id);
+            if(findOrder.isCancelled == true){
+                const update = await Order.findByIdAndUpdate(id, {isCancelled : false});
+                res.sendStatus(200);
+            }else{
+                const update = await Order.findByIdAndUpdate(id, {isCancelled : true});
+                res.sendStatus(200);
+            }
+        }catch{
+            res.sendStatus(400);
+        }
+    },
+
+    statusChange: async function(req, res){
+
+        const {orderID, status} = req.body;
+        //console.log(orderID)
+        //console.log(status)
+        
+        try{
+            const update = await Order.findByIdAndUpdate(orderID, {status : status});
+            res.sendStatus(200);
+        }catch{
+            res.sendStatus(400);
+        }
     },
 
 

@@ -23,7 +23,8 @@ const orderSchema = new mongoose.Schema({
     },
     date: {
         type: mongoose.SchemaTypes.Date,
-        required: true
+        required: true,
+        timestamps: true
     },
     status:{
         type: mongoose.SchemaTypes.String,
@@ -66,7 +67,13 @@ const orderSchema = new mongoose.Schema({
     country:{
         type: String,
         required: true
-    }
+    },
+
+    isCancelled:{
+        type: Boolean,
+        required: true
+    },
+
 })
 
 export const Order = mongoose.model('Order', orderSchema);
