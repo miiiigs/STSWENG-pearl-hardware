@@ -64,6 +64,37 @@ const controller = {
         }       
     },
 
+    getLogin: async function(req, res) {
+        try{           
+            res.render("login", {
+                script: './js/login.js'
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+
+    getRegister: async function(req, res) {
+        try{
+            res.render("register", {
+                script: './js/register.js'
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+
+    getAdmin: async function(req, res) {
+        try{
+            res.render("admin", {
+                layout: 'admin'
+            });
+        } catch{
+            res.sendStatus(400);   
+        }       
+    },
+
+
     getCategory: async function(req, res) {
 
         const category = req.params.category;
@@ -143,7 +174,14 @@ const controller = {
         }       
     },
 
-    
+    getProductDesc: async function (req, res) {
+        try {
+            res.render("productDesc", {
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
 
     getCart: async function(req, res) {
         try{           
@@ -155,25 +193,7 @@ const controller = {
         }       
     },
 
-    getLogin: async function(req, res) {
-        try{           
-            res.render("login", {
-                script: './js/login.js'
-            });
-        } catch{
-            res.sendStatus(400);   
-        }       
-    },
-
-    getRegister: async function(req, res) {
-        try{
-            res.render("register", {
-                script: './js/register.js'
-            });
-        } catch{
-            res.sendStatus(400);   
-        }       
-    },
+    
 
     getUserProfile: async function(req, res) {
         try{
@@ -320,7 +340,10 @@ const controller = {
 		try{
 			const product_result = await Product.find({_id: query}, {__v: 0}).lean();
 			//console.log(product_result);
-			return res.render("product",{product: product_result[0]});
+			return res.render("productDesc",{
+                product: product_result[0],
+                script: "./js/add_to_cart.js",
+            });
 		}
 		catch{};
 		res.render("product");
