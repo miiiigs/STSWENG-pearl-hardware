@@ -1,0 +1,38 @@
+<div class=" bg-white bg-opacity-80 p-1 rounded-md  w-[98%] mx-auto my-auto"
+    style="box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1), -10px -10px 10px rgba(0, 0, 0, 0.1);">
+    <div class="mx-10 my-5 py-0 pl-2 border-b-4 border-b-maincolor font-Inika text-2xl w-48 ">Inventory</div>
+
+    {{> inventory_bar}}
+
+    <div class="bg-white bg-opacity-80 p-1 rounded-md w-[95%] mx-auto my-auto shadow-md">
+
+        <div class=" bg-tertiary flex flex-wrap items-center justify-center rounded-[10px] mb-2">
+            <div class="w-32 h-32 mx-auto">
+
+                <img src="./uploads/temp.png" alt="">
+
+            </div>
+            <div class="font-Inknut text-secondary text-sm  border-white mx-auto">
+                Product Name</div>
+            <div class="font-Inknut text-secondary text-sm  border-white mx-auto">
+                Price</div>
+            <div class="font-Inknut text-secondary text-sm  border-white ml-4 h-8 py-1">
+                <input type="text" name="current_stock" class=" rounded w-40">
+            </div>
+
+            <div class="mx-auto">
+                <button
+                    class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                    Show
+                </button>
+                <button
+                    class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                    Hide
+                </button>
+            </div>
+
+
+        </div>
+
+
+    </div>
