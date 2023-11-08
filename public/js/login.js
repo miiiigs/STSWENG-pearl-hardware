@@ -5,8 +5,10 @@ const logPassword = document.querySelector('#logpassword');
 
 const regLog = document.querySelector('#regLog'); //we remove the myaccount and register buttons in the register/login pages
 const myAccount = document.querySelector('#myAccount')
-regLog.style.visibility = "hidden";
-myAccount.style.visibility = "hidden"; 
+try{
+    regLog.style.visibility = "hidden";
+    myAccount.style.visibility = "hidden"; 
+} catch{};
 
 function checkInputsLog() { //this function disables the register submit button until all fields have values
     if(logEmail.value.trim() !== '' && logPassword.value.trim() !== ''){

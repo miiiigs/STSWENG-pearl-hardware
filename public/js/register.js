@@ -7,8 +7,10 @@ const errorDisplay = document.querySelector("#errors");
 
 const regLog = document.querySelector('#regLog'); //we remove the myaccount and register buttons in the register/login pages
 const myAccount = document.querySelector('#myAccount')
-regLog.style.visibility = "hidden";
-myAccount.style.visibility = "hidden"; 
+try{
+    regLog.style.visibility = "hidden";
+    myAccount.style.visibility = "hidden"; 
+} catch{};
 
 registerSubmit.addEventListener('click', async (e) => {
     e.preventDefault();

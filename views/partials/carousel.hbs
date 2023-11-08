@@ -1,0 +1,88 @@
+<!--
+<div class="container-sm wrapper">
+
+    <i id="left" class="fa-solid fa-angle-left"></i>
+
+   
+    <ul class="carousel">
+    
+        <li class="card cardui">
+            <img class="card-img-top" src="{{cafePath}}" alt="img" draggable="false">
+
+            <div class="card-body">
+                    <a href="cafe/{{cafeName}}">
+                            <h2 class="card-title">Product</h2>
+                    </a>
+            <p class="card-text">Avg. Price: ₱10</p>
+            </div>
+        </li>
+    
+    </ul>
+
+    <i id="right" class="fa-solid fa-angle-right"></i>
+
+</div>
+-->
+<div class="mt-6 flex flex-row">
+        <div class="font-Inika text-2xl w-48 h-1">Brands</div>
+
+    </div>
+<div class="flex flex-row relative h-72 w-full overflow-hidden">
+        <div class="flex flex-row space-x-3 absolute transform transition duration-500 ease-in-out">
+            <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+            <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+            <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+            <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+            <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+            <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+            <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+            <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+            <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+            <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+        </div>
+    </div>
+
+
+
+<div class="carousel relative overflow-hidden w-full">
+    <div class="carousel-inner absolute w-full transform transition duration-500 ease-in-out">
+        <!-- Add your product divs here -->
+        <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+        <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+        
+        <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+        <img class="w-60 h-60 mt-12" src="../uploads/temp.png">
+        <div class="carousel-item bg-blue-500 w-full">Product 1</div>
+        <div class="carousel-item bg-green-500 w-full">Product 2</div>
+        <div class="carousel-item bg-red-500 w-full">Product 3</div>
+    </div>
+
+    <button class="carousel-next absolute top-1/2 transform -translate-y-1/2 right-0 p-4 text-white bg-blue-500 rounded-full hover:bg-blue-600">
+        Next
+    </button>
+    <button class="carousel-prev absolute top-1/2 transform -translate-y-1/2 left-0 p-4 text-white bg-blue-500 rounded-full hover:bg-blue-600">
+        Prev
+    </button>
+</div>
+
+<script>
+    const carousel = document.querySelector('.carousel');
+    const carouselInner = document.querySelector('.carousel-inner');
+    const nextButton = document.querySelector('.carousel-next');
+    const prevButton = document.querySelector('.carousel-prev');
+
+    nextButton.addEventListener('click', () => {
+        carouselInner.scrollBy({
+            left: carousel.clientWidth,
+            behavior: 'smooth'
+        });
+    });
+
+    prevButton.addEventListener('click', () => {
+        carouselInner.scrollBy({
+            left: -carousel.clientWidth,
+            behavior: 'smooth'
+        });
+
+    }
+</script>

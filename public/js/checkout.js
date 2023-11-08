@@ -5,7 +5,7 @@ const submit = document.querySelector('#submit');
 
 submit.addEventListener('click', async function (){
 
-    items = ['651d0b1f95c615eb89ebcaf1',  '651d0b1f95c615eb89ebcaf2', '651d0b1f95c615eb89ebcaef']
+    items = ['65398c317e23cd12376c2d9b',  '65398c317e23cd12376c2d9c', '65398c317e23cd12376c2d99']
     amount = [1,2,3];
 
 
