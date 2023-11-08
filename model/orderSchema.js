@@ -36,6 +36,36 @@ const orderSchema = new mongoose.Schema({
     paymongoID: {
         type: mongoose.SchemaTypes.String,
         required: true
+    },
+
+    line1:{
+        type: String,
+        required: true
+    },
+
+    line2:{
+        type: String,
+        required: false
+    },
+    
+    city:{
+        type: String,
+        required: true
+    },
+
+    state:{
+        type: String,
+        required: true
+    },
+
+    postalCode:{
+        type: Number,
+        required: true
+    },
+
+    country:{
+        type: String,
+        required: true
     }
 })
 

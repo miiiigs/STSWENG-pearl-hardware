@@ -211,7 +211,13 @@ const controller = {
             firstName: fname,
             lastName: lname,
             email: email,
-            password: hash
+            password: hash,
+            line1: "sample",
+            line2: "sample",
+            city: "sample",
+            state: "sample",
+            postalCode: 1111,
+            country: "PH"
         });
 
         try{
@@ -271,15 +277,31 @@ const controller = {
     },
 	
 	//getCart
-	//gets the cart of the current user.
+	//gets the cart of the current user and renders the cart page.
 	getCart: async function(req,res){
 		console.log("getting " + req.session.userID  + "(" + req.session.fName + ")'s cart");
-		
+
+        if(req.session.userID != null){
+            const result = await User.find({_id: req.session.userID},{cart: 1});
+		    //console.log(result[0].cart);
+		    //console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
+		    res.render("add_to_cart",{cart_result: result[0].cart, script: './js/checkout.js'});
+        }else{
+            try{           
+                res.render("login", {
+                    script: './js/login.js'
+                });
+            } catch{
+                res.sendStatus(400);   
+            }
+        }
+	},
+    
+    //sends the items in a user's cart 
+    getCartItems: async function(req,res){
 		const result = await User.find({_id: req.session.userID},{cart: 1});
-		//console.log(result[0].cart);
-		//console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
-		res.render("add_to_cart",{cart_result: result[0].cart});
-	},	
+        res.status(200).send(result[0].cart)
+	},
 	
 	//addToCart
 	//will add to cart using the product ID (mongodb ID)
@@ -465,7 +487,13 @@ const controller = {
                 date: Date.now(),
                 status: 'Awaiting payment',
                 amount: total,
-                paymongoID: -1 //paymongoID of -1 means there is no record of a transaction in paymongo in other words it is to be ignored as the user did not even go to the checkout page of paymongo
+                paymongoID: -1, //paymongoID of -1 means there is no record of a transaction in paymongo in other words it is to be ignored as the user did not even go to the checkout page of paymongo
+                line1: user.line1,
+                line2: user.line2,
+                city: user.city,
+                state: user.state,
+                postalCode: user.postalCode,
+                country: user.country
             })
 
             const result = await order.save(); //save order to database
@@ -477,7 +505,15 @@ const controller = {
                 body: JSON.stringify({
                     data: {
                       attributes: {
-                        billing: {name: user.firstName + ' ' + user.lastName, email: user.email, phone: '9000000000'},
+                        billing: {
+                            address: {
+                              line1: user.line1,
+                              line2: user.line2,
+                              city: user.city,
+                              state: user.state,
+                              postal_code: user.postalCode,
+                              country: user.country
+                            }, name: user.firstName + ' ' + user.lastName, email: user.email},
                         send_email_receipt: false,
                         show_description: false,
                         show_line_items: true,
@@ -496,7 +532,7 @@ const controller = {
             .then(response => response.json())
             .then(async response => {
 
-                //console.log(response.data.id)
+                console.log(response)
                 const addPaymongoID = await Order.findByIdAndUpdate(response.data.attributes.reference_number, {paymongoID : response.data.id}); //after redirecting to paymongo the paymongoID is updated using the paymongo generated id
 
                 res.status(200);
@@ -524,7 +560,14 @@ const controller = {
         .then(response => response.json())
         .then(async response => { //console.log(response)
             try{
-                const result = await Order.findByIdAndUpdate(ID, { status: response.data.attributes.payment_intent.attributes.status}); //update the status of the order in database using the status in paymongo
+                const result = await Order.findByIdAndUpdate(ID, { status: response.data.attributes.payment_intent.attributes.status,
+                                                                address: response.data.attributes.billing.address.line1,
+                                                                address2: response.data.attributes.billing.address.line1,
+                                                                postalCode: response.data.attributes.billing.address.postal_code,
+                                                                city: response.data.attributes.billing.address.city,
+                                                                state: response.data.attributes.billing.address.state,
+                                                                country: response.data.attributes.billing.address.country,
+                                                                email: response.data.attributes.billing.email}); //update the status of the order in database using the status in paymongo
                 
             }catch (err){
                 console.log("Fetching order failed!");
