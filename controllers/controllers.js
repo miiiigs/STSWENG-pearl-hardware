@@ -491,7 +491,7 @@ const controller = {
             itemsCheckout.push({
                 currency: 'PHP',
                 images: ['https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fsearch%2Fimages%3Fk%3Dsample&psig=AOvVaw0AFGkt28PQn4zNlauG_NGx&ust=1698039665576000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCKiesur4iIIDFQAAAAAdAAAAABAE'],
-                amount: item.price * 100,
+                amount: parseInt(parseFloat(item.price.toFixed(2)) * 100),
                 description: 'description',
                 name: item.name,
                 quantity: parseInt(amount[i])
@@ -584,14 +584,14 @@ const controller = {
         .then(async response => { //console.log(response)
             try{
                 const result = await Order.findByIdAndUpdate(ID, { status: response.data.attributes.payment_intent.attributes.status,
-                                                                address: response.data.attributes.billing.address.line1,
-                                                                address2: response.data.attributes.billing.address.line1,
+                                                                line1: response.data.attributes.billing.address.line1,
+                                                                line2: response.data.attributes.billing.address.line2,
                                                                 postalCode: response.data.attributes.billing.address.postal_code,
                                                                 city: response.data.attributes.billing.address.city,
                                                                 state: response.data.attributes.billing.address.state,
                                                                 country: response.data.attributes.billing.address.country,
                                                                 email: response.data.attributes.billing.email}); //update the status of the order in database using the status in paymongo
-                
+                const user = await User.findByIdAndUpdate(req.session.userID, {cart: []}) //clears the cart of the user after successfully checking out
             }catch (err){
                 console.log("Fetching order failed!");
                 console.error(err);
