@@ -306,12 +306,17 @@ const controller = {
 	//getCart
 	//gets the cart of the current user.
 	getCart: async function(req,res){
-		console.log("getting " + req.session.userID  + "(" + req.session.fName + ")'s cart");
-		
-		const result = await User.find({_id: req.session.userID},{cart: 1});
-		//console.log(result[0].cart);
-		//console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
-		res.render("add_to_cart",{cart_result: result[0].cart});
+        if(req.session.userID){
+            console.log("getting " + req.session.userID  + "(" + req.session.fName + ")'s cart");
+            
+            const result = await User.find({_id: req.session.userID},{cart: 1});
+
+            //console.log(result[0].cart);
+            //console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
+            res.render("add_to_cart",{cart_result: result[0].cart});
+        } else {
+            res.redirect('/login');
+        }
 	},	
 	
 	//addToCart
