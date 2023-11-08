@@ -32,6 +32,7 @@ router.get('/cart', controller.getCart);
 router.get('/logout', controller.logout);
 router.get('/product', controller.getProduct);
 router.get('/remove-from-cart',controller.removeFromCart);
+router.get('/admin',controller.getAdmin);
 router.get('/getCartItems', controller.getCartItems)
 
 //POSTS
