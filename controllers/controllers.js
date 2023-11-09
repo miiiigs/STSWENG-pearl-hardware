@@ -256,7 +256,13 @@ const controller = {
             firstName: fname,
             lastName: lname,
             email: email,
-            password: hash
+            password: hash,
+            line1: "sample",
+            line2: "sample",
+            city: "sample",
+            state: "sample",
+            postalCode: 1111,
+            country: "PH"
         });
 
         try {
@@ -355,17 +361,75 @@ const controller = {
         console.log("Should have added " + product_result.name + " to " + req.session.fName + "'s cart");
         res.redirect("/cart?");
     },
+	
+	//getCart
+	//gets the cart of the current user and renders the cart page.
+	getCart: async function(req,res){
 
-    //getProduct
-    //using the product ID in the query, it will send the data to products.hbs to render
-    //the webpage for that specific product
-    getProduct: async function (req, res) {
-        console.log("getting product!");
-        var query = req.query.id;
-        try {
-            const product_result = await Product.find({ _id: query }, { __v: 0 }).lean();
-            //console.log(product_result);
-            return res.render("productDesc", {
+		console.log("getting " + req.session.userID  + "(" + req.session.fName + ")'s cart");
+
+        if(req.session.userID != null){
+            const result = await User.find({_id: req.session.userID},{cart: 1});
+		    //console.log(result[0].cart);
+		    //console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
+		    res.render("add_to_cart",{cart_result: result[0].cart, script: './js/checkout.js'});
+        }else{
+            try{           
+                res.render("login", {
+                    script: './js/login.js'
+                });
+            } catch{
+                res.sendStatus(400);   
+            }
+        }
+	},
+    
+    //sends the items in a user's cart 
+    getCartItems: async function(req,res){
+		const result = await User.find({_id: req.session.userID},{cart: 1});
+        res.status(200).send(result[0].cart)
+	},
+	
+	//addToCart
+	//will add to cart using the product ID (mongodb ID)
+	addToCart: async function(req, res){
+		console.log("Adding to cart");
+		console.log(req.body);
+		console.log("Attempting to add: " + req.body.id);
+		
+		//const query = "ObjectId('" + req.body.p_id + "')";
+		const query = req.body.id;
+		const temp= await Product.find({_id: query},{__v: 0});
+		const product_result = temp[0];
+		const quant = req.body.quant;
+		const id = req.session.userID + ":" + query;
+		await User.updateOne(
+			{_id: req.session.userID},
+			{
+				$push: {
+					cart: {product: product_result, quantity: quant, uniqueID: id}
+				}
+			}
+		);
+		console.log(product_result);
+		//console.log(user_cart[0].cart);
+		
+		//user_cart[0].cart.push(product_result);
+		console.log("DId it work?");
+		console.log("Should have added " + product_result.name + " to " + req.session.fName + "'s cart");
+		res.redirect("/cart?");
+	},
+	
+	//getProduct
+	//using the product ID in the query, it will send the data to products.hbs to render
+	//the webpage for that specific product
+	getProduct: async function (req,res){
+		console.log("getting product!");
+		var query = req.query.id;
+		try{
+			const product_result = await Product.find({_id: query}, {__v: 0}).lean();
+			//console.log(product_result);
+			return res.render("productDesc",{
                 product: product_result[0],
                 script: "./js/add_to_cart.js",
             });
@@ -495,7 +559,7 @@ const controller = {
             itemsCheckout.push({
                 currency: 'PHP',
                 images: ['https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fsearch%2Fimages%3Fk%3Dsample&psig=AOvVaw0AFGkt28PQn4zNlauG_NGx&ust=1698039665576000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCKiesur4iIIDFQAAAAAdAAAAABAE'],
-                amount: item.price * 100,
+                amount: parseInt(parseFloat(item.price.toFixed(2)) * 100),
                 description: 'description',
                 name: item.name,
                 quantity: parseInt(amount[i])
@@ -512,9 +576,16 @@ const controller = {
                 email: user.email,
                 items: itemsNames,
                 date: Date.now(),
-                status: 'Awaiting payment',
-                amount: total,
-                paymongoID: -1 //paymongoID of -1 means there is no record of a transaction in paymongo in other words it is to be ignored as the user did not even go to the checkout page of paymongo
+                status: 'awaiting payment',
+                amount: parseFloat(total.toFixed(2)),
+                paymongoID: -1, //paymongoID of -1 means there is no record of a transaction in paymongo in other words it is to be ignored as the user did not even go to the checkout page of paymongo
+                line1: user.line1,
+                line2: user.line2,
+                city: user.city,
+                state: user.state,
+                postalCode: user.postalCode,
+                country: user.country,
+                isCancelled: false
             })
 
             const result = await order.save(); //save order to database
@@ -525,18 +596,26 @@ const controller = {
                 headers: { accept: 'application/json', 'Content-Type': 'application/json', 'Authorization': `Basic ${btoa(paymongoAPIkey)}` },
                 body: JSON.stringify({
                     data: {
-                        attributes: {
-                            billing: { name: user.firstName + ' ' + user.lastName, email: user.email, phone: '9000000000' },
-                            send_email_receipt: false,
-                            show_description: false,
-                            show_line_items: true,
-                            cancel_url: 'http:/localhost:3000/',
-                            description: 'description',
-                            line_items: itemsCheckout,
-                            payment_method_types: ['card', 'gcash'],
-                            reference_number: result._id, //store the order _id in database as the reference number
-                            success_url: 'http://localhost:3000/checkoutSuccess/' + result._id
-                        }
+                      attributes: {
+                        billing: {
+                            address: {
+                              line1: user.line1,
+                              line2: user.line2,
+                              city: user.city,
+                              state: user.state,
+                              postal_code: user.postalCode,
+                              country: user.country
+                            }, name: user.firstName + ' ' + user.lastName, email: user.email},
+                        send_email_receipt: false,
+                        show_description: false,
+                        show_line_items: true,
+                        cancel_url: 'http:/localhost:3000/',
+                        description: 'description',
+                        line_items: itemsCheckout,
+                        payment_method_types: ['card', 'gcash'],
+                        reference_number: result._id, //store the order _id in database as the reference number
+                        success_url: 'http://localhost:3000/checkoutSuccess/' + result._id
+                      }
                     }
                 })
             };
@@ -544,9 +623,8 @@ const controller = {
             fetch('https://api.paymongo.com/v1/checkout_sessions', options) //this api call is to create a checkout session in paymongo
                 .then(response => response.json())
                 .then(async response => {
-
-                    //console.log(response.data.id)
-                    const addPaymongoID = await Order.findByIdAndUpdate(response.data.attributes.reference_number, { paymongoID: response.data.id }); //after redirecting to paymongo the paymongoID is updated using the paymongo generated id
+                console.log(response)
+                const addPaymongoID = await Order.findByIdAndUpdate(response.data.attributes.reference_number, {paymongoID : response.data.id}); //after redirecting to paymongo the paymongoID is updated using the paymongo generated id
 
                     res.status(200);
                     res.send(response.data.attributes.checkout_url.toString());
@@ -568,20 +646,26 @@ const controller = {
         //console.log("Order ID: ", ID);
 
         const order = await Order.findById(ID);
-
-        fetch('https://api.paymongo.com/v1/checkout_sessions/' + order.paymongoID, options) //this api call is to retrieved the checkout information in paymongo
-            .then(response => response.json())
-            .then(async response => { //console.log(response)
-                try {
-                    const result = await Order.findByIdAndUpdate(ID, { status: response.data.attributes.payment_intent.attributes.status }); //update the status of the order in database using the status in paymongo
-
-                } catch (err) {
-                    console.log("Fetching order failed!");
-                    console.error(err);
-                    res.sendStatus(500);
-                }
-            })
-            .catch(err => console.error(err));
+        fetch('https://api.paymongo.com/v1/checkout_sessions/' + order.paymongoID , options) //this api call is to retrieved the checkout information in paymongo
+        .then(response => response.json())
+        .then(async response => { //console.log(response)
+            try{
+                const result = await Order.findByIdAndUpdate(ID, { status: response.data.attributes.payment_intent.attributes.status,
+                                                                line1: response.data.attributes.billing.address.line1,
+                                                                line2: response.data.attributes.billing.address.line2,
+                                                                postalCode: response.data.attributes.billing.address.postal_code,
+                                                                city: response.data.attributes.billing.address.city,
+                                                                state: response.data.attributes.billing.address.state,
+                                                                country: response.data.attributes.billing.address.country,
+                                                                email: response.data.attributes.billing.email}); //update the status of the order in database using the status in paymongo
+                const user = await User.findByIdAndUpdate(req.session.userID, {cart: []}) //clears the cart of the user after successfully checking out
+            }catch (err){
+                console.log("Fetching order failed!");
+                console.error(err);
+                res.sendStatus(500);
+            }
+        })
+        .catch(err => console.error(err));
 
         try {
             res.render("checkoutSuccess", {
@@ -589,6 +673,127 @@ const controller = {
             })
 
         } catch {
+            res.sendStatus(400);
+        }
+    },
+
+    getAdminCategory: async function(req, res) {
+
+        const category = req.params.category;
+        //console.log(category);
+
+        try{
+            
+            //getProducts function
+            var order_list = [];
+            let resp;
+            switch(category){
+                case 'allorders':
+                    resp = await Order.find({isCancelled: false});
+                    break;
+                case 'awaitingpayment':
+                    resp = await Order.find({status: 'awaiting payment', isCancelled: false});
+                    break;
+                case 'paymentsuccess':
+                    resp = await Order.find({status: 'succeeded', isCancelled: false});
+                    break;
+                case 'orderpacked':
+                    resp = await Order.find({status: 'order packed', isCancelled: false});
+                    break;
+                case 'intransit':
+                    resp = await Order.find({status: 'in transit', isCancelled: false});
+                    break;
+                case 'delivered':
+                    resp = await Order.find({status: 'delivered', isCancelled: false});
+                    break;
+                case 'cancelled':
+                    resp = await Order.find({isCancelled: true});
+                    break;
+            }
+
+            //console.log(resp.length)
+    
+            for(let i = 0; i < resp.length; i++) {
+                order_list.push({
+                    userID: resp[i].userID,
+                    firstName: resp[i].firstName,
+                    lastName: resp[i].lastName,
+                    email: resp[i].email,
+                    date: resp[i].date.toISOString().slice(0,10),
+					status: resp[i].status,
+                    amount: resp[i].amount,
+                    paymongoID: resp[i].paymongoID,
+                    orderID: resp[i]._id,
+                    isCancelled: resp[i].isCancelled.toString()
+                });
+            }
+            
+            // sortProducts function
+            const sortValue = req.query.sortBy;
+            console.log(sortValue);
+            if(sortValue !== undefined){
+                switch(sortValue){
+                    case 'def':
+                        
+                        break;
+                    case 'price_asc':
+                        product_list.sort((a, b) => a.price-b.price);
+                        break;
+                    case 'price_desc':
+                        product_list.sort((a, b) => b.price-a.price);
+                        break;
+                    case 'name_asc':
+                        product_list.sort((a,b) => a.name.localeCompare(b.name));
+                        break;
+                    case 'name_desc':
+                        product_list.sort((a,b) => b.name.localeCompare(a.name));
+                        break;         
+                }   
+            }
+
+            
+            res.render("admin", {
+                layout: 'adminMain',
+                order_list: order_list,
+                category: category,
+                script: '/./js/adminOrders.js',
+
+            });
+        } catch{
+            res.sendStatus(400);   
+        }
+        
+    },
+
+    cancelChange: async function(req, res){
+
+        const {id} = req.body;
+        //console.log(id)
+        
+        try{
+            const findOrder = await Order.findById(id);
+            if(findOrder.isCancelled == true){
+                const update = await Order.findByIdAndUpdate(id, {isCancelled : false});
+                res.sendStatus(200);
+            }else{
+                const update = await Order.findByIdAndUpdate(id, {isCancelled : true});
+                res.sendStatus(200);
+            }
+        }catch{
+            res.sendStatus(400);
+        }
+    },
+
+    statusChange: async function(req, res){
+
+        const {orderID, status} = req.body;
+        //console.log(orderID)
+        //console.log(status)
+        
+        try{
+            const update = await Order.findByIdAndUpdate(orderID, {status : status});
+            res.sendStatus(200);
+        }catch{
             res.sendStatus(400);
         }
     },
