@@ -194,8 +194,6 @@ const controller = {
         }       
     },
 
-    
-
     getUserProfile: async function(req, res) {
         try{
             
@@ -210,12 +208,16 @@ const controller = {
         try{
             
             res.render("admin", {
-                layout: 'adminMain'
+                layout: 'admin'
             });
         } catch{
             res.sendStatus(400);   
         }       
     },
+
+
+    
+
 
     
 
