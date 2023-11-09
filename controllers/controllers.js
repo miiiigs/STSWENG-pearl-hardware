@@ -312,6 +312,7 @@ const controller = {
 	//getCart
 	//gets the cart of the current user and renders the cart page.
 	getCart: async function(req,res){
+
 		console.log("getting " + req.session.userID  + "(" + req.session.fName + ")'s cart");
 
         if(req.session.userID != null){
