@@ -20,6 +20,7 @@ router.get('/register', controller.getRegister);
 
 
 router.get(`/category/:category`, controller.getCategory);
+router.get(`/adminCategory/:category`, controller.getAdminCategory);
 
 router.get('/sortProducts', controller.sortProducts);
 router.get('/searchProducts', controller.searchProducts);
@@ -33,7 +34,7 @@ router.get('/logout', controller.logout);
 router.get('/product', controller.getProduct);
 router.get('/remove-from-cart',controller.removeFromCart);
 router.get('/admin',controller.getAdmin);
-
+router.get('/getCartItems', controller.getCartItems)
 
 //POSTS
 router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
@@ -45,5 +46,7 @@ router.post('/register',body('fname').notEmpty(), body('lname').notEmpty(), body
 router.post('/login', body('email').notEmpty().normalizeEmail().isEmail(), body('password').notEmpty(), controller.login);
 router.post('/postCheckout', controller.postCheckout);
 router.post('/add-to-cart', controller.addToCart);
+router.post('/cancelChange', controller.cancelChange)
+router.post('/statusChange', controller.statusChange)
 
 export default router;
