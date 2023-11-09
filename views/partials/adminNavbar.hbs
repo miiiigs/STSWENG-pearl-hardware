@@ -5,45 +5,45 @@
         <div class="relative flex ">
             <div class="flex space-x-10 text-white mt-2 py-3 pt-0 mx-auto">
 
-                <form action="/category/allproducts" method="GET">
-                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'allproducts')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                <form action="/adminCategory/allorders" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'allorders')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
                         All Orders
                     </button>
                 </form>
 
-                <form action="/category/welding" method="GET">
-                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'welding')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                <form action="/adminCategory/awaitingpayment" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'awaitingpayment')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
                         Awaiting Payment
                     </button>
                 </form>
 
 
-                <form action="/category/safety" method="GET">
-                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'safety')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
-                        Payment Succesfull
+                <form action="/adminCategory/paymentsuccess" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'paymentsuccess')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                        Payment Succesful
                     </button>
                 </form>
 
-                <form action="/category/cleaning" method="GET">
-                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'cleaning')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                <form action="/adminCategory/orderpacked" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'orderpacked')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
                         Order Packed
                     </button>
                 </form>
                 
-                <form action="/category/industrial" method="GET">
-                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'industrial')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                <form action="/adminCategory/intransit" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'intransit')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
                         Order In Transit
                     </button>
                 </form>
 
-                <form action="/category/brassfittings" method="GET">
-                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'brassfittings')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                <form action="/adminCategory/delivered" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'delivered')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
                         Delivered
                     </button>
                 </form>
 
-                <form action="/category/brassfittings" method="GET">
-                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'brassfittings')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                <form action="/adminCategory/cancelled" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'cancelled')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
                         Cancelled Order
                     </button>
                 </form>

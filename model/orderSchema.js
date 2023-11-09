@@ -23,7 +23,8 @@ const orderSchema = new mongoose.Schema({
     },
     date: {
         type: mongoose.SchemaTypes.Date,
-        required: true
+        required: true,
+        timestamps: true
     },
     status:{
         type: mongoose.SchemaTypes.String,
@@ -36,7 +37,43 @@ const orderSchema = new mongoose.Schema({
     paymongoID: {
         type: mongoose.SchemaTypes.String,
         required: true
-    }
+    },
+
+    line1:{
+        type: String,
+        required: true
+    },
+
+    line2:{
+        type: String,
+        required: false
+    },
+    
+    city:{
+        type: String,
+        required: true
+    },
+
+    state:{
+        type: String,
+        required: true
+    },
+
+    postalCode:{
+        type: Number,
+        required: true
+    },
+
+    country:{
+        type: String,
+        required: true
+    },
+
+    isCancelled:{
+        type: Boolean,
+        required: true
+    },
+
 })
 
 export const Order = mongoose.model('Order', orderSchema);
