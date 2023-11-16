@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Coustard:wght@400;900&family=Inknut+Antiqua&family=Press+Start+2P&display=swap');
 
 /*
-! tailwindcss v3.3.3 | MIT License | https://tailwindcss.com
+! tailwindcss v3.3.5 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -650,6 +650,11 @@ video {
   margin-right: 4px;
 }
 
+.mx-\[5px\]{
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
 .mx-auto{
   margin-left: auto;
   margin-right: auto;
@@ -791,6 +796,10 @@ video {
   height: 5rem;
 }
 
+.h-32{
+  height: 8rem;
+}
+
 .h-44{
   height: 11rem;
 }
@@ -805,6 +814,10 @@ video {
 
 .h-72{
   height: 18rem;
+}
+
+.h-8{
+  height: 2rem;
 }
 
 .h-9{
@@ -983,6 +996,10 @@ video {
   max-width: 20rem;
 }
 
+.flex-auto{
+  flex: 1 1 auto;
+}
+
 .origin-top-right{
   transform-origin: top right;
 }
@@ -1091,6 +1108,12 @@ video {
   overflow: hidden;
 }
 
+.truncate{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .rounded{
   border-radius: 0.25rem;
 }
@@ -1162,11 +1185,6 @@ video {
 
 .border-t-0{
   border-top-width: 0px;
-}
-
-.border-\[\#000000\]{
-  --tw-border-opacity: 1;
-  border-color: rgb(0 0 0 / var(--tw-border-opacity));
 }
 
 .border-maincolor{

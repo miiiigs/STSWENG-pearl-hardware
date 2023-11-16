@@ -43,10 +43,11 @@ function selectOption(option) {
 	<div class="bg-white bg-opacity-80 p-1 rounded-md w-[95%] mx-auto my-auto shadow-md">
 	{{#each order_list}}
 		<div class=" bg-tertiary w-[100%] h-[45px] flex flex-wrap items-center justify-center rounded-[10px] mb-2">
- 	   		<div class="w-[200px] font-Inknut text-secondary text-sm text-center border border-t-0 border-b-0 border-maincolor">{{this.userID}}</div>
-	    	<div class="w-[170px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">{{this.firstName}}</div>
-	    	<div class="w-[170px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">{{this.lastName}}</div>
-	    	<div class="w-[220px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">{{this.email}}</div>
+			<div class="w-[200px] font-Inknut text-secondary text-sm text-center border border-t-0 border-b-0 border-maincolor truncate">{{this.userID}}</div>
+			<div class="w-[170px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.firstName}}</div>
+			<div class="w-[170px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.lastName}}</div>
+			<div class="w-[220px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.email}}</div>
+
  	   		<div class="w-[110px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">{{this.date}}</div>
 			
 			<div class="relative justify-center gap-x-1.5">
@@ -65,8 +66,8 @@ function selectOption(option) {
 
 			<div id="selectedOption" class="hidden bg-white border border-gray-300 mt-2 py-1 w-32"></div>
 
- 	   		<div class="w-[110px] font-Inknut text-secondary text-sm text-center border border-t-0 border-b-0 border-maincolor">{{this.amount}}</div>
- 	   		<div class="w-[230px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">{{this.paymongoID}}</div>
+ 	   		<div class="w-[110px] font-Inknut text-secondary text-sm text-center border border-t-0 border-b-0 border-maincolor truncate">{{this.amount}}</div>
+ 	   		<div class="w-[230px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.paymongoID}}</div>
 
 			<button class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{this.orderID}}>
 				{{#if (eq this.isCancelled "false")}}
