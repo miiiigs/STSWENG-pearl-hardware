@@ -28,16 +28,17 @@
             <p class="font-Inknut text-secondary text-2xl pb-2">Php {{product.price}}</p>
         
             <span class="text-[17px] pb-5">[Product Description!!]</span>
+            <span class="text-[17px] pb-5">[In Stock:] {{product.quantity}}</span>
         
             <form method="post" action="/add-to-cart" id="add" class="flex flex-col item-left w-[100%]">
                 <label for="quantity" class="add font-Inknut text-secondary">Quantity</label>
 
-                <input type="text" id="quantity" placeholder="0" class="add w-[50%]">
+                <input type="text" id="quantity" value=0 class="add w-[50%]" data-index={{product.quantity}}>
 
                 <input type="hidden" id="p_id" value="{{product._id}}">
 				
-				<div class="relative mt-5" id="submitBtn" form="add" disabled>
- 				   <button id="originalBtn" class="flex items-center w-auto h-12 px-4 bg-maincolor rounded-full text-white text-2xl font-Inika ml-auto mr-5">
+				<div class="relative mt-5"  form="add">
+ 				   <button id="submitBtn" class="flex items-center w-auto h-12 px-4 bg-maincolor rounded-full text-white text-2xl font-Inika ml-auto mr-5">
  				       <img class="w-5 mr-2" src="../uploads/cart.png" alt="Cart Icon" />
     				    Add to Cart
     				</button>
