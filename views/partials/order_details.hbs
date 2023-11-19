@@ -1,0 +1,177 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdownButton = document.getElementById('dropdownButton');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+
+    dropdownButton.addEventListener('click', function() {
+        dropdownMenu.classList.toggle('hidden');
+    });
+
+    // Close the dropdown when clicking outside of it
+    document.addEventListener('click', function(event) {
+        if (!dropdownContainer.contains(event.target)) {
+            dropdownMenu.classList.add('hidden');
+        }
+    });
+});
+
+function selectOption(option) {
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const selectedOption = document.getElementById('selectedOption');
+
+    dropdownMenu.classList.add('hidden');
+
+	dropdownButton.textContent = option;
+}
+</script>
+
+<div class=" bg-white bg-opacity-80 p-1 rounded-md w-[98%] mx-auto" style="box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1), -10px -10px 10px rgba(0, 0, 0, 0.1);">
+	<div class="mx-10 my-5 pl-2 border-b-4 border-b-maincolor font-Inika text-2xl w-48 ">Order Detail</div>
+
+
+<div class="flex flex-row bg-tertiary w-[90%] rounded-[10px] mx-auto mb-2">
+
+    <div class="mx-10 flex flex-col items-start">
+        <div class="m-0 text-secondary text-lg text-center">Order Date:</div>
+        <div class="pr-5 text-secondary text-lg text-center">Order ID:</div>
+    </div>
+
+    <div class="flex flex-col items-start">
+        <div class="text-secondary text-lg text-center">November 8, 2023</div>
+        <div class="text-secondary text-lg text-center">0123456789</div>
+    </div>
+
+    <div class="relative justify-center gap-x-1.5 my-auto ml-auto">
+        <button id="dropdownButton" class="w-[190px] rounded-lg bg-white px-3 py-2 mx-[4px] font-Inknut text-secondary text-sm text-center shadow-sm ring-1 ring-inset ring-gray-300">
+            Change Status
+        </button>
+        <ul id="dropdownMenu" class="hidden absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical">
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Awaiting Payment')">Awaiting Payment</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Payment Succesfull')">Payment Succesfull</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Order Packed')">Order Packed</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('In Transit')">In Transit</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Delivered')">Delivered</a></li>
+        </ul>
+    </div>
+
+    <button class="mr-10 my-auto border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center">
+        Save
+    </button>
+
+</div>
+
+
+<div class="bg-tertiary w-[90%] rounded-[10px] mx-auto mb-2">
+    <div class="grid grid-cols-3 gap-3">
+        <div class="flex flex-col mx-10 border border-r-maincolor border-t-0 border-l-0 border-b-0 h-[150px] my-auto">
+            <div class="pr-10 text-secondary text-2xl font-semibold mb-1">Costumer</div>
+            <div class="text-secondary text-lg">[firstname] John [lastname] Doe</div>
+			<div class="text-secondary text-lg">[email] John_Doe@sample.com</div>
+			<div class="text-secondary text-lg">[contact number] 012345678910</div>
+			<a href="#" class="text-maincolor hover:underline mb-5">View Profile</a>
+        </div>
+
+        <div class="flex flex-col mx-10 border border-r-maincolor border-t-0 border-l-0 border-b-0 h-[150px] my-auto">
+            <div class="pr-10 text-secondary text-2xl font-semibold mb-1">Costumer</div>
+        	
+		    <div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">Shipping:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">Doe shipping services</div>
+    		</div>
+			
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">Payment method:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">Cash</div>
+    		</div>
+			
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">Status:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">Awaiting Payment</div>
+    		</div>
+			<a href="#" class="text-maincolor hover:underline mb-5">Download</a>
+        </div>
+
+        <div class="flex flex-col h-[150px] my-auto">
+            <div class="pr-10 text-secondary text-2xl font-semibold mb-1">Deliver to:</div>
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">City:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">Makati</div>
+    		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">Street:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">IDK street</div>
+    		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">Address:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">somewhere in makita</div>
+    		</div>
+        </div>
+    </div>
+</div>
+
+<div class="bg-tertiary w-[90%] rounded-[10px] mx-auto mb-2 p-2">
+    <div class="grid grid-cols-3 gap-3">
+        <div class="col-span-2 ">
+			<div class="bg-white w-[100%] h-[35px] flex flex-wrap flex-row items-center justify-center mx-auto rounded-[10px_10px_0px_0px] border border-b-maincolor border-t-0 border-l-0 border-r-0">
+            	<div class="w-[450px] text-secondary text-lg border border-r-maincolor border-t-0 border-l-0 border-b-0">Product</div>
+				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">Quantity</div>
+				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">Price</div>
+				<div class="w-[200px] text-secondary text-lg text-right">Total</div>
+			</div>
+
+			<div class="bg-white w-[100%] flex flex-wrap items-center justify-center mx-auto border border-b-maincolor border-t-0 border-l-0 border-r-0">
+				<img class="w-[50px] h-[100%] mr-8 my-2" src="../uploads/nylon_brush.jpg" alt="product image">
+            	<div class="w-[370px] text-secondary text-lg border border-r-maincolor border-t-0 border-l-0 border-b-0">Nylon Brush</div>
+				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">2</div>
+				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">Php 100</div>
+				<div class="w-[200px] text-secondary text-lg text-right">Php 200</div>
+			</div>
+
+			<div class="bg-white w-[100%] flex flex-wrap items-center justify-center mx-auto border border-b-maincolor border-t-0 border-l-0 border-r-0">
+				<img class="w-[50px] h-[100%] mr-8 my-2" src="../uploads/nylon_brush.jpg" alt="product image">
+            	<div class="w-[370px] text-secondary text-lg border border-r-maincolor border-t-0 border-l-0 border-b-0">Nylon Brush</div>
+				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">2</div>
+				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">Php 100</div>
+				<div class="w-[200px] text-secondary text-lg text-right">Php 200</div>
+			</div>
+
+			<div class="bg-white w-[100%] flex flex-wrap  justify-end rounded-b-lg">
+				<div class="grid grid-cols-2 gap-x-4 gap-y-0">
+					<div class="w-[150px] flex flex-col items-start">
+        				<div class="text-secondary text-lg text-left">Subtotal</div>
+        				<div class="text-secondary text-lg text-left">Shipping cost</div>
+						<div class="text-secondary text-lg text-left">Total</div>
+   		 			</div>
+
+					<div class="w-[120px] flex flex-col items-end">
+						<div class="text-secondary text-lg">Php 200</div>
+						<div class="text-secondary text-lg">Php 50</div>
+						<div class="text-secondary text-lg">Php 250</div>
+					</div>
+				</div>
+			</div>
+        </div>
+
+        <div class="flex flex-col bg-white w-[100%] rounded-lg pl-5">
+            <div class="pr-10 w-[50%] text-secondary text-2xl font-semibold mt-5 mb-5 border border-b-maincolor border-t-0 border-l-0 border-r-0">Payment Info</div>
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">Method:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">Cash</div>
+    		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">other info for online banking:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">***************</div>
+    		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">other info:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">***********</div>
+    		</div>
+        </div>
+    </div>
+</div>
+
+</div>
