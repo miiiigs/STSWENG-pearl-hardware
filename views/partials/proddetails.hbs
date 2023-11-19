@@ -1,0 +1,64 @@
+{{#if product}}
+<div class="container mx-auto px-4 py-8">
+    <div class="m-5 py-1 pl-2 border-b-2 border-b-maincolor font-Inika text-2xl w-48">
+        Product Line
+    </div>
+
+    <div class=" m-5 py-1 pl-2 font-Inika text-2xl w-48">
+        {{product.name}}
+    </div>
+
+
+    <div class="h-100 w-100 flex justify-center">
+        <!-- temporary image -->
+        <img src="./uploads/temp.png" alt="productImg">
+    </div>
+
+</div>
+
+<div class="text-center mt-2 font-Inika text-secondary">
+    <div class="text-xl">
+        PRODUCT LINE NUMBER
+    </div>
+    <div class="text-base mt-7">
+        Description Description Description Description Description
+    </div>
+
+    <div class="text-xl mt-7">
+        PHP {{product.price}}
+    </div>
+</div>
+<div class="mt-8 flex justify-center">
+    <form method="post" action="/add-to-cart" id="add" >
+        <label for="quantity" class="add">Quantity</label>
+
+        <input type="number" id="quantity" placeholder="0" class="">
+
+        <input type="hidden" id="p_id" value="{{product._id}}">
+    </form>
+
+</div>
+
+
+<div class="mt-8 flex justify-center">
+    <button class="bg-maincolor hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit" id="submitBtn" form="add" disabled>
+        <i class='bx bx-cart-alt'></i> Add to Cart
+    </button>
+
+</div>
+
+<div class="mt-8 flex justify-center">
+    <button class="bg-maincolor hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="button">
+        Back to Product Line Products
+    </button>
+
+</div>
+
+<style>
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+{{/if}}

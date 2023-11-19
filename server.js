@@ -54,7 +54,7 @@ const hbs = exphbs.create({ //A new handlebar extension instantiation that inclu
         eq: function(a,b){ //this helper is used to compare to values in a handle bar to use: {{#if (eq value1 value2)}}
             return a==b;
         },
-        multiply: function(a, b) {return a * b;},
+        multiply: function(a, b) {return (a * b).toFixed(2);},
     }
 })
 app.engine("hbs", hbs.engine);
