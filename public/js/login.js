@@ -52,8 +52,6 @@ loginSubmit.addEventListener('click', async (e) => {
             logPassword.value = "";
             */
             window.location.href = '/';
-        }else if(response.status == 201){
-            window.location.href = '/admin';
         }
         else if(response.status == 500){ 
             logErrorDisplay.textContent = "Invalid email or password";
