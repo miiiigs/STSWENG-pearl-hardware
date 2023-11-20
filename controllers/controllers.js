@@ -86,9 +86,22 @@ const controller = {
 
     getAdmin: async function (req, res) {
         try {
-            res.render("admin", {
-                layout: 'admin'
-            });
+            if(req.session.userID){
+                const user = await User.findById(req.session.userID)
+                //console.log(user);
+                if(user.isAuthorized == true){
+                    console.log("AUTHORIZED")
+                    res.render("adminHome", {
+                        layout: 'adminMain',
+                        script: './js/admin.js',
+                    });
+                }else{
+                    console.log("UNAUTHORIZED");
+                    res.sendStatus(400);
+                }
+            }else{
+                res.sendStatus(400);
+            }
         } catch {
             res.sendStatus(400);
         }
@@ -749,7 +762,7 @@ const controller = {
             }
 
             
-            res.render("admin", {
+            res.render("adminOrderDetails", {
                 layout: 'adminMain',
                 order_list: order_list,
                 category: category,
