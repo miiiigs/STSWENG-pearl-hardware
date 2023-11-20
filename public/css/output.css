@@ -1114,30 +1114,6 @@ video {
   width: 100%;
 }
 
-.w-56{
-  width: 14rem;
-}
-
-.w-\[180px\]{
-  width: 180px;
-}
-
-.w-\[170px\]{
-  width: 170px;
-}
-
-.w-\[198px\]{
-  width: 198px;
-}
-
-.w-\[150px\]{
-  width: 150px;
-}
-
-.w-\[90\%\]{
-  width: 90%;
-}
-
 .max-w-full{
   max-width: 100%;
 }

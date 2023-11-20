@@ -91,8 +91,8 @@ const controller = {
                 //console.log(user);
                 if(user.isAuthorized == true){
                     console.log("AUTHORIZED")
-                    res.render("admin", {
-                        layout: 'admin',
+                    res.render("adminHome", {
+                        layout: 'adminMain',
                         script: './js/admin.js',
                     });
                 }else{
@@ -779,7 +779,7 @@ const controller = {
             }
 
             
-            res.render("admin", {
+            res.render("adminOrderDetails", {
                 layout: 'adminMain',
                 order_list: order_list.reverse(),
                 category: category,
