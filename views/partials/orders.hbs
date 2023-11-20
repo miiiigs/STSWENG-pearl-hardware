@@ -43,7 +43,7 @@ function selectOption(option) {
 	<div class="bg-white bg-opacity-80 p-1 rounded-md w-[95%] mx-auto my-auto shadow-md">
 	{{#each order_list}}
 		<div class=" bg-tertiary w-[100%] h-[45px] flex flex-wrap items-center justify-center rounded-[10px] mb-2">
-			<div class="px-1 w-[200px] text-secondary text-m text-center border border-t-0 border-b-0 border-maincolor truncate">{{this.userID}}</div> 
+			<div class="px-1 w-[200px] text-secondary text-m text-center border border-t-0 border-b-0 border-maincolor truncate" id="orderInstance" data-index={{this.orderID}}>{{this.orderID}}</div> 
 			<div class="px-1 w-[170px] text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.firstName}}</div>
 			<div class="px-1 w-[170px] text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.lastName}}</div>
 			<div class="px-1 w-[220px] text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.email}}</div>
@@ -69,13 +69,17 @@ function selectOption(option) {
  	   		<div class="px-1 w-[110px] text-secondary text-m text-center border border-t-0 border-b-0 border-maincolor truncate">{{this.amount}}</div>
  	   		<div class="px-1 w-[230px] text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.paymongoID}}</div>
 
-			<button class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{this.orderID}}>
+			
 				{{#if (eq this.isCancelled "false")}}
-    				Cancel
+					<button class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{this.orderID}}>
+    					Cancel
+					</button>
 				{{else}}
-					Uncancel
+					<button class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{this.orderID}} disabled>
+    					Order Cancelled
+					</button>
 				{{/if}}
-			</button>
+			
 
 	</div>
 	{{/each}}

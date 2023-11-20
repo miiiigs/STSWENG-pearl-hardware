@@ -4,9 +4,6 @@ const PS = document.querySelectorAll('#PS');
 const OP = document.querySelectorAll('#OP');
 const IT = document.querySelectorAll('#IT');
 const D = document.querySelectorAll('#D');
-const orderInstance = document.querySelectorAll('#orderInstance');
-
-console.log(cancel)
 
 cancel.forEach(button => { button.addEventListener('click', async (e) => {
         e.preventDefault();
@@ -148,24 +145,3 @@ D.forEach(button => {
         }
     });
 });
-
-orderInstance.forEach(button => {
-    button.addEventListener('click', async (e) => {
-        const orderID = button.dataset.index;
-
-        const response = await fetch('/adminOrderDetails/' + orderID, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-
-        if(response.status == 200){
-            window.location.href = '/adminOrderDetails/' + orderID;
-        }else{
-            console.log("error has occured");
-        }
-
-    });
-});
-
