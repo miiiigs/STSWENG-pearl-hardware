@@ -4,12 +4,6 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
 
-    isAuthorized:{
-        type: Boolean,
-        required: true,
-        default: false,
-    },
-
     firstName: {
         type: String,
         required:true
