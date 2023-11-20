@@ -86,22 +86,9 @@ const controller = {
 
     getAdmin: async function (req, res) {
         try {
-            if(req.session.userID){
-                const user = await User.findById(req.session.userID)
-                //console.log(user);
-                if(user.isAuthorized == true){
-                    console.log("AUTHORIZED")
-                    res.render("admin", {
-                        layout: 'admin',
-                        script: './js/admin.js',
-                    });
-                }else{
-                    console.log("UNAUTHORIZED");
-                    res.sendStatus(400);
-                }
-            }else{
-                res.sendStatus(400);
-            }
+            res.render("admin", {
+                layout: 'admin'
+            });
         } catch {
             res.sendStatus(400);
         }
@@ -227,6 +214,20 @@ const controller = {
         }
     },
 
+    getAdmin: async function (req, res) {
+        try {
+
+            res.render("admin", {
+                layout: 'admin'
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
+
+
+
     register: async function (req, res) {
 
         const errors = validationResult(req);
@@ -278,17 +279,12 @@ const controller = {
 
         const existingUser = await User.findOne({ email: req.body.email });
 
-        if (existingUser && await bcrypt.compare(req.body.password, existingUser.password) && existingUser.isAuthorized == false) {
-            //console.log("login successful");
+        if (existingUser && await bcrypt.compare(req.body.password, existingUser.password)) {
+            console.log("login successful");
 
             req.session.userID = existingUser._id;
             req.session.fName = existingUser.firstName;
             return res.sendStatus(200);
-        }else if(existingUser && await bcrypt.compare(req.body.password, existingUser.password) && existingUser.isAuthorized == true){
-            req.session.userID = existingUser._id;
-            req.session.fName = existingUser.firstName;
-            return res.sendStatus(201);
-
         }
         console.log("Invalid email or password");
         res.sendStatus(500);
@@ -550,18 +546,8 @@ const controller = {
 
         let total = 0; //the total amount the user has to pay
 
-        class itemDetails {
-            constructor(name, price, amount, image, ID){
-                this.name = name;
-                this.price = price;
-                this.amount = amount;
-                this.image = image;
-                this.ID = ID;
-            }
-        }
-
         const itemsCheckout = [] //an array containing the _id of the products the user added in the cart
-        const itemsDetails = [] //an array containing the product names the user added to their cart
+        const itemsNames = [] //an array containing the product names the user added to their cart
         const user = await User.findById(req.session.userID).exec();
         //console.log(user);
 
@@ -575,18 +561,17 @@ const controller = {
                 name: item.name,
                 quantity: parseInt(amount[i])
             })
-            itemsDetails.push(new itemDetails(item.name, item.price, amount[i], item.productpic, item._id));
+            itemsNames.push(item.name)
             total += item.price * parseInt(amount[i]);
         }
 
         try {
-            if(parseFloat(total.toFixed(2)) > 20.00){
             const order = new Order({
                 userID: user._id,
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-                items: itemsDetails,
+                items: itemsNames,
                 date: Date.now(),
                 status: 'awaiting payment',
                 amount: parseFloat(total.toFixed(2)),
@@ -636,28 +621,12 @@ const controller = {
                 .then(response => response.json())
                 .then(async response => {
                 console.log(response)
-                for(let x = 0; x < items.length; x++){ //this iterates through the items included in the order and adjusts the current stock of the products by subtracting it to what the user ordered
-                    try{
-                        const updateStock = await Product.findByIdAndUpdate(
-                            itemsDetails[x].ID,
-                            { $inc: { quantity: - itemsDetails[x].amount } },
-                            { new: true }
-                          );
-                        //console.log(updateStock)
-                    }catch{
-                        res.sendStatus(500);
-                    }
-                }
                 const addPaymongoID = await Order.findByIdAndUpdate(response.data.attributes.reference_number, {paymongoID : response.data.id}); //after redirecting to paymongo the paymongoID is updated using the paymongo generated id
 
                     res.status(200);
                     res.send(response.data.attributes.checkout_url.toString());
                 })
                 .catch(err => console.error(err));
-            }else{
-                console.log("INVALID AMOUNT")
-                res.sendStatus(401);
-            }
         } catch (err) {
             console.log("Placing order failed!");
             console.error(err);
@@ -697,7 +666,7 @@ const controller = {
 
         try {
             res.render("checkoutSuccess", {
-                orderID: ID
+
             })
 
         } catch {
@@ -743,7 +712,7 @@ const controller = {
     
             for(let i = 0; i < resp.length; i++) {
                 order_list.push({
-                    orderID: resp[i]._id,
+                    userID: resp[i].userID,
                     firstName: resp[i].firstName,
                     lastName: resp[i].lastName,
                     email: resp[i].email,
@@ -751,6 +720,7 @@ const controller = {
 					status: resp[i].status,
                     amount: resp[i].amount,
                     paymongoID: resp[i].paymongoID,
+                    orderID: resp[i]._id,
                     isCancelled: resp[i].isCancelled.toString()
                 });
             }
@@ -781,7 +751,7 @@ const controller = {
             
             res.render("admin", {
                 layout: 'adminMain',
-                order_list: order_list.reverse(),
+                order_list: order_list,
                 category: category,
                 script: '/./js/adminOrders.js',
 
@@ -798,22 +768,14 @@ const controller = {
         //console.log(id)
         
         try{
-            const update = await Order.findByIdAndUpdate(id, {isCancelled : true});
-
-            for(let x = 0; x < update.items.length; x++){ //this iterates through the items included in the order and adjusts the current stock of the products by subtracting it to what the user ordered
-                try{
-                    const updateStock = await Product.findByIdAndUpdate(
-                        update.items[x].ID,
-                        { $inc: { quantity: + update.items[x].amount } },
-                        { new: true }
-                      );
-                    //console.log(updateStock)
-                }catch{
-                    res.sendStatus(500);
-                }
+            const findOrder = await Order.findById(id);
+            if(findOrder.isCancelled == true){
+                const update = await Order.findByIdAndUpdate(id, {isCancelled : false});
+                res.sendStatus(200);
+            }else{
+                const update = await Order.findByIdAndUpdate(id, {isCancelled : true});
+                res.sendStatus(200);
             }
-            res.sendStatus(200);
-            
         }catch{
             res.sendStatus(400);
         }
@@ -829,39 +791,6 @@ const controller = {
             const update = await Order.findByIdAndUpdate(orderID, {status : status});
             res.sendStatus(200);
         }catch{
-            res.sendStatus(400);
-        }
-    },
-
-    getOrderDetails: async function (req, res) {
-
-        const id = req.params.orderID
-        //console.log(id);
-
-        try {
-            const order = await Order.findById(id);
-
-            res.render("adminOrderDetails", {
-                layout: 'adminMain',
-                orderID: order._id,
-                orderDate: order.date,
-                fname: order.firstName,
-                lname: order.lastName,
-                email: order.email,
-                status: order.status,
-                city: order.city,
-                postalCode: order.postalCode,
-                state: order.state,
-                line1: order.line1,
-                line2: order.line2,
-                isCancelled: order.isCancelled,
-                items: order.items,
-                amount: order.amount,
-
-                script: '/./js/adminOrderDetails.js',
-            })
-
-        } catch {
             res.sendStatus(400);
         }
     },

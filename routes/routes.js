@@ -37,7 +37,6 @@ router.get('/adminInventory', controller.getAdminInventory);
 router.get('/remove-from-cart',controller.removeFromCart);
 router.get('/admin',controller.getAdmin);
 router.get('/getCartItems', controller.getCartItems)
-router.get('/AdminOrderDetails/:orderID', controller.getOrderDetails)
 
 
 //POSTS
