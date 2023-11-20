@@ -216,15 +216,90 @@ const controller = {
         }
     },
 
-    getAdminInventory: async function (req, res) {
+   getAdminInventory: async function (req, res) {
         try {
-
+		const result = await Product.find({}).lean();
+		
+		
+		// sortProducts function
+		const sortValue = req.query.sortBy;
+		console.log(sortValue);
+		if (sortValue !== undefined) {
+			switch (sortValue) {
+				case 'def':
+					break;
+				case 'price_asc':
+					result.sort((a, b) => a.price - b.price);
+					break;
+				case 'price_desc':
+					result.sort((a, b) => b.price - a.price);
+					break;
+				case 'name_asc':
+					result.sort((a, b) => a.name.localeCompare(b.name));
+					break;
+				case 'name_desc':
+					result.sort((a, b) => b.name.localeCompare(a.name));
+					break;
+				case 'stock_asc':
+					result.sort((a, b) => a.quantity - b.quantity);
+					break;
+				case 'stock_desc':
+					result.sort((a, b) => b.quantity - a.quantity);
+					break;					
+			}
+		}
+			
             res.render("adminInventory", {
-                layout: 'adminMain'
+                layout: 'adminMain',
+				inventory_result: result
             });
+			
         } catch {
             res.sendStatus(400);
         }
+    },
+	
+	//searchInventory
+	//specialized search and sort for Admin
+    searchInventory: async function (req, res) {
+        console.log("Searching in inventory!");
+
+        var query = req.query.product_query;
+		
+
+        console.log("Searching for " + query);
+
+        const result = await Product.find({ name: new RegExp('.*' + query + '.*', 'i') }, { __v: 0 }).lean();
+		
+	// sortProducts function
+	const sortValue = req.query.sortBy;
+	console.log(sortValue);
+	if (sortValue !== undefined) {
+		switch (sortValue) {
+			case 'def':
+				break;
+			case 'price_asc':
+				result.sort((a, b) => a.price - b.price);
+				break;
+			case 'price_desc':
+				result.sort((a, b) => b.price - a.price);
+				break;
+			case 'name_asc':
+				result.sort((a, b) => a.name.localeCompare(b.name));
+				break;
+			case 'name_desc':
+				result.sort((a, b) => b.name.localeCompare(a.name));
+				break;
+			case 'stock_asc':
+				result.sort((a, b) => a.quantity - b.quantity);
+				break;
+			case 'stock_desc':
+				result.sort((a, b) => b.quantity - a.quantity);
+				break;	
+		}
+	}
+	
+	res.render("adminInventory", {layout: 'adminMain',inventory_result: result, buffer: query});
     },
 
     register: async function (req, res) {
