@@ -1,29 +1,48 @@
-<div class="container flex flex-col gap-8 mx-auto px-4 py-8  bg-white bg-opacity-80 shadow-md rounded-md">
+<div class="container flex flex-col gap-4 mx-auto px-4 py-8  bg-white bg-opacity-80 shadow-md rounded-md">
     
     <div class=" m-5 py-1 pl-2 border-b-2 border-b-maincolor font-Inika text-2xl w-48 ">Shopping Cart</div>
 
 	{{#if cart_result}}
 		{{#each cart_result}}
-		<div class="flex flex-col bg-tertiary p-5 mx-5">
-			<div class="flex flex-row">
-				<div class="w-60 mx-10">
-					<img src="./uploads/temp.png"  class=" w-full">
-					<h2 class="text-xl font-semibold mt-2 text-center">{{this.product.name}}</h2>
+		<div class="flex flex-col bg-tertiary p-2 mx-5 rounded-md">
+			<div class="grid grid-cols-5 gap-2">
+
+				<div class="w-full">
+					<img src="./uploads/temp.png"  class="w-full">
 				</div>
-				<div class="bg-dirty-white mx-10 w-full grid grid-cols-4 gap-4">
-							<div class="m-auto"> Kelan pa tayo nagka product brand??? wala sa schema natin!!</div>
-							<div class="m-auto"> P{{this.product.price}}</div>
-							<div class="m-auto"> {{this.quantity}}x </div>
-							<div class="m-auto"> <a href="/remove-from-cart?id={{this.product._id}}&quantity={{this.quantity}}&uid={{this.uniqueID}}"> <u>Remove</u> </a> </div>
-				</div>
-			</div>
-			<div class=" bg-maincolor w-32 py-3 text-center ml-auto mr-10 text-white" fun="row-price">
-				P{{multiply this.product.price this.quantity }}
+
+				<div class="col-span-4 h-full ">
+					<div class="bg-dirty-white h-[60px] w-full mt-[70px] mb-[50px] rounded-md">
+						<div class="grid grid-cols-4 gap-4 h-full">
+    						<div class="flex items-center justify-center h-[80%] my-auto w-full border border-l-0 border-t-0 border-b-0 border-maincolor">
+        						{{product.name}}
+    						</div>
+    						<div class="flex items-center justify-center h-[80%] my-auto w-full border border-l-0 border-t-0 border-b-0 border-maincolor">
+    						    &#8369; {{this.product.price}}
+    						</div>
+    						<div class="flex items-center justify-center h-[80%] my-auto w-full border border-l-0 border-t-0 border-b-0 border-maincolor">
+     							{{this.quantity}}
+    						</div>
+							<div class="flex items-center justify-center w-full ">
+								<div class="flex items-center justify-center w-full h-[80%]">
+    								<a href="/remove-from-cart?id={{this.product._id}}&quantity={{this.quantity}}&uid={{this.uniqueID}}"
+       								class="flex items-center justify-center border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px]">
+        								Remove
+    								</a>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="bg-maincolor w-32 py-3 text-center ml-auto mr-10 mt-10 text-white rounded-md" fun="row-price">
+    					&#8369; {{multiply this.product.price this.quantity }}
+					</div>
+				</div>				
 			</div>
 		</div>
 		{{/each}}
 	{{else}}
 		<p>Add things to your cart!</p>
 	{{/if}}
-    <button class=" bg-maincolor w-80 py-5 text-white mx-auto" type="submit">Checkout   INSERTtotal     </button>
+    <button class=" bg-maincolor w-80 py-5 text-white mx-auto" id="submit" type="submit">Checkout</button>
 </div>

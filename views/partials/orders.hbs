@@ -1,11 +1,19 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const dropdownButton = document.getElementById('dropdownButton');
+    const dropdownButton = document.querySelectorAll('#dropdownButton');
     const dropdownMenu = document.getElementById('dropdownMenu');
 
-    dropdownButton.addEventListener('click', function() {
-        dropdownMenu.classList.toggle('hidden');
-    });
+    dropdownButton.forEach(button => {
+  		button.addEventListener('click', (e) => {
+    		const buttonIndex = Array.from(dropdownButton).indexOf(button);
+    		const dropdownMenus = document.querySelectorAll('#dropdownMenu');
+
+    		if (dropdownMenus && dropdownMenus.length > buttonIndex) {
+      			const dropdownMenu = dropdownMenus[buttonIndex];
+      			dropdownMenu.classList.toggle('hidden');
+    		}
+  		});
+	});
 
     // Close the dropdown when clicking outside of it
     document.addEventListener('click', function(event) {
@@ -31,72 +39,50 @@ function selectOption(option) {
 
 	{{> orders_bar}}
 
+	
 	<div class="bg-white bg-opacity-80 p-1 rounded-md w-[95%] mx-auto my-auto shadow-md">
-
+	{{#each order_list}}
 		<div class=" bg-tertiary w-[100%] h-[45px] flex flex-wrap items-center justify-center rounded-[10px] mb-2">
- 	   		<div class="w-[200px] font-Inknut text-secondary text-sm text-center border border-t-0 border-b-0 border-maincolor">User ID</div>
-	    	<div class="w-[170px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">First Name</div>
-	    	<div class="w-[170px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Last Name</div>
-	    	<div class="w-[220px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Email</div>
- 	   		<div class="w-[110px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Date</div>
+			<div class="px-1 w-[200px] text-secondary text-m text-center border border-t-0 border-b-0 border-maincolor truncate" id="orderInstance" data-index={{this.orderID}}>{{this.orderID}}</div> 
+			<div class="px-1 w-[170px] text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.firstName}}</div>
+			<div class="px-1 w-[170px] text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.lastName}}</div>
+			<div class="px-1 w-[220px] text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.email}}</div>
+
+ 	   		<div class="px-1 w-[110px] text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor">{{this.date}}</div>
 			
 			<div class="relative justify-center gap-x-1.5">
 
-
-    			<button id="dropdownButton" class="w-[190px] rounded-lg bg-white px-3 py-2 mx-[4px] font-Inknut text-secondary text-sm text-center shadow-sm ring-1 ring-inset ring-gray-300">
-    			    Status
+    			<button id="dropdownButton" class="px-1 w-[190px] rounded-lg bg-white px-3 py-2 mx-[4px] text-secondary text-m text-center shadow-sm ring-1 ring-inset ring-gray-300">
+    			    {{this.status}}
     			</button>
-    			<ul id="dropdownMenu" class="hidden absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical">
-    			    <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Awaiting Payment')">Awaiting Payment</a></li>
-    			    <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Payment Succesfull')">Payment Succesfull</a></li>
-    			    <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Order Packed')">Order Packed</a></li>
-					<li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('In Transit')">In Transit</a></li>
-   			    <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Delivered')">Delivered</a></li>
+    			<ul id="dropdownMenu" class="hidden absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" data-index={{this.orderID}}>
+    			    <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="AP" onclick="selectOption('Awaiting Payment')">Awaiting Payment</a></li>
+    			    <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="PS" onclick="selectOption('Payment Succesfull')">Payment Succesfull</a></li>
+    			    <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="OP" onclick="selectOption('Order Packed')">Order Packed</a></li>
+					<li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="IT" onclick="selectOption('In Transit')">In Transit</a></li>
+   			    <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id= "D" onclick="selectOption('Delivered')">Delivered</a></li>
     			</ul>
 			</div>
 
 			<div id="selectedOption" class="hidden bg-white border border-gray-300 mt-2 py-1 w-32"></div>
 
- 	   		<div class="w-[110px] font-Inknut text-secondary text-sm text-center border border-t-0 border-b-0 border-maincolor">Amount</div>
- 	   		<div class="w-[230px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Paymongo ID</div>
+ 	   		<div class="px-1 w-[110px] text-secondary text-m text-center border border-t-0 border-b-0 border-maincolor truncate">{{this.amount}}</div>
+ 	   		<div class="px-1 w-[230px] text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.paymongoID}}</div>
 
-			<button class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center">
-    			Cancel
-			</button>
-
-		</div>
-
-
-
-		<div class="bg-tertiary w-[100%] h-[45px] flex flex-wrap items-center justify-center rounded-[10px] mx-auto mb-2">
- 	   		<div class="w-[200px] font-Inknut text-secondary text-sm text-center border border-t-0 border-b-0 border-maincolor">User ID</div>
-	    	<div class="w-[170px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">First Name</div>
-	    	<div class="w-[170px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Last Name</div>
-	    	<div class="w-[220px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Email</div>
- 	   		<div class="w-[110px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Date</div>
-	    	<div class="w-[198px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Status</div>
- 	   		<div class="w-[110px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Amount</div>
- 	   		<div class="w-[230px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Paymongo ID</div>
-			<button class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center">
-    			Cancel
-			</button>
-		</div>
-
-		<div class="bg-tertiary w-[100%] h-[45px] flex flex-wrap items-center justify-center rounded-[10px] mx-auto mb-2">
- 	   		<div class="w-[200px] font-Inknut text-secondary text-sm text-center border border-t-0 border-b-0 border-maincolor">User ID</div>
-	    	<div class="w-[170px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">First Name</div>
-	    	<div class="w-[170px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Last Name</div>
-	    	<div class="w-[220px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Email</div>
- 	   		<div class="w-[110px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Date</div>
-	    	<div class="w-[198px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Status</div>
- 	   		<div class="w-[110px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Amount</div>
- 	   		<div class="w-[230px] font-Inknut text-secondary text-sm text-center border border-l-0 border-t-0 border-b-0 border-maincolor">Paymongo ID</div>
-			<button class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center">
-    			Cancel
-			</button>
-		</div>
+			
+				{{#if (eq this.isCancelled "false")}}
+					<button class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{this.orderID}}>
+    					Cancel
+					</button>
+				{{else}}
+					<button class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{this.orderID}} disabled>
+    					Order Cancelled
+					</button>
+				{{/if}}
+			
 
 	</div>
+	{{/each}}
 	<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-2 w-[98%] mx-auto">	
 
 
