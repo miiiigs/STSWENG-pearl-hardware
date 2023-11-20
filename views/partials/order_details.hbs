@@ -37,47 +37,47 @@ function selectOption(option) {
     </div>
 
     <div class="flex flex-col items-start">
-        <div class="text-secondary text-lg text-center">November 8, 2023</div>
-        <div class="text-secondary text-lg text-center">0123456789</div>
+        <div class="text-secondary text-lg text-center">{{orderDate}}</div>
+        <div class="text-secondary text-lg text-center">{{orderID}}</div>
     </div>
 
     <div class="relative justify-center gap-x-1.5 my-auto ml-auto">
         <button id="dropdownButton" class="w-[190px] rounded-lg bg-white px-3 py-2 mx-[4px] font-Inknut text-secondary text-sm text-center shadow-sm ring-1 ring-inset ring-gray-300">
             Change Status
         </button>
-        <ul id="dropdownMenu" class="hidden absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical">
-            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Awaiting Payment')">Awaiting Payment</a></li>
-            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Payment Succesfull')">Payment Succesfull</a></li>
-            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Order Packed')">Order Packed</a></li>
-            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('In Transit')">In Transit</a></li>
-            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Delivered')">Delivered</a></li>
+        <ul id="dropdownMenu" class="hidden absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" data-index={{orderID}}>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="AP" onclick="selectOption('Awaiting Payment')">Awaiting Payment</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="PS" onclick="selectOption('Payment Succesfull')">Payment Succesfull</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="OP" onclick="selectOption('Order Packed')">Order Packed</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="IT" onclick="selectOption('In Transit')">In Transit</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id= "D" onclick="selectOption('Delivered')">Delivered</a></li>
         </ul>
     </div>
-
-    <button class="mr-10 my-auto border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center">
-        Save
+	{{#if isCancelled}}
+    <button class="mr-10 my-auto border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{orderID}} disabled>
+        Order Cancelled
     </button>
+	{{else}}
+		<button class="mr-10 my-auto border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{orderID}}>
+        	Cancel Order
+    	</button>
+	{{/if}}
+
 
 </div>
 
 
-<div class="bg-tertiary w-[90%] rounded-[10px] mx-auto mb-2">
-    <div class="grid grid-cols-3 gap-3">
-        <div class="flex flex-col mx-10 border border-r-maincolor border-t-0 border-l-0 border-b-0 h-[150px] my-auto">
-            <div class="pr-10 text-secondary text-2xl font-semibold mb-1">Costumer</div>
-            <div class="text-secondary text-lg">[firstname] John [lastname] Doe</div>
-			<div class="text-secondary text-lg">[email] John_Doe@sample.com</div>
-			<div class="text-secondary text-lg">[contact number] 012345678910</div>
+<div class="bg-tertiary w-[90%] rounded-[10px] mx-auto mb-2 p-2">
+    <div class="grid grid-cols-3">
+        <div class="flex flex-col ml-10 my-auto">
+            <div class="pr-10 text-secondary text-2xl font-semibold mb-1">Customer</div>
+            <div class="text-secondary text-lg">{{fname}} {{lname}}</div>
+			<div class="text-secondary text-lg">{{email}}</div>
 			<a href="#" class="text-maincolor hover:underline mb-5">View Profile</a>
         </div>
 
-        <div class="flex flex-col mx-10 border border-r-maincolor border-t-0 border-l-0 border-b-0 h-[150px] my-auto">
-            <div class="pr-10 text-secondary text-2xl font-semibold mb-1">Costumer</div>
-        	
-		    <div class=" flex flex-row items-start">
-        		<div class="text-secondary text-lg mr-2">Shipping:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">Doe shipping services</div>
-    		</div>
+        <div class="flex flex-col pl-10 border border-r-maincolor border-t-0 border-l-maincolor border-b-0 my-auto">
+            <div class="pr-10 text-secondary text-2xl font-semibold mb-1">Transaction Details</div>
 			
 			<div class=" flex flex-row items-start">
         		<div class="text-secondary text-lg mr-2">Payment method:</div>
@@ -86,92 +86,89 @@ function selectOption(option) {
 			
 			<div class=" flex flex-row items-start">
         		<div class="text-secondary text-lg mr-2">Status:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">Awaiting Payment</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{status}}</div>
     		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">Cancellation Status:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{isCancelled}}</div>
+    		</div>
+
 			<a href="#" class="text-maincolor hover:underline mb-5">Download</a>
         </div>
 
-        <div class="flex flex-col h-[150px] my-auto">
-            <div class="pr-10 text-secondary text-2xl font-semibold mb-1">Deliver to:</div>
+        <div class="flex flex-col my-auto pl-10">
+            <div class=" text-secondary text-2xl font-semibold mb-1">Deliver to:</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">State:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{state}}</div>
+    		</div>
+
 			<div class=" flex flex-row items-start">
         		<div class="text-secondary text-lg mr-2">City:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">Makati</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{city}}</div>
     		</div>
 
 			<div class=" flex flex-row items-start">
-        		<div class="text-secondary text-lg mr-2">Street:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">IDK street</div>
+        		<div class="text-secondary text-lg mr-2">Postal Code:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{postalCode}}</div>
     		</div>
 
 			<div class=" flex flex-row items-start">
-        		<div class="text-secondary text-lg mr-2">Address:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">somewhere in makita</div>
+        		<div class="text-secondary text-lg mr-2">Address 1:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{line1}}</div>
     		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">Address 2:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{line2}}</div>
+    		</div>
+			
         </div>
     </div>
 </div>
 
 <div class="bg-tertiary w-[90%] rounded-[10px] mx-auto mb-2 p-2">
-    <div class="grid grid-cols-3 gap-3">
-        <div class="col-span-2 ">
-			<div class="bg-white w-[100%] h-[35px] flex flex-wrap flex-row items-center justify-center mx-auto rounded-[10px_10px_0px_0px] border border-b-maincolor border-t-0 border-l-0 border-r-0">
-            	<div class="w-[450px] text-secondary text-lg border border-r-maincolor border-t-0 border-l-0 border-b-0">Product</div>
-				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">Quantity</div>
-				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">Price</div>
-				<div class="w-[200px] text-secondary text-lg text-right">Total</div>
-			</div>
-
-			<div class="bg-white w-[100%] flex flex-wrap items-center justify-center mx-auto border border-b-maincolor border-t-0 border-l-0 border-r-0">
-				<img class="w-[50px] h-[100%] mr-8 my-2" src="../uploads/nylon_brush.jpg" alt="product image">
-            	<div class="w-[370px] text-secondary text-lg border border-r-maincolor border-t-0 border-l-0 border-b-0">Nylon Brush</div>
-				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">2</div>
-				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">Php 100</div>
-				<div class="w-[200px] text-secondary text-lg text-right">Php 200</div>
-			</div>
-
-			<div class="bg-white w-[100%] flex flex-wrap items-center justify-center mx-auto border border-b-maincolor border-t-0 border-l-0 border-r-0">
-				<img class="w-[50px] h-[100%] mr-8 my-2" src="../uploads/nylon_brush.jpg" alt="product image">
-            	<div class="w-[370px] text-secondary text-lg border border-r-maincolor border-t-0 border-l-0 border-b-0">Nylon Brush</div>
-				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">2</div>
-				<div class="w-[100px] text-secondary text-lg ml-5 border border-r-maincolor border-t-0 border-l-0 border-b-0">Php 100</div>
-				<div class="w-[200px] text-secondary text-lg text-right">Php 200</div>
-			</div>
-
-			<div class="bg-white w-[100%] flex flex-wrap  justify-end rounded-b-lg">
-				<div class="grid grid-cols-2 gap-x-4 gap-y-0">
-					<div class="w-[150px] flex flex-col items-start">
-        				<div class="text-secondary text-lg text-left">Subtotal</div>
-        				<div class="text-secondary text-lg text-left">Shipping cost</div>
-						<div class="text-secondary text-lg text-left">Total</div>
-   		 			</div>
-
-					<div class="w-[120px] flex flex-col items-end">
-						<div class="text-secondary text-lg">Php 200</div>
-						<div class="text-secondary text-lg">Php 50</div>
-						<div class="text-secondary text-lg">Php 250</div>
-					</div>
-				</div>
-			</div>
+    <div class="grid grid-cols-4 gap-3 mb-2 bg-maincolor text-white h-[35px] flex flex-wrap flex-row items-center justify-center mx-auto rounded-[10px_10px_0px_0px]">
+        <div class="col-span-2 text-lg text-center">Product</div>
+        <div class="grid grid-rows-1 grid-flow-col justify-end">
+            <div class="w-[100px] text-lg border border-r-white border-l-white border-t-0 border-b-0 text-center">Quantity</div>
+            <div class="w-[100px] text-lg border border-r-white border-t-0 border-l-0 border-b-0 text-center">Price</div>					
         </div>
+        <div class="w-[200px] text-lg text-right">Total</div>
+    </div>
+       {{#each items}}	
+    <div class="grid grid-cols-4 gap-2 gap-x-0 mb-2 p-2 bg-white rounded-lg pl-10">
+ 	
+            <div class="flex flex-wrap items-center ">
+                <img class="w-[50px] h-[100%] mr-8 mb-2 py-2" src={{image}} alt="product image">
+            </div>
+            <div class="flex flex-wrap items-center pl-10">
+                <div class="text-secondary text-lg">{{this.name}}</div>
+            </div>
+            <div class="flex flex-wrap items-center justify-end">
+                <div class="w-[100px] text-secondary text-lg border border-r-maincolor border-l-maincolor border-t-0 border-b-0 text-center">{{this.amount}}</div>
+                <div class="w-[100px] text-secondary text-lg border border-r-maincolor border-t-0 border-l-0 border-b-0 text-center">&#8369; {{this.price}}</div>
+            </div>
+            <div class="flex flex-wrap items-center justify-center rounded-[0px_10px_10px_0px]">
+                <div class="text-secondary text-lg text-center">&#8369; {{multiply this.amount this.price}}</div>
+            </div>
 
-        <div class="flex flex-col bg-white w-[100%] rounded-lg pl-5">
-            <div class="pr-10 w-[50%] text-secondary text-2xl font-semibold mt-5 mb-5 border border-b-maincolor border-t-0 border-l-0 border-r-0">Payment Info</div>
-			<div class=" flex flex-row items-start">
-        		<div class="text-secondary text-lg mr-2">Method:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">Cash</div>
-    		</div>
+    </div>
+        {{/each}}
+    <div class="ml-[1000px] bg-white flex flex-wrap rounded-lg pr-4 mt-2">
+        <div class="grid grid-cols-2 gap-x-0 gap-y-0">
+            <div class="w-[160px] flex flex-col">
+                <div class="text-secondary text-lg text-center">Total</div>
+            </div>
 
-			<div class=" flex flex-row items-start">
-        		<div class="text-secondary text-lg mr-2">other info for online banking:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">***************</div>
-    		</div>
-
-			<div class=" flex flex-row items-start">
-        		<div class="text-secondary text-lg mr-2">other info:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">***********</div>
-    		</div>
+            <div class="w-[125px] flex flex-col items-end">
+                <div class="text-secondary text-lg">&#8369; {{amount}}</div>
+            </div>
         </div>
     </div>
 </div>
+
 
 </div>

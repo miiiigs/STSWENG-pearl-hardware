@@ -37,6 +37,10 @@ submit.addEventListener('click', async function (){
         if(response.status == 200){
             const checkout_url = await response.text();
             window.location.href = checkout_url
+            submit.textContent = "Checkout"
+        }
+        if(response.status == 401){
+            submit.textContent = "Amount needs to be greater than 20 pesos"
         }
     }
     
