@@ -37,26 +37,32 @@ function selectOption(option) {
     </div>
 
     <div class="flex flex-col items-start">
-        <div class="text-secondary text-lg text-center">November 8, 2023</div>
-        <div class="text-secondary text-lg text-center">0123456789</div>
+        <div class="text-secondary text-lg text-center">{{orderDate}}</div>
+        <div class="text-secondary text-lg text-center">{{orderID}}</div>
     </div>
 
     <div class="relative justify-center gap-x-1.5 my-auto ml-auto">
         <button id="dropdownButton" class="w-[190px] rounded-lg bg-white px-3 py-2 mx-[4px] font-Inknut text-secondary text-sm text-center shadow-sm ring-1 ring-inset ring-gray-300">
             Change Status
         </button>
-        <ul id="dropdownMenu" class="hidden absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical">
-            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Awaiting Payment')">Awaiting Payment</a></li>
-            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Payment Succesfull')">Payment Succesfull</a></li>
-            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Order Packed')">Order Packed</a></li>
-            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('In Transit')">In Transit</a></li>
-            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" onclick="selectOption('Delivered')">Delivered</a></li>
+        <ul id="dropdownMenu" class="hidden absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" data-index={{orderID}}>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="AP" onclick="selectOption('Awaiting Payment')">Awaiting Payment</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="PS" onclick="selectOption('Payment Succesfull')">Payment Succesfull</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="OP" onclick="selectOption('Order Packed')">Order Packed</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id="IT" onclick="selectOption('In Transit')">In Transit</a></li>
+            <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200" id= "D" onclick="selectOption('Delivered')">Delivered</a></li>
         </ul>
     </div>
-
-    <button class="mr-10 my-auto border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center">
-        Save
+	{{#if isCancelled}}
+    <button class="mr-10 my-auto border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{orderID}} disabled>
+        Order Cancelled
     </button>
+	{{else}}
+		<button class="mr-10 my-auto border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{orderID}}>
+        	Cancel Order
+    	</button>
+	{{/if}}
+
 
 </div>
 
@@ -80,8 +86,14 @@ function selectOption(option) {
 			
 			<div class=" flex flex-row items-start">
         		<div class="text-secondary text-lg mr-2">Status:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">Awaiting Payment</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{status}}</div>
     		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">Cancellation Status:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{isCancelled}}</div>
+    		</div>
+
 			<a href="#" class="text-maincolor hover:underline mb-5">Download</a>
         </div>
 
@@ -95,18 +107,24 @@ function selectOption(option) {
 
 			<div class=" flex flex-row items-start">
         		<div class="text-secondary text-lg mr-2">City:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">Makati</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{city}}</div>
     		</div>
 
 			<div class=" flex flex-row items-start">
-        		<div class="text-secondary text-lg mr-2">Street:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">IDK street</div>
+        		<div class="text-secondary text-lg mr-2">Postal Code:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{postalCode}}</div>
     		</div>
 
 			<div class=" flex flex-row items-start">
-        		<div class="text-secondary text-lg mr-2">Address:</div>
-        		<div class="pr-5 text-secondary text-lg text-center">somewhere in makita</div>
+        		<div class="text-secondary text-lg mr-2">Address 1:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{line1}}</div>
     		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-secondary text-lg mr-2">Address 2:</div>
+        		<div class="pr-5 text-secondary text-lg text-center">{{line2}}</div>
+    		</div>
+			
         </div>
     </div>
 </div>

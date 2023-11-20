@@ -73,7 +73,7 @@ function selectOption(option) {
 			</button>
  	   		
 
-			<button class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{this.orderID}}>
+			
 				{{#if (eq this.isCancelled "false")}}
 					<button class="mx-auto border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[4px] h-[35px] text-center" id="cancel" data-index={{this.orderID}}>
     					Cancel
@@ -83,7 +83,7 @@ function selectOption(option) {
     					Order Cancelled
 					</button>
 				{{/if}}
-			</button>
+			
 
 	</div>
 	{{/each}}

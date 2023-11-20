@@ -691,8 +691,6 @@ video {
 .my-\[200px\]{
   margin-top: 200px;
   margin-bottom: 200px;
-<<<<<<< HEAD
-=======
 }
 
 .my-auto{
@@ -708,12 +706,6 @@ video {
 .my-\[250px\]{
   margin-top: 250px;
   margin-bottom: 250px;
->>>>>>> 5a79b703f8d3846dbfeae0600be45109170c1d15
-}
-
-.my-auto{
-  margin-top: auto;
-  margin-bottom: auto;
 }
 
 .mb-1{
@@ -976,13 +968,10 @@ video {
   height: 100%;
 }
 
-<<<<<<< HEAD
-=======
 .h-screen{
   height: 100vh;
 }
 
->>>>>>> 5a79b703f8d3846dbfeae0600be45109170c1d15
 .w-11{
   width: 2.75rem;
 }
@@ -1360,14 +1349,11 @@ video {
   border-top-right-radius: 1rem;
 }
 
-<<<<<<< HEAD
-=======
 .rounded-b-lg{
   border-bottom-right-radius: 0.5rem;
   border-bottom-left-radius: 0.5rem;
 }
 
->>>>>>> 5a79b703f8d3846dbfeae0600be45109170c1d15
 .rounded-tl-lg{
   border-top-left-radius: 0.5rem;
 }
