@@ -18,7 +18,6 @@ router.get(`/`, controller.getIndex);
 router.get(`/login`, controller.getLogin);
 router.get('/register', controller.getRegister);
 
-
 router.get(`/category/:category`, controller.getCategory);
 router.get(`/adminCategory/:category`, controller.getAdminCategory);
 
@@ -51,7 +50,11 @@ router.post('/register', body('fname').notEmpty(), body('lname').notEmpty(), bod
 router.post('/login', body('email').notEmpty().normalizeEmail().isEmail(), body('password').notEmpty(), controller.login);
 router.post('/postCheckout', controller.postCheckout);
 router.post('/add-to-cart', controller.addToCart);
-router.post('/cancelChange', controller.cancelChange)
-router.post('/statusChange', controller.statusChange)
+router.post('/cancelChange', controller.cancelChange);
+router.post('/statusChange', controller.statusChange);
+
+router.post('/showProduct', controller.showProduct);
+router.post('/hideProduct', controller.hideProduct);
+
 
 export default router;
