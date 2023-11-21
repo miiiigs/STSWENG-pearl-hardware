@@ -34,6 +34,7 @@ router.get('/logout', controller.logout);
 router.get('/product', controller.getProduct);
 
 router.get('/adminInventory', controller.getAdminInventory);
+router.get('/searchInventory', controller.searchInventory);
 router.get('/remove-from-cart',controller.removeFromCart);
 router.get('/admin',controller.getAdmin);
 router.get('/getCartItems', controller.getCartItems)
