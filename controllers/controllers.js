@@ -129,6 +129,25 @@ const controller = {
         }
     },
 
+    addProduct: async function(req, res) {
+        try{
+            
+            const product = req.body
+            new Product({
+                name: product.name,
+                type: product.type,
+                quantity: product.quantity,
+                price: product.price,
+                productpic: '/./uploads/' + req.file.originalname
+            }).save();
+
+            res.redirect('/adminInventory');
+           
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
     getAdminInventory: async function (req, res) {
         try {
             var product_list = [];
@@ -160,6 +179,8 @@ const controller = {
             res.sendStatus(400);
         }
     },
+
+    
 	
 	//searchInventory
 	//specialized search and sort for Admin
