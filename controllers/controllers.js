@@ -17,14 +17,16 @@ const controller = {
             var product_list = [];
             const resp = await Product.find({});
             for (let i = 0; i < resp.length; i++) {
-                product_list.push({
-                    name: resp[i].name,
-                    type: resp[i].type,
-                    price: resp[i].price,
-                    quantity: resp[i].quantity,
-                    productpic: resp[i].productpic,
-                    p_id: resp[i]._id
-                });
+                if(resp[i].isShown) {
+                    product_list.push({
+                        name: resp[i].name,
+                        type: resp[i].type,
+                        price: resp[i].price,
+                        quantity: resp[i].quantity,
+                        productpic: resp[i].productpic,
+                        p_id: resp[i]._id
+                    });
+                }
             }
 
             // sortProducts function
@@ -142,14 +144,16 @@ const controller = {
             console.log(resp.length)
 
             for (let i = 0; i < resp.length; i++) {
-                product_list.push({
-                    name: resp[i].name,
-                    type: resp[i].type,
-                    price: resp[i].price,
-                    quantity: resp[i].quantity,
-                    productpic: resp[i].productpic,
-                    p_id: resp[i]._id
-                });
+                if(resp[i].isShown) {
+                    product_list.push({
+                        name: resp[i].name,
+                        type: resp[i].type,
+                        price: resp[i].price,
+                        quantity: resp[i].quantity,
+                        productpic: resp[i].productpic,
+                        p_id: resp[i]._id
+                    });
+                }
             }
 
             // sortProducts function
@@ -216,11 +220,28 @@ const controller = {
         }
     },
 
-    getAdminInventory: async function (req, res) {
+    getAdminInventory: async function (req, res) {        
         try {
+            var product_list = [];
+            let resp = await Product.find({});;
 
+            console.log(resp.length)
+
+            for (let i = 0; i < resp.length; i++) {
+                product_list.push({
+                    name: resp[i].name,
+                    type: resp[i].type,
+                    price: resp[i].price,
+                    quantity: resp[i].quantity,
+                    productpic: resp[i].productpic,
+                    p_id: resp[i]._id,
+                });
+            }
             res.render("adminInventory", {
-                layout: 'adminMain'
+                layout: 'adminMain',
+                product_list: product_list,
+
+                
             });
         } catch {
             res.sendStatus(400);
@@ -318,7 +339,7 @@ const controller = {
 
         console.log("Searching for " + query);
 
-        const result = await Product.find({ name: new RegExp('.*' + query + '.*', 'i') }, { __v: 0 }).lean();
+        const result = await Product.find({ name: new RegExp('.*' + query + '.*', 'i'), isShown: true }, { __v: 0 }).lean();
         res.render("search_results", { product_list: result });
     },
 
@@ -864,6 +885,17 @@ const controller = {
         } catch {
             res.sendStatus(400);
         }
+    },
+
+    showProduct: async function (req, res) {
+        const id = req.body.id;
+        const product = await Product.findByIdAndUpdate(id, {isShown: true});
+    },
+
+    hideProduct: async function (req, res) {
+        console.log("hide");
+        const id = req.body.id;
+        const product = await Product.findByIdAndUpdate(id, {isShown: false});
     },
 
 
