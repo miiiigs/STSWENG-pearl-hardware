@@ -4,6 +4,17 @@ import bodyParser from 'body-parser';
 import { body, validationResult } from 'express-validator';
 import { User } from '../model/userSchema.js';
 
+import multer from 'multer';
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    }
+});
+const upload = multer({ storage: storage });
+
 const router = Router();
 
 //BOILERPLATE
@@ -21,8 +32,6 @@ router.get('/register', controller.getRegister);
 router.get(`/category/:category`, controller.getCategory);
 router.get(`/adminCategory/:category`, controller.getAdminCategory);
 
-router.get('/sortProducts', controller.sortProducts);
-router.get('/searchProducts', controller.searchProducts);
 router.get('/userprofile', controller.getUserProfile);
 router.get('/checkout', controller.checkout);
 router.get('/checkoutSuccess/:orderID', controller.checkoutSuccess);
@@ -53,8 +62,10 @@ router.post('/add-to-cart', controller.addToCart);
 router.post('/cancelChange', controller.cancelChange);
 router.post('/statusChange', controller.statusChange);
 
+router.post('/addProduct', upload.single('productPic'), controller.addProduct);
 router.post('/showProduct', controller.showProduct);
 router.post('/hideProduct', controller.hideProduct);
+router.post('/deleteProduct', controller.deleteProduct);
 
 
 export default router;

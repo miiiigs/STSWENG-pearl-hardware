@@ -22,53 +22,72 @@
         })
 
     }
+
+    async function deleteProduct(id){
+        const jString = JSON.stringify({id});
+        const response = await fetch('/deleteProduct', {
+            method: "POST",
+            body: jString,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        console.log(response);
+        if(response.status == 200){
+            window.location.href = '/adminInventory';
+        }
+
+    }
 </script>
 
-<div class=" bg-white bg-opacity-80 p-1 rounded-md  w-[98%] mx-auto my-auto"
-    style="box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1), -10px -10px 10px rgba(0, 0, 0, 0.1);">
-    <div class="flex flex-row pr-28">
-        <div class="mx-10 my-5 py-0 pl-2 border-b-4 border-b-maincolor font-Inika text-2xl w-48 ">Inventory</div>
-        <script src="js/sort_inventory.js" defer></script>
-        {{> sort_inventory}}
-    </div>
+
     
-    {{> inventory_bar}}
-	
+{{> inventory_bar}}
 
-    <div class="bg-white bg-opacity-80 p-1 rounded-md w-[95%] mx-auto my-auto shadow-md">
-        {{#each product_list}}
-        <div class=" bg-tertiary flex flex-wrap items-center justify-center rounded-[10px] mb-2">
-            <div class="w-32 h-32 mx-auto">
 
-                <img src={{this.productpic.[0]}} alt="">
+<div class="bg-white bg-opacity-80 p-1 rounded-md w-[95%] mx-auto my-auto shadow-md">
+    {{#each product_list}}
+    <div class=" bg-tertiary flex flex-wrap items-center justify-center rounded-[10px] mb-2">
+        <div class=" w-32 h-32 mx-auto">
 
-            </div>
-            <div class="font-Inknut text-secondary text-sm  border-white mx-auto">
-                {{this.name}}</div>
-            <div class="font-Inknut text-secondary text-sm  border-white mx-auto">
-                {{this.price}}</div>
-            <div class="font-Inknut text-secondary text-sm  border-white ml-4 h-8 py-1">
-			<!-- should add data validation to this -->
-                <input type="text" name="current_stock" class=" rounded w-40" value={{this.quantity}}>
-            </div>
-
-            <div class="mx-auto">
-                
-                <button onclick="showProduct('{{this.p_id}}')"
-                    class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
-                    Show
-                </button>
-                
-                <button onclick="hideProduct('{{this.p_id}}')"
-                    class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
-                    Hide
-                </button>
-            </div>
-
+            <img src={{this.productpic.[0]}} alt="" class=" max-h-32">
 
         </div>
-        {{/each}}
+        <div class="font-Inknut text-secondary text-sm  border-white mx-auto">
+            {{this.name}}</div>
+        <div class="font-Inknut text-secondary text-sm  border-white mx-auto">
+            {{this.price}}</div>
+        <div class="font-Inknut text-secondary text-sm  border-white ml-4 h-8 py-1">
+        <!-- should add data validation to this -->
+            <input type="text" name="current_stock" class=" rounded w-40" value={{this.quantity}}>
+        </div>
+
+        <div class="mx-auto">
+            
+            <button onclick="showProduct('{{this.p_id}}')"
+                class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                Show
+            </button>
+            
+            <button onclick="hideProduct('{{this.p_id}}')"
+                class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                Hide
+            </button>
+
+            <button onclick="deleteProduct('{{this.p_id}}')"
+                class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                Delete
+            </button>
+            
+        </div>
+
+
+        
+
 
     </div>
+    {{/each}}
+
+</div>
 
     
