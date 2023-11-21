@@ -4,6 +4,7 @@ import { User } from '../model/userSchema.js';
 import { Order } from '../model/orderSchema.js';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
+import { ObjectId } from 'mongodb';
 
 const SALT_WORK_FACTOR = 10;
 
@@ -132,13 +133,23 @@ const controller = {
     addProduct: async function(req, res) {
         try{
             
-            const product = req.body
+            const pic = req.file;
+            const product = req.body;
+            let path;
+
+            if(pic === undefined){
+                path = 'temp.png';              
+            }
+            else{
+                path = pic.originalname;
+            }
+            
             new Product({
                 name: product.name,
                 type: product.type,
                 quantity: product.quantity,
                 price: product.price,
-                productpic: '/./uploads/' + req.file.originalname
+                productpic: '/./uploads/' + path
             }).save();
 
             res.redirect('/adminInventory');
@@ -753,9 +764,22 @@ const controller = {
     },
 
     hideProduct: async function (req, res) {
-        console.log("hide");
         const id = req.body.id;
         const product = await Product.findByIdAndUpdate(id, {isShown: false});
+    },
+
+    deleteProduct: async function (req, res) {
+
+        const id = req.body.id;
+        const result = await Product.deleteOne({_id: id});
+
+        if(result.deletedCount){
+            res.sendStatus(200);
+        }
+        else{
+            res.sendStatus(201);
+        }
+
     },
 
 

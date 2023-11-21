@@ -65,6 +65,7 @@ router.post('/statusChange', controller.statusChange);
 router.post('/addProduct', upload.single('productPic'), controller.addProduct);
 router.post('/showProduct', controller.showProduct);
 router.post('/hideProduct', controller.hideProduct);
+router.post('/deleteProduct', controller.deleteProduct);
 
 
 export default router;

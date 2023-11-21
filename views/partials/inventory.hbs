@@ -22,6 +22,22 @@
         })
 
     }
+
+    async function deleteProduct(id){
+        const jString = JSON.stringify({id});
+        const response = await fetch('/deleteProduct', {
+            method: "POST",
+            body: jString,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        console.log(response);
+        if(response.status == 200){
+            window.location.href = '/adminInventory';
+        }
+
+    }
 </script>
 
 
@@ -57,7 +73,16 @@
                 class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
                 Hide
             </button>
+
+            <button onclick="deleteProduct('{{this.p_id}}')"
+                class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                Delete
+            </button>
+            
         </div>
+
+
+        
 
 
     </div>
