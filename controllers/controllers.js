@@ -93,8 +93,8 @@ const controller = {
                 //console.log(user);
                 if(user.isAuthorized == true){
                     console.log("AUTHORIZED")
-                    res.render("admin", {
-                        layout: 'admin',
+                    res.render("adminHome", {
+                        layout: 'adminHome',
                         script: './js/admin.js',
                     });
                 }else{
@@ -237,7 +237,6 @@ const controller = {
                     p_id: resp[i]._id,
                 });
             }
-
             // sortProducts function
             const sortValue = req.query.sortBy;
             console.log(sortValue);
@@ -268,7 +267,7 @@ const controller = {
                 
             res.render("adminInventory", {
                 layout: 'adminMain',
-                inventory_result: product_list
+                product_list: product_list
             });
                 
         } catch {
