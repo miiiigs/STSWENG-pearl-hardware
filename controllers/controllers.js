@@ -7,6 +7,8 @@ import bcrypt from 'bcrypt';
 
 const SALT_WORK_FACTOR = 10;
 
+
+
 const controller = {
 
 
@@ -14,47 +16,11 @@ const controller = {
         try {
             console.log("USER ID" + req.session.userID);
             //getProducts function
-            var product_list = [];
-            const resp = await Product.find({});
-            for (let i = 0; i < resp.length; i++) {
-                if(resp[i].isShown) {
-                    product_list.push({
-                        name: resp[i].name,
-                        type: resp[i].type,
-                        price: resp[i].price,
-                        quantity: resp[i].quantity,
-                        productpic: resp[i].productpic,
-                        p_id: resp[i]._id
-                    });
-                }
-            }
+            var product_list = await getProducts();
 
             // sortProducts function
             const sortValue = req.query.sortBy;
-            console.log(sortValue);
-            if (sortValue !== undefined) {
-                switch (sortValue) {
-                    case 'def':
-
-                        break;
-                    case 'price_asc':
-                        product_list.sort((a, b) => a.price - b.price);
-                        console.log(product_list);
-                        break;
-                    case 'price_desc':
-                        product_list.sort((a, b) => b.price - a.price);
-                        console.log(product_list);
-                        break;
-                    case 'name_asc':
-                        product_list.sort((a, b) => a.name.localeCompare(b.name));
-                        console.log(product_list);
-                        break;
-                    case 'name_desc':
-                        product_list.sort((a, b) => b.name.localeCompare(a.name));
-                        console.log(product_list);
-                        break;
-                }
-            }
+            sortProducts(product_list, sortValue);
 
             res.render("index", {
                 product_list: product_list,
@@ -90,7 +56,6 @@ const controller = {
         try {
             if(req.session.userID){
                 const user = await User.findById(req.session.userID)
-                //console.log(user);
                 if(user.isAuthorized == true){
                     console.log("AUTHORIZED")
                     res.render("adminHome", {
@@ -118,67 +83,11 @@ const controller = {
         try {
 
             //getProducts function
-            var product_list = [];
-            let resp;
-            switch (category) {
-                case 'allproducts':
-                    resp = await Product.find({});
-                    break;
-                case 'welding':
-                    resp = await Product.find({ type: 'Welding' });
-                    break;
-                case 'safety':
-                    resp = await Product.find({ type: 'Safety' });
-                    break;
-                case 'cleaning':
-                    resp = await Product.find({ type: 'Cleaning' });
-                    break;
-                case 'industrial':
-                    resp = await Product.find({ type: 'Industrial' });
-                    break;
-                case 'brassfittings':
-                    resp = await Product.find({ type: 'Brass Fittings' });
-                    break;
-            }
-
-            console.log(resp.length)
-
-            for (let i = 0; i < resp.length; i++) {
-                if(resp[i].isShown) {
-                    product_list.push({
-                        name: resp[i].name,
-                        type: resp[i].type,
-                        price: resp[i].price,
-                        quantity: resp[i].quantity,
-                        productpic: resp[i].productpic,
-                        p_id: resp[i]._id
-                    });
-                }
-            }
+            var product_list = await getProducts(category);
 
             // sortProducts function
             const sortValue = req.query.sortBy;
-            console.log(sortValue);
-            if (sortValue !== undefined) {
-                switch (sortValue) {
-                    case 'def':
-
-                        break;
-                    case 'price_asc':
-                        product_list.sort((a, b) => a.price - b.price);
-                        break;
-                    case 'price_desc':
-                        product_list.sort((a, b) => b.price - a.price);
-                        break;
-                    case 'name_asc':
-                        product_list.sort((a, b) => a.name.localeCompare(b.name));
-                        break;
-                    case 'name_desc':
-                        product_list.sort((a, b) => b.name.localeCompare(a.name));
-                        break;
-                }
-            }
-
+            sortProducts(product_list, sortValue);
 
             res.render("all_products", {
                 product_list: product_list,
@@ -240,30 +149,7 @@ const controller = {
             // sortProducts function
             const sortValue = req.query.sortBy;
             console.log(sortValue);
-            if (sortValue !== undefined) {
-                switch (sortValue) {
-                    case 'def':
-                        break;
-                    case 'price_asc':
-                        product_list.sort((a, b) => a.price - b.price);
-                        break;
-                    case 'price_desc':
-                        product_list.sort((a, b) => b.price - a.price);
-                        break;
-                    case 'name_asc':
-                        product_list.sort((a, b) => a.name.localeCompare(b.name));
-                        break;
-                    case 'name_desc':
-                        product_list.sort((a, b) => b.name.localeCompare(a.name));
-                        break;
-                    case 'stock_asc':
-                        product_list.sort((a, b) => a.quantity - b.quantity);
-                        break;
-                    case 'stock_desc':
-                        product_list.sort((a, b) => b.quantity - a.quantity);
-                        break;					
-                }
-            }
+            sortProducts(product_list, sortValue);
                 
             res.render("adminInventory", {
                 layout: 'adminMain',
@@ -287,35 +173,12 @@ const controller = {
 
         const result = await Product.find({ name: new RegExp('.*' + query + '.*', 'i') }, { __v: 0 }).lean();
 		
-	// sortProducts function
-	const sortValue = req.query.sortBy;
-	console.log(sortValue);
-	if (sortValue !== undefined) {
-		switch (sortValue) {
-			case 'def':
-				break;
-			case 'price_asc':
-				result.sort((a, b) => a.price - b.price);
-				break;
-			case 'price_desc':
-				result.sort((a, b) => b.price - a.price);
-				break;
-			case 'name_asc':
-				result.sort((a, b) => a.name.localeCompare(b.name));
-				break;
-			case 'name_desc':
-				result.sort((a, b) => b.name.localeCompare(a.name));
-				break;
-			case 'stock_asc':
-				result.sort((a, b) => a.quantity - b.quantity);
-				break;
-			case 'stock_desc':
-				result.sort((a, b) => b.quantity - a.quantity);
-				break;	
-		}
-	}
+        // sortProducts function
+        const sortValue = req.query.sortBy;
+        console.log(sortValue);
+        sortProducts(result, sortValue);
 	
-	res.render("adminInventory", {layout: 'adminMain',inventory_result: result, buffer: query});
+	    res.render("adminInventory", {layout: 'adminMain',product_list: result, buffer: query});
     },
 
     register: async function (req, res) {
@@ -364,13 +227,11 @@ const controller = {
     },
 
     login: async function (req, res) {
-        //console.log("hello");
         console.log(req.body);
 
         const existingUser = await User.findOne({ email: req.body.email });
 
         if (existingUser && await bcrypt.compare(req.body.password, existingUser.password) && existingUser.isAuthorized == false) {
-            //console.log("login successful");
 
             req.session.userID = existingUser._id;
             req.session.fName = existingUser.firstName;
@@ -400,17 +261,6 @@ const controller = {
             res.sendStatus(400);
             console.log("Failed to get current user");
         }
-    },
-    //searchProducts
-    searchProducts: async function (req, res) {
-        console.log("Searching for a product!");
-
-        var query = req.query.product_query;
-
-        console.log("Searching for " + query);
-
-        const result = await Product.find({ name: new RegExp('.*' + query + '.*', 'i'), isShown: true }, { __v: 0 }).lean();
-        res.render("search_results", { product_list: result });
     },
 
     //getCart
@@ -558,68 +408,6 @@ const controller = {
         console.log("yes?");
         res.redirect("/cart");
     },
-
-    sortProducts: async function (req, res) {
-        console.log("Searching for a product!");
-
-        var query = req.body.sortValue;
-        var resp = await Product.find({});
-        const product_list = [];
-        for (let i = 0; i < resp.length; i++) {
-            product_list.push({
-                name: resp[i].name,
-                type: resp[i].type,
-                price: resp[i].price,
-                quantity: resp[i].quantity,
-                productpic: resp[i].productpic,
-                p_id: resp[i]._id
-            });
-        }
-        switch (query) {
-            case 'def':
-
-                break;
-            case 'price_asc':
-                product_list.sort((a, b) => a.price - b.price);
-                res.render("hehe", {
-                    product_list: product_list
-                });
-                break;
-            case 'price_desc':
-                product_list.sort((a, b) => a.price - b.price);
-                res.render("hehe", {
-                    script: './js/index.js',
-                    product_list: product_list
-                });
-                break;
-        }
-    },
-
-    /*
-    PLS DON'T DELETE
-    COMMENTED OUT FOR DEMONSTRATION PURPOSES
-    
-    getProducts: async function(req, res) {
-        try{
-            const product_list = [];
-            const resp = await Product.find({});
-            for(let i = 0; i < resp.products.length; i++) {
-                product_list.push({
-                    name: resp[i].name,
-                    type: resp[i].type,
-                    quantity: resp[i].quantity,
-                    productpic: resp[i].productpic,
-                });
-            }    
-
-            res.render('products', {
-                product_list: product_list
-            })
-        } catch{
-            res.sendStatus(400); 
-        }
-    },
-    */
 
     checkout: async function (req, res) {
         try {
@@ -848,26 +636,7 @@ const controller = {
             
             // sortProducts function
             const sortValue = req.query.sortBy;
-            console.log(sortValue);
-            if(sortValue !== undefined){
-                switch(sortValue){
-                    case 'def':
-                        
-                        break;
-                    case 'price_asc':
-                        product_list.sort((a, b) => a.price-b.price);
-                        break;
-                    case 'price_desc':
-                        product_list.sort((a, b) => b.price-a.price);
-                        break;
-                    case 'name_asc':
-                        product_list.sort((a,b) => a.name.localeCompare(b.name));
-                        break;
-                    case 'name_desc':
-                        product_list.sort((a,b) => b.name.localeCompare(a.name));
-                        break;         
-                }   
-            }
+            sortProducts(order_list, sortValue);
 
             
             res.render("adminOrders", {
@@ -970,6 +739,67 @@ const controller = {
 
 
 
+}
+
+async function getProducts(category) {
+    var product_list = [];
+    let resp;
+    switch (category) {            
+        case 'welding':
+            resp = await Product.find({ type: 'Welding' });
+            break;
+        case 'safety':
+            resp = await Product.find({ type: 'Safety' });
+            break;
+        case 'cleaning':
+            resp = await Product.find({ type: 'Cleaning' });
+            break;
+        case 'industrial':
+            resp = await Product.find({ type: 'Industrial' });
+            break;
+        case 'brassfittings':
+            resp = await Product.find({ type: 'Brass Fittings' });
+            break;
+        default:
+            resp = await Product.find({});
+            break;
+    }
+    for (let i = 0; i < resp.length; i++) {
+        if(resp[i].isShown) {
+            product_list.push({
+                name: resp[i].name,
+                type: resp[i].type,
+                price: resp[i].price,
+                quantity: resp[i].quantity,
+                productpic: resp[i].productpic,
+                p_id: resp[i]._id
+            });
+        }
+    }
+    return product_list;
+}
+
+async function sortProducts(product_list, sortValue){
+    if (sortValue !== undefined) {
+        switch (sortValue) {
+            case 'def':
+
+                break;
+            case 'price_asc':
+                product_list.sort((a, b) => a.price - b.price);
+              
+                break;
+            case 'price_desc':
+                product_list.sort((a, b) => b.price - a.price);
+                break;
+            case 'name_asc':
+                product_list.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'name_desc':
+                product_list.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+        }
+    }
 }
 
 export default controller;
