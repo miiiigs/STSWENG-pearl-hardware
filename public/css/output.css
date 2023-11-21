@@ -570,10 +570,13 @@ video {
   }
 }
 
+<<<<<<< HEAD
 .collapse{
   visibility: collapse;
 }
 
+=======
+>>>>>>> kat_test
 .fixed{
   position: fixed;
 }
@@ -697,9 +700,15 @@ video {
   margin-bottom: 1.5rem;
 }
 
+<<<<<<< HEAD
 .my-\[250px\]{
   margin-top: 250px;
   margin-bottom: 250px;
+=======
+.my-\[200px\]{
+  margin-top: 200px;
+  margin-bottom: 200px;
+>>>>>>> kat_test
 }
 
 .my-auto{
@@ -947,6 +956,10 @@ video {
   height: 60px;
 }
 
+.h-\[680px\]{
+  height: 680px;
+}
+
 .h-\[80\%\]{
   height: 80%;
 }
@@ -963,10 +976,13 @@ video {
   height: 100%;
 }
 
+<<<<<<< HEAD
 .h-screen{
   height: 100vh;
 }
 
+=======
+>>>>>>> kat_test
 .w-11{
   width: 2.75rem;
 }
@@ -1109,6 +1125,14 @@ video {
 
 .w-full{
   width: 100%;
+}
+
+.w-\[90px\]{
+  width: 90px;
+}
+
+.w-\[185px\]{
+  width: 185px;
 }
 
 .max-w-full{

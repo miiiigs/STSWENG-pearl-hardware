@@ -130,6 +130,15 @@ const controller = {
         }
     },
 
+    getUserPurchases: async function(req, res) {
+        try{
+            res.render("userpurchases", {
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
     addProduct: async function(req, res) {
         try{
             
