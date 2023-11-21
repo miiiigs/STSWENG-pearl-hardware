@@ -123,7 +123,24 @@ const controller = {
 
     getUserProfile: async function(req, res) {
         try{
+            const user = await User.findById(req.session.userID);
+            let userData = {
+                firstName: user.firstName, 
+                lastName: user.lastName,
+                email: user.email,
+                profilepic: user.profilepic,
+                cart: user.cart,
+                line1: user.line1,
+                line2: user.line2,
+                city: user.city,
+                state: user.state,
+                postalCode: user.postalCode,
+                country: user.country,
+            }
+            console.log(userData);
             res.render("userprofile", {
+                user: userData, 
+                
             });
         } catch {
             res.sendStatus(400);
