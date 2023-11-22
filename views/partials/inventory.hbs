@@ -46,47 +46,46 @@
 
 
 <div class="bg-white bg-opacity-80 p-1 rounded-md w-[95%] mx-auto my-auto shadow-md">
-    {{#each product_list}}
-    <div class=" bg-tertiary flex flex-wrap items-center justify-center rounded-[10px] mb-2">
-        <div class=" w-32 h-32 mx-auto">
+	{{#if product_list}}
+		{{#each product_list}}
+		<div class=" bg-tertiary flex flex-wrap items-center justify-center rounded-[10px] mb-2">
+			<div class=" w-32 h-32 mx-auto">
 
-            <img src={{this.productpic.[0]}} alt="" class=" max-h-32">
+				<img src={{this.productpic.[0]}} alt="" class=" max-h-32">
 
-        </div>
-        <div class="font-Inknut text-secondary text-sm  border-white mx-auto">
-            {{this.name}}</div>
-        <div class="font-Inknut text-secondary text-sm  border-white mx-auto">
-            {{this.price}}</div>
-        <div class="font-Inknut text-secondary text-sm  border-white ml-4 h-8 py-1">
-        <!-- should add data validation to this -->
-            <input type="text" name="current_stock" class=" rounded w-40" value={{this.quantity}}>
-        </div>
+			</div>
+			<div class="font-Inknut text-secondary text-sm  border-white mx-auto">
+				{{this.name}}</div>
+			<div class="font-Inknut text-secondary text-sm  border-white mx-auto">
+				{{this.price}}</div>
+			<div class="font-Inknut text-secondary text-sm  border-white ml-4 h-8 py-1">
+			<!-- should add data validation to this -->
+				<input type="text" name="current_stock" class=" rounded w-40" value={{this.quantity}}>
+			</div>
 
-        <div class="mx-auto">
-            
-            <button onclick="showProduct('{{this.p_id}}')"
-                class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
-                Show
-            </button>
-            
-            <button onclick="hideProduct('{{this.p_id}}')"
-                class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
-                Hide
-            </button>
+			<div class="mx-auto">
+				
+				<button onclick="showProduct('{{this.p_id}}')"
+					class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+					Show
+				</button>
+				
+				<button onclick="hideProduct('{{this.p_id}}')"
+					class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+					Hide
+				</button>
 
-            <button onclick="deleteProduct('{{this.p_id}}')"
-                class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
-                Delete
-            </button>
-            
-        </div>
-
-
-        
-
-
-    </div>
-    {{/each}}
+				<button onclick="deleteProduct('{{this.p_id}}')"
+					class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+					Delete
+				</button>
+				
+			</div>
+		</div>
+		{{/each}}
+	{{else}}
+		<center> <p style="padding: 10px;"> No Products found! </p> </center>
+	{{/if}}
 
 </div>
 
