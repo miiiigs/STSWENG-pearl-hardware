@@ -1,6 +1,11 @@
+
+
+
+
+
 <script>
-    async function showProduct(id){
-        const jString = JSON.stringify({id});
+    async function showProduct(id) {
+        const jString = JSON.stringify({ id });
         const response = await fetch('/showProduct', {
             method: "POST",
             body: jString,
@@ -11,8 +16,8 @@
 
     }
 
-    async function hideProduct(id){
-        const jString = JSON.stringify({id});
+    async function hideProduct(id) {
+        const jString = JSON.stringify({ id });
         const response = await fetch('/hideProduct', {
             method: "POST",
             body: jString,
@@ -23,8 +28,8 @@
 
     }
 
-    async function deleteProduct(id){
-        const jString = JSON.stringify({id});
+    async function deleteProduct(id) {
+        const jString = JSON.stringify({ id });
         const response = await fetch('/deleteProduct', {
             method: "POST",
             body: jString,
@@ -33,60 +38,145 @@
             }
         })
         console.log(response);
-        if(response.status == 200){
+        if (response.status == 200) {
             window.location.href = '/adminInventory';
         }
 
     }
+
+    async function toggleEditWindow(id) {
+
+        const editWindow = document.getElementById('edit_' + id);
+        editWindow.style.display = (editWindow.style.display === 'none' || editWindow.style.display === '') ? 'block' : 'none';
+
+    }
+
+
 </script>
 
 
-    
-{{> inventory_bar}}
 
+{{> inventory_bar}}
 
 <div class="bg-white bg-opacity-80 p-1 rounded-md w-[95%] mx-auto my-auto shadow-md">
 	{{#if product_list}}
 		{{#each product_list}}
-		<div class=" bg-tertiary flex flex-wrap items-center justify-center rounded-[10px] mb-2">
-			<div class=" w-32 h-32 mx-auto">
+		<div class="bg-tertiary flex flex-wrap items-center justify-center rounded-[10px] mb-2">
+			<div class="grid grid-cols-6 gap-48">
+            <div class="w-32 h-32 border border-white mt-6 mb-8 ml-6">
 
 				<img src={{this.productpic.[0]}} alt="" class=" max-h-32">
 
-			</div>
-			<div class="font-Inknut text-secondary text-sm  border-white mx-auto">
-				{{this.name}}</div>
-			<div class="font-Inknut text-secondary text-sm  border-white mx-auto">
-				{{this.price}}</div>
-			<div class="font-Inknut text-secondary text-sm  border-white ml-4 h-8 py-1">
-			<!-- should add data validation to this -->
-				<input type="text" name="current_stock" class=" rounded w-40" value={{this.quantity}}>
-			</div>
+            </div>
+            <div class="font-Inknut text-secondary text-sm mt-20 ml-4">
+                {{this.name}}</div>
+            <div class="font-Inknut text-secondary text-sm mt-20 ml-8 ">
+                PHP{{this.price}}</div>
+            <div class="font-Inknut text-secondary text-sm mt-20 ml-12 ">
+                10</div>
+            <div class=" grid grid-cols-3 gap-20 ml-0 mt-16">
 
-			<div class="mx-auto">
-				
-				<button onclick="showProduct('{{this.p_id}}')"
-					class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
-					Show
-				</button>
-				
-				<button onclick="hideProduct('{{this.p_id}}')"
-					class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
-					Hide
-				</button>
+                <div>
+                    <button onclick="showProduct('{{this.p_id}}')"
+                        class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                        Show
+                    </button>
+                </div>
 
-				<button onclick="deleteProduct('{{this.p_id}}')"
-					class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
-					Delete
-				</button>
-				
-			</div>
-		</div>
-		{{/each}}
-	{{else}}
-		<center> <p style="padding: 10px;"> No Products found! </p> </center>
-	{{/if}}
 
+                <div>
+                    <button onclick="hideProduct('{{this.p_id}}')"
+                        class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                        Hide
+                    </button>
+
+                </div>
+
+                <div>
+                    <button onclick="deleteProduct('{{this.p_id}}')"
+                        class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                        Delete
+                    </button>
+                </div>
+
+
+
+            </div>
+
+            <div class="mt-16">
+                <button onclick="toggleEditWindow('{{this.p_id}}')"
+                    class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                    Edit
+                </button>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div id="edit_{{this.p_id}}" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true" >
+
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+
+            <div
+                class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                
+                <form action="/editProduct" method="POST" enctype="multipart/form-data">
+                    <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                <h3 class="text-2xl font-semibold leading-6 text-gray-900" id="modal-title">
+                                    Edit Product </h3>
+                                <div class="mt-6">
+
+                                    {{!-- edit nlang mga values --}}
+                                    <input type="hidden" name="id" value="{{this.p_id}}">
+                                    <input type="hidden" name="init_pic" value="{{this.productpic}}">
+
+                                    <div>
+                                        <label for="name" class="block text-sm font-medium text-gray-600 mt">Product Name:
+                                        </label>
+                                        <input type="text" id="name" name="name" value="{{this.name}}" class="mt-1 p-2 w-full border rounded" >
+                                    </div>
+
+                                    <div>
+                                        <label for="name" class="block text-sm font-medium text-gray-600 mt-5">Price:
+                                        </label>
+                                        <input type="text" id="price" name="price" value="{{this.price}}" class="mt-1 p-2 w-full border rounded">
+                                    </div>
+
+                                    <div>
+                                        <label for="name" class="block text-sm font-medium text-gray-600 mt-5">Current
+                                            Stock:
+                                        </label>
+                                        <input type="text" id="stock" name="stock" value="{{this.quantity}}" class="mt-1 p-2 w-full border rounded">
+                                    </div>
+
+                                    <div class="attachmedia">
+                                        <img class="max-h-32" src="{{this.productpic}}">
+                                        <label for="formFile" class="block text-sm font-medium text-gray-600 mt-5">Product
+                                            Picture</label>
+                                        <input class="form-control" type="file" name="productPic" id="formFile"
+                                            accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div  class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="submit" 
+                            class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">Done</button>
+                        <button type="button" onclick="toggleEditWindow('{{this.p_id}}')"
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
-    
+    {{/each}}
+</div>
