@@ -5,6 +5,7 @@ import { Order } from '../model/orderSchema.js';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
+import mongoose from 'mongoose';
 
 const SALT_WORK_FACTOR = 10;
 
@@ -188,7 +189,7 @@ const controller = {
     getAdminInventory: async function (req, res) {
         try {
             var product_list = [];
-            let resp = await Product.find({});;
+            let resp = await Product.find({});
 
             console.log(resp.length)
 
@@ -216,8 +217,6 @@ const controller = {
             res.sendStatus(400);
         }
     },
-
-    
 	
 	//searchInventory
 	//specialized search and sort for Admin
@@ -238,7 +237,53 @@ const controller = {
 	
 	    res.render("adminInventory", {layout: 'adminMain',product_list: result, buffer: query});
     },
+	
+	//searchOrders
+	//specialized search and sort for admin
+	searchOrders: async function (req, res) {
+        console.log("Searching for order!");
 
+        var query = req.query.product_query;
+
+        console.log("Searching for " + query);
+	    var resp = undefined;
+		var order_list = [];
+        // sortOrders function
+		const sortValue = req.query.sortBy;
+        console.log(sortValue);
+		try{
+			const id = new mongoose.Types.ObjectId(query);
+			console.log(id);
+			if (sortValue == "date_asc"){
+				resp = await Order.find({ _id: id }, { __v: 0 }).sort({date: 'asc'}).lean();
+			}
+			else if (sortValue == "date_desc"){
+				resp = await Order.find({ _id: id }, { __v: 0 }).sort({date: 'desc'}).lean();
+			}
+			else {
+				resp = await Order.find({ _id: id }, { __v: 0 }).lean();
+				sortOrders(resp, sortValue);
+			}
+			for(let i = 0; i < resp.length; i++) {
+                order_list.push({
+                    orderID: resp[i]._id,
+                    firstName: resp[i].firstName,
+                    lastName: resp[i].lastName,
+                    email: resp[i].email,
+                    date: resp[i].date.toISOString().slice(0,10),
+					status: resp[i].status,
+                    amount: resp[i].amount,
+                    paymongoID: resp[i].paymongoID,
+                    isCancelled: resp[i].isCancelled.toString()
+                });
+            }
+		}
+		catch{
+			console.log("Failed!");
+		}
+		res.render("adminOrders", {layout: 'adminMain',order_list: order_list, buffer: query});
+    },
+	
     register: async function (req, res) {
 
         const errors = validationResult(req);
@@ -339,7 +384,6 @@ const controller = {
         console.log(req.body);
         console.log("Attempting to add: " + req.body.id);
 
-        //const query = "ObjectId('" + req.body.p_id + "')";
         const query = req.body.id;
         const temp = await Product.find({ _id: query }, { __v: 0 });
         const product_result = temp[0];
@@ -652,32 +696,44 @@ const controller = {
             //getProducts function
             var order_list = [];
             let resp;
+			const sortValue = req.query.sortBy;
+			//console.log("sort val = " + sortValue);
+			var dateVal = undefined;
+			if (sortValue == "date_asc"){
+				dateVal = "asc";
+			}
+			else if (sortValue == "date_desc"){
+				dateVal = "desc";
+			}
+			else {
+				dateVal = "asc"; //defaults to showing dates from newest to oldest
+			}
             switch(category){
                 case 'allorders':
-                    resp = await Order.find({isCancelled: false});
+                    resp = await Order.find({isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'awaitingpayment':
-                    resp = await Order.find({status: 'awaiting payment', isCancelled: false});
+                    resp = await Order.find({status: 'awaiting payment', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'paymentsuccess':
-                    resp = await Order.find({status: 'succeeded', isCancelled: false});
+                    resp = await Order.find({status: 'succeeded', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'orderpacked':
-                    resp = await Order.find({status: 'order packed', isCancelled: false});
+                    resp = await Order.find({status: 'order packed', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'intransit':
-                    resp = await Order.find({status: 'in transit', isCancelled: false});
+                    resp = await Order.find({status: 'in transit', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'delivered':
-                    resp = await Order.find({status: 'delivered', isCancelled: false});
+                    resp = await Order.find({status: 'delivered', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'cancelled':
-                    resp = await Order.find({isCancelled: true});
+                    resp = await Order.find({isCancelled: true}).sort({date: dateVal});
                     break;
             }
 
             //console.log(resp.length)
-    
+
             for(let i = 0; i < resp.length; i++) {
                 order_list.push({
                     orderID: resp[i]._id,
@@ -692,9 +748,10 @@ const controller = {
                 });
             }
             
-            // sortProducts function
-            const sortValue = req.query.sortBy;
-            sortProducts(order_list, sortValue);
+            // sortOrders function
+			if (sortValue == "price_asc" || sortValue == "price_desc"){ 
+				sortOrders(order_list, sortValue);
+			}
 
             
             res.render("adminOrders", {
@@ -869,8 +926,30 @@ async function sortProducts(product_list, sortValue){
             case 'name_desc':
                 product_list.sort((a, b) => b.name.localeCompare(a.name));
                 break;
+			case 'stock_asc':
+				product_list.sort((a, b) => a.quantity - b.quantity);
+				break;
+			case 'stock_desc':
+				product_list.sort((a, b) => b.quantity - a.quantity);
+				break;			
         }
     }
 }
+
+async function sortOrders(order_list, sortValue){
+    if (sortValue !== undefined) {
+        switch (sortValue) {
+            case 'def':
+                break;
+            case 'price_asc':
+                order_list.sort((a, b) => b.amount - a.amount);
+                break;
+            case 'price_desc':
+                order_list.sort((a, b) => a.amount - b.amount);
+                break;		
+        }
+    }
+}
+
 
 export default controller;
