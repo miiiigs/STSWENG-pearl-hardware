@@ -185,6 +185,40 @@ const controller = {
         }
     },
 
+    editProduct: async function (req, res) {
+        try {
+
+            const pic = req.file;
+            const product = req.body;
+            console.log(pic);
+            console.log(product); 
+            let path;
+
+            if (pic === undefined) {
+                path = product.init_pic;
+            }
+            else {
+                path = '/./uploads/' + pic.originalname;
+            }
+
+            const updateStock = await Product.findByIdAndUpdate(
+                product.id,
+                { name: product.name,
+                    type: product.type,
+                    quantity: product.quantity,
+                    price: product.price,
+                    productpic: path
+                },
+                
+            );
+
+            res.redirect('/adminInventory');
+
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
     getAdminInventory: async function (req, res) {
         try {
             var product_list = [];

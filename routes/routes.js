@@ -66,6 +66,7 @@ router.post('/cancelChange', controller.cancelChange);
 router.post('/statusChange', controller.statusChange);
 
 router.post('/addProduct', upload.single('productPic'), controller.addProduct);
+router.post('/editProduct', upload.single('productPic'), controller.editProduct);
 router.post('/showProduct', controller.showProduct);
 router.post('/hideProduct', controller.hideProduct);
 router.post('/deleteProduct', controller.deleteProduct);
