@@ -622,6 +622,10 @@ video {
   top: 4px;
 }
 
+.bottom-0{
+  bottom: 0px;
+}
+
 .z-10{
   z-index: 10;
 }
@@ -632,6 +636,26 @@ video {
 
 .col-span-4{
   grid-column: span 4 / span 4;
+}
+
+.col-span-5{
+  grid-column: span 5 / span 5;
+}
+
+.col-span-6{
+  grid-column: span 6 / span 6;
+}
+
+.col-span-1{
+  grid-column: span 1 / span 1;
+}
+
+.col-end-4{
+  grid-column-end: 4;
+}
+
+.col-end-5{
+  grid-column-end: 5;
 }
 
 .m-0{
@@ -705,6 +729,12 @@ video {
 .my-auto{
   margin-top: auto;
   margin-bottom: auto;
+}
+
+
+.mx-1{
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
 }
 
 .mb-1{
@@ -875,8 +905,10 @@ video {
   display: flex;
 }
 
-.inline-flex{
-  display: inline-flex;
+
+.table-footer-group{
+  display: table-footer-group;
+
 }
 
 .grid{
@@ -995,12 +1027,9 @@ video {
   height: 100vh;
 }
 
-.max-h-32{
-  max-height: 8rem;
-}
+.min-h-screen{
+  min-height: 100vh;
 
-.min-h-full{
-  min-height: 100%;
 }
 
 .w-11{
@@ -1095,14 +1124,6 @@ video {
   width: 160px;
 }
 
-.w-\[170px\]{
-  width: 170px;
-}
-
-.w-\[185px\]{
-  width: 185px;
-}
-
 .w-\[190px\]{
   width: 190px;
 }
@@ -1113,10 +1134,6 @@ video {
 
 .w-\[200px\]{
   width: 200px;
-}
-
-.w-\[220px\]{
-  width: 220px;
 }
 
 .w-\[227px\]{
@@ -1171,8 +1188,9 @@ video {
   width: 100%;
 }
 
-.w-screen{
-  width: 100vw;
+
+.w-\[30\%\]{
+  width: 30%;
 }
 
 .max-w-full{
@@ -1220,8 +1238,16 @@ video {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
-.grid-cols-6{
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+.grid-cols-8{
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
+.grid-cols-10{
+  grid-template-columns: repeat(10, minmax(0, 1fr));
+}
+
+.grid-cols-9{
+  grid-template-columns: repeat(9, minmax(0, 1fr));
 }
 
 .grid-rows-1{
@@ -1294,6 +1320,10 @@ video {
 
 .gap-8{
   gap: 2rem;
+}
+
+.gap-1{
+  gap: 0.25rem;
 }
 
 .gap-x-0{
@@ -1443,6 +1473,11 @@ video {
 .border-white{
   --tw-border-opacity: 1;
   border-color: rgb(255 255 255 / var(--tw-border-opacity));
+}
+
+.border-secondary{
+  --tw-border-opacity: 1;
+  border-color: rgb(0 26 105 / var(--tw-border-opacity));
 }
 
 .border-b-maincolor{
@@ -1653,12 +1688,8 @@ video {
   padding-top: 0.5rem;
 }
 
-.pt-5{
-  padding-top: 1.25rem;
-}
-
-.text-left{
-  text-align: left;
+.pl-1{
+  padding-left: 0.25rem;
 }
 
 .text-center{
@@ -1864,6 +1895,11 @@ video {
 .hover\:border-white:hover{
   --tw-border-opacity: 1;
   border-color: rgb(255 255 255 / var(--tw-border-opacity));
+}
+
+.hover\:border-maincolor:hover{
+  --tw-border-opacity: 1;
+  border-color: rgb(9 128 211 / var(--tw-border-opacity));
 }
 
 .hover\:bg-maincolor:hover{
