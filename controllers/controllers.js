@@ -4,8 +4,12 @@ import { User } from '../model/userSchema.js';
 import { Order } from '../model/orderSchema.js';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
+import { ObjectId } from 'mongodb';
+import mongoose from 'mongoose';
 
 const SALT_WORK_FACTOR = 10;
+
+
 
 const controller = {
 
@@ -14,45 +18,11 @@ const controller = {
         try {
             console.log("USER ID" + req.session.userID);
             //getProducts function
-            var product_list = [];
-            const resp = await Product.find({});
-            for (let i = 0; i < resp.length; i++) {
-                product_list.push({
-                    name: resp[i].name,
-                    type: resp[i].type,
-                    price: resp[i].price,
-                    quantity: resp[i].quantity,
-                    productpic: resp[i].productpic,
-                    p_id: resp[i]._id
-                });
-            }
+            var product_list = await getProducts();
 
             // sortProducts function
             const sortValue = req.query.sortBy;
-            console.log(sortValue);
-            if (sortValue !== undefined) {
-                switch (sortValue) {
-                    case 'def':
-
-                        break;
-                    case 'price_asc':
-                        product_list.sort((a, b) => a.price - b.price);
-                        console.log(product_list);
-                        break;
-                    case 'price_desc':
-                        product_list.sort((a, b) => b.price - a.price);
-                        console.log(product_list);
-                        break;
-                    case 'name_asc':
-                        product_list.sort((a, b) => a.name.localeCompare(b.name));
-                        console.log(product_list);
-                        break;
-                    case 'name_desc':
-                        product_list.sort((a, b) => b.name.localeCompare(a.name));
-                        console.log(product_list);
-                        break;
-                }
-            }
+            sortProducts(product_list, sortValue);
 
             res.render("index", {
                 product_list: product_list,
@@ -86,20 +56,19 @@ const controller = {
 
     getAdmin: async function (req, res) {
         try {
-            if(req.session.userID){
+            if (req.session.userID) {
                 const user = await User.findById(req.session.userID)
-                //console.log(user);
-                if(user.isAuthorized == true){
+                if (user.isAuthorized == true) {
                     console.log("AUTHORIZED")
-                    res.render("admin", {
-                        layout: 'admin',
+                    res.render("adminHome", {
+                        layout: 'adminHome',
                         script: './js/admin.js',
                     });
-                }else{
+                } else {
                     console.log("UNAUTHORIZED");
                     res.sendStatus(400);
                 }
-            }else{
+            } else {
                 res.sendStatus(400);
             }
         } catch {
@@ -116,65 +85,11 @@ const controller = {
         try {
 
             //getProducts function
-            var product_list = [];
-            let resp;
-            switch (category) {
-                case 'allproducts':
-                    resp = await Product.find({});
-                    break;
-                case 'welding':
-                    resp = await Product.find({ type: 'Welding' });
-                    break;
-                case 'safety':
-                    resp = await Product.find({ type: 'Safety' });
-                    break;
-                case 'cleaning':
-                    resp = await Product.find({ type: 'Cleaning' });
-                    break;
-                case 'industrial':
-                    resp = await Product.find({ type: 'Industrial' });
-                    break;
-                case 'brassfittings':
-                    resp = await Product.find({ type: 'Brass Fittings' });
-                    break;
-            }
-
-            console.log(resp.length)
-
-            for (let i = 0; i < resp.length; i++) {
-                product_list.push({
-                    name: resp[i].name,
-                    type: resp[i].type,
-                    price: resp[i].price,
-                    quantity: resp[i].quantity,
-                    productpic: resp[i].productpic,
-                    p_id: resp[i]._id
-                });
-            }
+            var product_list = await getProducts(category);
 
             // sortProducts function
             const sortValue = req.query.sortBy;
-            console.log(sortValue);
-            if (sortValue !== undefined) {
-                switch (sortValue) {
-                    case 'def':
-
-                        break;
-                    case 'price_asc':
-                        product_list.sort((a, b) => a.price - b.price);
-                        break;
-                    case 'price_desc':
-                        product_list.sort((a, b) => b.price - a.price);
-                        break;
-                    case 'name_asc':
-                        product_list.sort((a, b) => a.name.localeCompare(b.name));
-                        break;
-                    case 'name_desc':
-                        product_list.sort((a, b) => b.name.localeCompare(a.name));
-                        break;
-                }
-            }
-
+            sortProducts(product_list, sortValue);
 
             res.render("all_products", {
                 product_list: product_list,
@@ -207,10 +122,99 @@ const controller = {
         }
     },
 
-    getUserProfile: async function(req, res) {
-        try{
+    getUserProfile: async function (req, res) {
+        try {
+            const user = await User.findById(req.session.userID);
+            let userData = {
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                profilepic: user.profilepic,
+                cart: user.cart,
+                line1: user.line1,
+                line2: user.line2,
+                city: user.city,
+                state: user.state,
+                postalCode: user.postalCode,
+                country: user.country,
+            }
+            console.log(userData);
             res.render("userprofile", {
+                user: userData,
+
             });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
+    getUserPurchases: async function (req, res) {
+        try {
+            res.render("userpurchases", {
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
+    addProduct: async function (req, res) {
+        try {
+
+            const pic = req.file;
+            const product = req.body;
+            let path;
+
+            if (pic === undefined) {
+                path = 'temp.png';
+            }
+            else {
+                path = pic.originalname;
+            }
+
+            new Product({
+                name: product.name,
+                type: product.type,
+                quantity: product.quantity,
+                price: product.price,
+                productpic: '/./uploads/' + path
+            }).save();
+
+            res.redirect('/adminInventory');
+
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
+    editProduct: async function (req, res) {
+        try {
+
+            const pic = req.file;
+            const product = req.body;
+            console.log(pic);
+            console.log(product); 
+            let path;
+
+            if (pic === undefined) {
+                path = product.init_pic;
+            }
+            else {
+                path = '/./uploads/' + pic.originalname;
+            }
+
+            const updateStock = await Product.findByIdAndUpdate(
+                product.id,
+                { name: product.name,
+                    type: product.type,
+                    quantity: product.quantity,
+                    price: product.price,
+                    productpic: path
+                },
+                
+            );
+
+            res.redirect('/adminInventory');
+
         } catch {
             res.sendStatus(400);
         }
@@ -218,15 +222,102 @@ const controller = {
 
     getAdminInventory: async function (req, res) {
         try {
+            var product_list = [];
+            let resp = await Product.find({});
+
+            console.log(resp.length)
+
+            for (let i = 0; i < resp.length; i++) {
+                product_list.push({
+                    name: resp[i].name,
+                    type: resp[i].type,
+                    price: resp[i].price,
+                    quantity: resp[i].quantity,
+                    productpic: resp[i].productpic,
+                    p_id: resp[i]._id,
+                });
+            }
+            // sortProducts function
+            const sortValue = req.query.sortBy;
+            console.log(sortValue);
+            sortProducts(product_list, sortValue);
 
             res.render("adminInventory", {
-                layout: 'adminMain'
+                layout: 'adminInven',
+                product_list: product_list
             });
+
         } catch {
             res.sendStatus(400);
         }
     },
+	
+	//searchInventory
+	//specialized search and sort for Admin
+    searchInventory: async function (req, res) {
+        console.log("Searching in inventory!");
 
+        var query = req.query.product_query;
+
+
+        console.log("Searching for " + query);
+
+        const result = await Product.find({ name: new RegExp('.*' + query + '.*', 'i') }, { __v: 0 }).lean();
+
+        // sortProducts function
+        const sortValue = req.query.sortBy;
+        console.log(sortValue);
+        sortProducts(result, sortValue);
+
+        res.render("adminInventory", { layout: 'adminMain', product_list: result, buffer: query });
+    },
+	
+	//searchOrders
+	//specialized search and sort for admin
+	searchOrders: async function (req, res) {
+        console.log("Searching for order!");
+
+        var query = req.query.product_query;
+
+        console.log("Searching for " + query);
+	    var resp = undefined;
+		var order_list = [];
+        // sortOrders function
+		const sortValue = req.query.sortBy;
+        console.log(sortValue);
+		try{
+			const id = new mongoose.Types.ObjectId(query);
+			console.log(id);
+			if (sortValue == "date_asc"){
+				resp = await Order.find({ _id: id }, { __v: 0 }).sort({date: 'asc'}).lean();
+			}
+			else if (sortValue == "date_desc"){
+				resp = await Order.find({ _id: id }, { __v: 0 }).sort({date: 'desc'}).lean();
+			}
+			else {
+				resp = await Order.find({ _id: id }, { __v: 0 }).lean();
+				sortOrders(resp, sortValue);
+			}
+			for(let i = 0; i < resp.length; i++) {
+                order_list.push({
+                    orderID: resp[i]._id,
+                    firstName: resp[i].firstName,
+                    lastName: resp[i].lastName,
+                    email: resp[i].email,
+                    date: resp[i].date.toISOString().slice(0,10),
+					status: resp[i].status,
+                    amount: resp[i].amount,
+                    paymongoID: resp[i].paymongoID,
+                    isCancelled: resp[i].isCancelled.toString()
+                });
+            }
+		}
+		catch{
+			console.log("Failed!");
+		}
+		res.render("adminOrders", {layout: 'adminMain',order_list: order_list, buffer: query});
+    },
+	
     register: async function (req, res) {
 
         const errors = validationResult(req);
@@ -273,18 +364,16 @@ const controller = {
     },
 
     login: async function (req, res) {
-        //console.log("hello");
         console.log(req.body);
 
         const existingUser = await User.findOne({ email: req.body.email });
 
         if (existingUser && await bcrypt.compare(req.body.password, existingUser.password) && existingUser.isAuthorized == false) {
-            //console.log("login successful");
 
             req.session.userID = existingUser._id;
             req.session.fName = existingUser.firstName;
             return res.sendStatus(200);
-        }else if(existingUser && await bcrypt.compare(req.body.password, existingUser.password) && existingUser.isAuthorized == true){
+        } else if (existingUser && await bcrypt.compare(req.body.password, existingUser.password) && existingUser.isAuthorized == true) {
             req.session.userID = existingUser._id;
             req.session.fName = existingUser.firstName;
             return res.sendStatus(201);
@@ -310,17 +399,6 @@ const controller = {
             console.log("Failed to get current user");
         }
     },
-    //searchProducts
-    searchProducts: async function (req, res) {
-        console.log("Searching for a product!");
-
-        var query = req.query.product_query;
-
-        console.log("Searching for " + query);
-
-        const result = await Product.find({ name: new RegExp('.*' + query + '.*', 'i') }, { __v: 0 }).lean();
-        res.render("search_results", { product_list: result });
-    },
 
     //getCart
     //gets the cart of the current user.
@@ -331,6 +409,63 @@ const controller = {
         //console.log(result[0].cart);
         //console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
         res.render("add_to_cart", { cart_result: result[0].cart });
+    },
+
+    //addToCart
+    //will add to cart using the product ID (mongodb ID)
+    addToCart: async function (req, res) {
+        console.log("Adding to cart");
+        console.log(req.body);
+        console.log("Attempting to add: " + req.body.id);
+
+        const query = req.body.id;
+        const temp = await Product.find({ _id: query }, { __v: 0 });
+        const product_result = temp[0];
+        const quant = req.body.quant;
+        const id = req.session.userID + ":" + query;
+        await User.updateOne(
+            { _id: req.session.userID },
+            {
+                $push: {
+                    cart: { product: product_result, quantity: quant, uniqueID: id }
+                }
+            }
+        );
+        console.log(product_result);
+        //console.log(user_cart[0].cart);
+
+        //user_cart[0].cart.push(product_result);
+        console.log("DId it work?");
+        console.log("Should have added " + product_result.name + " to " + req.session.fName + "'s cart");
+        res.redirect("/cart?");
+    },
+
+    //getCart
+    //gets the cart of the current user and renders the cart page.
+    getCart: async function (req, res) {
+
+        console.log("getting " + req.session.userID + "(" + req.session.fName + ")'s cart");
+
+        if (req.session.userID != null) {
+            const result = await User.find({ _id: req.session.userID }, { cart: 1 });
+            //console.log(result[0].cart);
+            //console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
+            res.render("add_to_cart", { cart_result: result[0].cart, script: './js/checkout.js' });
+        } else {
+            try {
+                res.render("login", {
+                    script: './js/login.js'
+                });
+            } catch {
+                res.sendStatus(400);
+            }
+        }
+    },
+
+    //sends the items in a user's cart 
+    getCartItems: async function (req, res) {
+        const result = await User.find({ _id: req.session.userID }, { cart: 1 });
+        res.status(200).send(result[0].cart)
     },
 
     //addToCart
@@ -362,75 +497,17 @@ const controller = {
         console.log("Should have added " + product_result.name + " to " + req.session.fName + "'s cart");
         res.redirect("/cart?");
     },
-	
-	//getCart
-	//gets the cart of the current user and renders the cart page.
-	getCart: async function(req,res){
 
-		console.log("getting " + req.session.userID  + "(" + req.session.fName + ")'s cart");
-
-        if(req.session.userID != null){
-            const result = await User.find({_id: req.session.userID},{cart: 1});
-		    //console.log(result[0].cart);
-		    //console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
-		    res.render("add_to_cart",{cart_result: result[0].cart, script: './js/checkout.js'});
-        }else{
-            try{           
-                res.render("login", {
-                    script: './js/login.js'
-                });
-            } catch{
-                res.sendStatus(400);   
-            }
-        }
-	},
-    
-    //sends the items in a user's cart 
-    getCartItems: async function(req,res){
-		const result = await User.find({_id: req.session.userID},{cart: 1});
-        res.status(200).send(result[0].cart)
-	},
-	
-	//addToCart
-	//will add to cart using the product ID (mongodb ID)
-	addToCart: async function(req, res){
-		console.log("Adding to cart");
-		console.log(req.body);
-		console.log("Attempting to add: " + req.body.id);
-		
-		//const query = "ObjectId('" + req.body.p_id + "')";
-		const query = req.body.id;
-		const temp= await Product.find({_id: query},{__v: 0});
-		const product_result = temp[0];
-		const quant = req.body.quant;
-		const id = req.session.userID + ":" + query;
-		await User.updateOne(
-			{_id: req.session.userID},
-			{
-				$push: {
-					cart: {product: product_result, quantity: quant, uniqueID: id}
-				}
-			}
-		);
-		console.log(product_result);
-		//console.log(user_cart[0].cart);
-		
-		//user_cart[0].cart.push(product_result);
-		console.log("DId it work?");
-		console.log("Should have added " + product_result.name + " to " + req.session.fName + "'s cart");
-		res.redirect("/cart?");
-	},
-	
-	//getProduct
-	//using the product ID in the query, it will send the data to products.hbs to render
-	//the webpage for that specific product
-	getProduct: async function (req,res){
-		console.log("getting product!");
-		var query = req.query.id;
-		try{
-			const product_result = await Product.find({_id: query}, {__v: 0}).lean();
-			//console.log(product_result);
-			return res.render("productDesc",{
+    //getProduct
+    //using the product ID in the query, it will send the data to products.hbs to render
+    //the webpage for that specific product
+    getProduct: async function (req, res) {
+        console.log("getting product!");
+        var query = req.query.id;
+        try {
+            const product_result = await Product.find({ _id: query }, { __v: 0 }).lean();
+            //console.log(product_result);
+            return res.render("productDesc", {
                 product: product_result[0],
                 script: "./js/add_to_cart.js",
             });
@@ -468,68 +545,6 @@ const controller = {
         res.redirect("/cart");
     },
 
-    sortProducts: async function (req, res) {
-        console.log("Searching for a product!");
-
-        var query = req.body.sortValue;
-        var resp = await Product.find({});
-        const product_list = [];
-        for (let i = 0; i < resp.length; i++) {
-            product_list.push({
-                name: resp[i].name,
-                type: resp[i].type,
-                price: resp[i].price,
-                quantity: resp[i].quantity,
-                productpic: resp[i].productpic,
-                p_id: resp[i]._id
-            });
-        }
-        switch (query) {
-            case 'def':
-
-                break;
-            case 'price_asc':
-                product_list.sort((a, b) => a.price - b.price);
-                res.render("hehe", {
-                    product_list: product_list
-                });
-                break;
-            case 'price_desc':
-                product_list.sort((a, b) => a.price - b.price);
-                res.render("hehe", {
-                    script: './js/index.js',
-                    product_list: product_list
-                });
-                break;
-        }
-    },
-
-    /*
-    PLS DON'T DELETE
-    COMMENTED OUT FOR DEMONSTRATION PURPOSES
-    
-    getProducts: async function(req, res) {
-        try{
-            const product_list = [];
-            const resp = await Product.find({});
-            for(let i = 0; i < resp.products.length; i++) {
-                product_list.push({
-                    name: resp[i].name,
-                    type: resp[i].type,
-                    quantity: resp[i].quantity,
-                    productpic: resp[i].productpic,
-                });
-            }    
-
-            res.render('products', {
-                product_list: product_list
-            })
-        } catch{
-            res.sendStatus(400); 
-        }
-    },
-    */
-
     checkout: async function (req, res) {
         try {
             res.render("checkout", {
@@ -551,7 +566,7 @@ const controller = {
         let total = 0; //the total amount the user has to pay
 
         class itemDetails {
-            constructor(name, price, amount, image, ID){
+            constructor(name, price, amount, image, ID) {
                 this.name = name;
                 this.price = price;
                 this.amount = amount;
@@ -580,81 +595,82 @@ const controller = {
         }
 
         try {
-            if(parseFloat(total.toFixed(2)) > 20.00){
-            const order = new Order({
-                userID: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                items: itemsDetails,
-                date: Date.now(),
-                status: 'awaiting payment',
-                amount: parseFloat(total.toFixed(2)),
-                paymongoID: -1, //paymongoID of -1 means there is no record of a transaction in paymongo in other words it is to be ignored as the user did not even go to the checkout page of paymongo
-                line1: user.line1,
-                line2: user.line2,
-                city: user.city,
-                state: user.state,
-                postalCode: user.postalCode,
-                country: user.country,
-                isCancelled: false
-            })
-
-            const result = await order.save(); //save order to database
-            //console.log(result);
-
-            const options = {
-                method: 'POST',
-                headers: { accept: 'application/json', 'Content-Type': 'application/json', 'Authorization': `Basic ${btoa(paymongoAPIkey)}` },
-                body: JSON.stringify({
-                    data: {
-                      attributes: {
-                        billing: {
-                            address: {
-                              line1: user.line1,
-                              line2: user.line2,
-                              city: user.city,
-                              state: user.state,
-                              postal_code: user.postalCode,
-                              country: user.country
-                            }, name: user.firstName + ' ' + user.lastName, email: user.email},
-                        send_email_receipt: false,
-                        show_description: false,
-                        show_line_items: true,
-                        cancel_url: 'http:/localhost:3000/',
-                        description: 'description',
-                        line_items: itemsCheckout,
-                        payment_method_types: ['card', 'gcash'],
-                        reference_number: result._id, //store the order _id in database as the reference number
-                        success_url: 'http://localhost:3000/checkoutSuccess/' + result._id
-                      }
-                    }
+            if (parseFloat(total.toFixed(2)) > 20.00) {
+                const order = new Order({
+                    userID: user._id,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    email: user.email,
+                    items: itemsDetails,
+                    date: Date.now(),
+                    status: 'awaiting payment',
+                    amount: parseFloat(total.toFixed(2)),
+                    paymongoID: -1, //paymongoID of -1 means there is no record of a transaction in paymongo in other words it is to be ignored as the user did not even go to the checkout page of paymongo
+                    line1: user.line1,
+                    line2: user.line2,
+                    city: user.city,
+                    state: user.state,
+                    postalCode: user.postalCode,
+                    country: user.country,
+                    isCancelled: false
                 })
-            };
 
-            fetch('https://api.paymongo.com/v1/checkout_sessions', options) //this api call is to create a checkout session in paymongo
-                .then(response => response.json())
-                .then(async response => {
-                console.log(response)
-                for(let x = 0; x < items.length; x++){ //this iterates through the items included in the order and adjusts the current stock of the products by subtracting it to what the user ordered
-                    try{
-                        const updateStock = await Product.findByIdAndUpdate(
-                            itemsDetails[x].ID,
-                            { $inc: { quantity: - itemsDetails[x].amount } },
-                            { new: true }
-                          );
-                        //console.log(updateStock)
-                    }catch{
-                        res.sendStatus(500);
-                    }
-                }
-                const addPaymongoID = await Order.findByIdAndUpdate(response.data.attributes.reference_number, {paymongoID : response.data.id}); //after redirecting to paymongo the paymongoID is updated using the paymongo generated id
+                const result = await order.save(); //save order to database
+                //console.log(result);
 
-                    res.status(200);
-                    res.send(response.data.attributes.checkout_url.toString());
-                })
-                .catch(err => console.error(err));
-            }else{
+                const options = {
+                    method: 'POST',
+                    headers: { accept: 'application/json', 'Content-Type': 'application/json', 'Authorization': `Basic ${btoa(paymongoAPIkey)}` },
+                    body: JSON.stringify({
+                        data: {
+                            attributes: {
+                                billing: {
+                                    address: {
+                                        line1: user.line1,
+                                        line2: user.line2,
+                                        city: user.city,
+                                        state: user.state,
+                                        postal_code: user.postalCode,
+                                        country: user.country
+                                    }, name: user.firstName + ' ' + user.lastName, email: user.email
+                                },
+                                send_email_receipt: false,
+                                show_description: false,
+                                show_line_items: true,
+                                cancel_url: 'http:/localhost:3000/',
+                                description: 'description',
+                                line_items: itemsCheckout,
+                                payment_method_types: ['card', 'gcash'],
+                                reference_number: result._id, //store the order _id in database as the reference number
+                                success_url: 'http://localhost:3000/checkoutSuccess/' + result._id
+                            }
+                        }
+                    })
+                };
+
+                fetch('https://api.paymongo.com/v1/checkout_sessions', options) //this api call is to create a checkout session in paymongo
+                    .then(response => response.json())
+                    .then(async response => {
+                        console.log(response)
+                        for (let x = 0; x < items.length; x++) { //this iterates through the items included in the order and adjusts the current stock of the products by subtracting it to what the user ordered
+                            try {
+                                const updateStock = await Product.findByIdAndUpdate(
+                                    itemsDetails[x].ID,
+                                    { $inc: { quantity: - itemsDetails[x].amount } },
+                                    { new: true }
+                                );
+                                //console.log(updateStock)
+                            } catch {
+                                res.sendStatus(500);
+                            }
+                        }
+                        const addPaymongoID = await Order.findByIdAndUpdate(response.data.attributes.reference_number, { paymongoID: response.data.id }); //after redirecting to paymongo the paymongoID is updated using the paymongo generated id
+
+                        res.status(200);
+                        res.send(response.data.attributes.checkout_url.toString());
+                    })
+                    .catch(err => console.error(err));
+            } else {
                 console.log("INVALID AMOUNT")
                 res.sendStatus(401);
             }
@@ -674,26 +690,28 @@ const controller = {
         //console.log("Order ID: ", ID);
 
         const order = await Order.findById(ID);
-        fetch('https://api.paymongo.com/v1/checkout_sessions/' + order.paymongoID , options) //this api call is to retrieved the checkout information in paymongo
-        .then(response => response.json())
-        .then(async response => { //console.log(response)
-            try{
-                const result = await Order.findByIdAndUpdate(ID, { status: response.data.attributes.payment_intent.attributes.status,
-                                                                line1: response.data.attributes.billing.address.line1,
-                                                                line2: response.data.attributes.billing.address.line2,
-                                                                postalCode: response.data.attributes.billing.address.postal_code,
-                                                                city: response.data.attributes.billing.address.city,
-                                                                state: response.data.attributes.billing.address.state,
-                                                                country: response.data.attributes.billing.address.country,
-                                                                email: response.data.attributes.billing.email}); //update the status of the order in database using the status in paymongo
-                const user = await User.findByIdAndUpdate(req.session.userID, {cart: []}) //clears the cart of the user after successfully checking out
-            }catch (err){
-                console.log("Fetching order failed!");
-                console.error(err);
-                res.sendStatus(500);
-            }
-        })
-        .catch(err => console.error(err));
+        fetch('https://api.paymongo.com/v1/checkout_sessions/' + order.paymongoID, options) //this api call is to retrieved the checkout information in paymongo
+            .then(response => response.json())
+            .then(async response => { //console.log(response)
+                try {
+                    const result = await Order.findByIdAndUpdate(ID, {
+                        status: response.data.attributes.payment_intent.attributes.status,
+                        line1: response.data.attributes.billing.address.line1,
+                        line2: response.data.attributes.billing.address.line2,
+                        postalCode: response.data.attributes.billing.address.postal_code,
+                        city: response.data.attributes.billing.address.city,
+                        state: response.data.attributes.billing.address.state,
+                        country: response.data.attributes.billing.address.country,
+                        email: response.data.attributes.billing.email
+                    }); //update the status of the order in database using the status in paymongo
+                    const user = await User.findByIdAndUpdate(req.session.userID, { cart: [] }) //clears the cart of the user after successfully checking out
+                } catch (err) {
+                    console.log("Fetching order failed!");
+                    console.error(err);
+                    res.sendStatus(500);
+                }
+            })
+            .catch(err => console.error(err));
 
         try {
             res.render("checkoutSuccess", {
@@ -705,130 +723,124 @@ const controller = {
         }
     },
 
-    getAdminCategory: async function(req, res) {
+    getAdminCategory: async function (req, res) {
 
         const category = req.params.category;
         //console.log(category);
 
-        try{
-            
+        try {
+
             //getProducts function
             var order_list = [];
             let resp;
+			const sortValue = req.query.sortBy;
+			//console.log("sort val = " + sortValue);
+			var dateVal = undefined;
+			if (sortValue == "date_asc"){
+				dateVal = "asc";
+			}
+			else if (sortValue == "date_desc"){
+				dateVal = "desc";
+			}
+			else {
+				dateVal = "asc"; //defaults to showing dates from newest to oldest
+			}
             switch(category){
                 case 'allorders':
-                    resp = await Order.find({isCancelled: false});
+                    resp = await Order.find({isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'awaitingpayment':
-                    resp = await Order.find({status: 'awaiting payment', isCancelled: false});
+                    resp = await Order.find({status: 'awaiting payment', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'paymentsuccess':
-                    resp = await Order.find({status: 'succeeded', isCancelled: false});
+                    resp = await Order.find({status: 'succeeded', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'orderpacked':
-                    resp = await Order.find({status: 'order packed', isCancelled: false});
+                    resp = await Order.find({status: 'order packed', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'intransit':
-                    resp = await Order.find({status: 'in transit', isCancelled: false});
+                    resp = await Order.find({status: 'in transit', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'delivered':
-                    resp = await Order.find({status: 'delivered', isCancelled: false});
+                    resp = await Order.find({status: 'delivered', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'cancelled':
-                    resp = await Order.find({isCancelled: true});
+                    resp = await Order.find({isCancelled: true}).sort({date: dateVal});
                     break;
             }
 
             //console.log(resp.length)
-    
+
             for(let i = 0; i < resp.length; i++) {
                 order_list.push({
                     orderID: resp[i]._id,
                     firstName: resp[i].firstName,
                     lastName: resp[i].lastName,
                     email: resp[i].email,
-                    date: resp[i].date.toISOString().slice(0,10),
-					status: resp[i].status,
+                    date: resp[i].date.toISOString().slice(0, 10),
+                    status: resp[i].status,
                     amount: resp[i].amount,
                     paymongoID: resp[i].paymongoID,
                     isCancelled: resp[i].isCancelled.toString()
                 });
             }
             
-            // sortProducts function
-            const sortValue = req.query.sortBy;
-            console.log(sortValue);
-            if(sortValue !== undefined){
-                switch(sortValue){
-                    case 'def':
-                        
-                        break;
-                    case 'price_asc':
-                        product_list.sort((a, b) => a.price-b.price);
-                        break;
-                    case 'price_desc':
-                        product_list.sort((a, b) => b.price-a.price);
-                        break;
-                    case 'name_asc':
-                        product_list.sort((a,b) => a.name.localeCompare(b.name));
-                        break;
-                    case 'name_desc':
-                        product_list.sort((a,b) => b.name.localeCompare(a.name));
-                        break;         
-                }   
-            }
+            // sortOrders function
+			if (sortValue == "price_asc" || sortValue == "price_desc"){ 
+				sortOrders(order_list, sortValue);
+			}
 
-            
-            res.render("admin", {
+
+            res.render("adminOrders", {
                 layout: 'adminMain',
                 order_list: order_list.reverse(),
                 category: category,
                 script: '/./js/adminOrders.js',
 
             });
-        } catch{
-            res.sendStatus(400);   
+        } catch {
+            res.sendStatus(400);
         }
-        
+
     },
 
-    cancelChange: async function(req, res){
+    cancelChange: async function (req, res) {
 
-        const {id} = req.body;
+        const { id } = req.body;
         //console.log(id)
-        
-        try{
-            const update = await Order.findByIdAndUpdate(id, {isCancelled : true});
 
-            for(let x = 0; x < update.items.length; x++){ //this iterates through the items included in the order and adjusts the current stock of the products by subtracting it to what the user ordered
-                try{
+        try {
+            const update = await Order.findByIdAndUpdate(id, { isCancelled: true });
+
+            for (let x = 0; x < update.items.length; x++) { //this iterates through the items included in the order and adjusts the current stock of the products by subtracting it to what the user ordered
+                try {
                     const updateStock = await Product.findByIdAndUpdate(
                         update.items[x].ID,
                         { $inc: { quantity: + update.items[x].amount } },
                         { new: true }
-                      );
+                    );
                     //console.log(updateStock)
-                }catch{
+                } catch {
                     res.sendStatus(500);
                 }
             }
             res.sendStatus(200);
-            
-        }catch{
+
+        } catch {
             res.sendStatus(400);
         }
     },
 
-    statusChange: async function(req, res){
+    statusChange: async function (req, res) {
 
-        const {orderID, status} = req.body;
+        const { orderID, status } = req.body;
         //console.log(orderID)
         //console.log(status)
-        
-        try{
-            const update = await Order.findByIdAndUpdate(orderID, {status : status});
+
+        try {
+            const update = await Order.findByIdAndUpdate(orderID, { status: status });
             res.sendStatus(200);
-        }catch{
+        } catch {
             res.sendStatus(400);
         }
     },
@@ -866,8 +878,115 @@ const controller = {
         }
     },
 
+    showProduct: async function (req, res) {
+        const id = req.body.id;
+        const product = await Product.findByIdAndUpdate(id, { isShown: true });
+    },
+
+    hideProduct: async function (req, res) {
+        const id = req.body.id;
+        const product = await Product.findByIdAndUpdate(id, { isShown: false });
+    },
+
+    deleteProduct: async function (req, res) {
+
+        const id = req.body.id;
+        const result = await Product.deleteOne({ _id: id });
+
+        if (result.deletedCount) {
+            res.sendStatus(200);
+        }
+        else {
+            res.sendStatus(201);
+        }
+
+    },
+
 
 
 }
+
+async function getProducts(category) {
+    var product_list = [];
+    let resp;
+    switch (category) {
+        case 'welding':
+            resp = await Product.find({ type: 'Welding' });
+            break;
+        case 'safety':
+            resp = await Product.find({ type: 'Safety' });
+            break;
+        case 'cleaning':
+            resp = await Product.find({ type: 'Cleaning' });
+            break;
+        case 'industrial':
+            resp = await Product.find({ type: 'Industrial' });
+            break;
+        case 'brassfittings':
+            resp = await Product.find({ type: 'Brass Fittings' });
+            break;
+        default:
+            resp = await Product.find({});
+            break;
+    }
+    for (let i = 0; i < resp.length; i++) {
+        if (resp[i].isShown) {
+            product_list.push({
+                name: resp[i].name,
+                type: resp[i].type,
+                price: resp[i].price,
+                quantity: resp[i].quantity,
+                productpic: resp[i].productpic,
+                p_id: resp[i]._id
+            });
+        }
+    }
+    return product_list;
+}
+
+async function sortProducts(product_list, sortValue) {
+    if (sortValue !== undefined) {
+        switch (sortValue) {
+            case 'def':
+
+                break;
+            case 'price_asc':
+                product_list.sort((a, b) => a.price - b.price);
+
+                break;
+            case 'price_desc':
+                product_list.sort((a, b) => b.price - a.price);
+                break;
+            case 'name_asc':
+                product_list.sort((a, b) => a.name.localeCompare(b.name));
+                break;
+            case 'name_desc':
+                product_list.sort((a, b) => b.name.localeCompare(a.name));
+                break;
+			case 'stock_asc':
+				product_list.sort((a, b) => a.quantity - b.quantity);
+				break;
+			case 'stock_desc':
+				product_list.sort((a, b) => b.quantity - a.quantity);
+				break;			
+        }
+    }
+}
+
+async function sortOrders(order_list, sortValue){
+    if (sortValue !== undefined) {
+        switch (sortValue) {
+            case 'def':
+                break;
+            case 'price_asc':
+                order_list.sort((a, b) => b.amount - a.amount);
+                break;
+            case 'price_desc':
+                order_list.sort((a, b) => a.amount - b.amount);
+                break;		
+        }
+    }
+}
+
 
 export default controller;

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<head>
+
+    {{> adminHead}}
+
+
+    <link rel="stylesheet" href="../css/output.css" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <script src="{{script}}" defer></script>
+</head>
+
+<body class="flex flex-col">
+
+    <div class="flex flex-col mb-16">
+        <div class="flex flex-row">
+            {{> title}}
+            <div class="ml-auto my-auto mr-16">
+                {{> search_inventory}}
+            </div>
+        </div>
+
+        <div class="bg-maincolor w-[98%] h-[45px] mt-2 flex flex-auto items-center rounded-[10px_10px_0px_0px] mx-auto">
+        </div>
+
+
+        {{{body}}}
+    </div>
+
+</body>
+
+</html>

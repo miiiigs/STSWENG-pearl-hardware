@@ -26,13 +26,18 @@ const productSchema = new Schema({
 
     productpic: {
         type: [String],
-        default:[]   
+        default:[],   
     },
 
     variations: {
         type: Schema.Types.ObjectId,
         ref: 'Variation'
     },
+
+    isShown: {
+        type: Boolean,
+        default: true,
+    }
 
 });
 
