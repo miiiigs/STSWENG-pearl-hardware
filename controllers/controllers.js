@@ -269,7 +269,7 @@ const controller = {
         console.log(sortValue);
         sortProducts(result, sortValue);
 
-        res.render("adminInventory", { layout: 'adminMain', product_list: result, buffer: query });
+        res.render("adminInventory", { layout: 'adminInven', product_list: result, buffer: query });
     },
 	
 	//searchOrders
@@ -316,6 +316,23 @@ const controller = {
 			console.log("Failed!");
 		}
 		res.render("adminOrders", {layout: 'adminMain',order_list: order_list, buffer: query});
+    },
+
+	//searchProducts
+	searchProducts: async function(req,res){
+		console.log("Searching for a product!");
+		
+		var query = req.query.product_query;
+		
+		console.log("Searching for " + query);
+		
+		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {__v:0}).lean();
+		// sortProducts function
+	const sortValue = req.query.sortBy;
+	console.log(sortValue);
+	sortProducts(result, sortValue);
+		
+		res.render("search_results", {product_list: result, script: '/./js/sort.js', buffer: query});
     },
 	
     register: async function (req, res) {
