@@ -35,7 +35,7 @@ router.get(`/adminCategory/:category`, controller.getAdminCategory);
 router.get('/userprofile', controller.getUserProfile);
 router.get('/userpurchases', controller.getUserPurchases);
 
-
+router.get('/searchProducts', controller.searchProducts);
 router.get('/checkout', controller.checkout);
 router.get('/checkoutSuccess/:orderID', controller.checkoutSuccess);
 router.get('/getUser', controller.getUser);
