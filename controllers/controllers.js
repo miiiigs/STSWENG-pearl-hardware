@@ -204,8 +204,6 @@ const controller = {
                     price: product.price,
                     productpic: 'http://localhost:3000/image/' + imageSave._id,
                 }).save();
-    
-                res.redirect('/adminInventory');
 
             }else {
                 new Product({
@@ -219,8 +217,9 @@ const controller = {
 
             res.redirect('/adminInventory');
     
-        }catch{
-            res.sendStatus(400);
+        }catch(err){
+            console.error(err);
+            
         }
     },
 
