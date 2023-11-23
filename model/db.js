@@ -14,6 +14,10 @@ const database = {
         }).catch(function(error) {
             console.log(error)
         });
+    },
+
+    getDb: function(){
+        return mongoose.connection.db;
     }
 }
 
