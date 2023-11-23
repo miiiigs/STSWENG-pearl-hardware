@@ -34,13 +34,21 @@ sortSelect.addEventListener('change', async (e) => {
     e.preventDefault();
     var sortValue = sortSelect.value;
     const currentURL = window.location.pathname;
-    console.log('.' + currentURL + '?sortBy=' + sortValue);
-    const response = await fetch('/.' + currentURL + '?sortBy=' + sortValue, {
-        method: 'GET',
-    });
-    
-
-    window.location.href = '/.' + currentURL + '?sortBy=' + sortValue;
-
+     var queryVal = document.querySelector('#product_query').value;
+	let actionURL;
+	if(currentURL == "/searchProducts"){
+		actionURL = '/.' + currentURL + '?product_query=' + queryVal + '&sortBy=' + sortValue;
+	}
+	else{
+		actionURL = '/.' + currentURL + '?sortBy=' + sortValue;
+		
+	}
+    console.log(actionURL);
+	
+	const response = await fetch(actionURL, {
+		method: 'GET',
+	});
+	
+    window.location.href = actionURL;
     
 });
