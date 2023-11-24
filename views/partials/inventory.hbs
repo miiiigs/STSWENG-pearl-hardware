@@ -51,7 +51,6 @@
 
     }
 
-
 </script>
 
 
@@ -65,7 +64,7 @@
 			<div class="grid grid-cols-6 gap-48">
             <div class="w-32 h-32 border border-white mt-6 mb-8 ml-6">
 
-				<img src={{this.productpic.[0]}} alt="" class=" max-h-32">
+				<img src={{this.productpic}} alt="" class=" max-h-32">
 
             </div>
             <div class="font-Inknut text-secondary text-sm mt-20 ml-4">
@@ -73,7 +72,7 @@
             <div class="font-Inknut text-secondary text-sm mt-20 ml-8 ">
                 PHP{{this.price}}</div>
             <div class="font-Inknut text-secondary text-sm mt-20 ml-12 ">
-                10</div>
+                {{this.quantity}}</div>
             <div class=" grid grid-cols-3 gap-20 ml-0 mt-16">
 
                 <div>
@@ -179,7 +178,9 @@
 </div>
 
     {{/each}}
+
 	{{else}}
 		<center><p> No Products found! </p> </center>
 	{{/if}}
 </div>
+
