@@ -1,3 +1,4 @@
+
 window.onload = function() {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const query = urlSearchParams.get('sortBy');

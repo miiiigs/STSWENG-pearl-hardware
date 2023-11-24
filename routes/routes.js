@@ -5,15 +5,8 @@ import { body, validationResult } from 'express-validator';
 import { User } from '../model/userSchema.js';
 
 import multer from 'multer';
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/uploads/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, file.originalname);
-    }
-});
-const upload = multer({ storage: storage });
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage });
 
 const router = Router();
 
@@ -32,9 +25,13 @@ router.get('/register', controller.getRegister);
 router.get(`/category/:category`, controller.getCategory);
 router.get(`/adminCategory/:category`, controller.getAdminCategory);
 
+router.get('/searchProducts', controller.searchProducts);
+
+
 router.get('/userprofile', controller.getUserProfile);
 router.get('/userpurchases', controller.getUserPurchases);
 
+router.get('/image/:id', controller.image);
 
 router.get('/checkout', controller.checkout);
 router.get('/checkoutSuccess/:orderID', controller.checkoutSuccess);

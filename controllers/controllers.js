@@ -1,4 +1,4 @@
-import db from '../model/db.js';
+import database from '../model/db.js';
 import { Product } from '../model/productSchema.js';
 import { User } from '../model/userSchema.js';
 import { Order } from '../model/orderSchema.js';
@@ -6,13 +6,34 @@ import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
+import { Image } from '../model/imageSchema.js';
 
 const SALT_WORK_FACTOR = 10;
 
-
+/*
+    Checks if file is an image
+*/
+const isImage = (file) => {
+    const mimeType = mime.lookup(file);
+    return mimeType && mimeType.startsWith('image/');
+};
 
 const controller = {
 
+    image: async (req, res) => {
+        console.log("Image request received");
+        const { id } = req.params;
+
+        try {
+            const image = await Image.findById(id);
+
+            res.set('Content-Type', 'image/jpeg');
+            res.send(image.img.data);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Server error');
+        }
+      },
 
     getIndex: async function (req, res) {
         try {
@@ -156,33 +177,49 @@ const controller = {
             res.sendStatus(400);
         }
     },
+    
 
     addProduct: async function (req, res) {
         try {
-
             const pic = req.file;
             const product = req.body;
-            let path;
+    
+            if (pic) {
 
-            if (pic === undefined) {
-                path = 'temp.png';
-            }
-            else {
-                path = pic.originalname;
-            }
+                //console.log(pic)
 
-            new Product({
-                name: product.name,
-                type: product.type,
-                quantity: product.quantity,
-                price: product.price,
-                productpic: '/./uploads/' + path
-            }).save();
+                const obj = {
+                    img: {
+                        data: new Buffer.from(pic.buffer, 'base64'),
+                        contentType: pic.mimeType
+                    }
+                }
+
+                const imageSave = await Image.create(obj);
+                
+                new Product({
+                    name: product.name,
+                    type: product.type,
+                    quantity: product.quantity,
+                    price: product.price,
+                    productpic: 'http://localhost:3000/image/' + imageSave._id,
+                }).save();
+
+            }else {
+                new Product({
+                    name: product.name,
+                    type: product.type,
+                    quantity: product.quantity,
+                    price: product.price,
+                    productpic: './uploads/temp.png',
+                }).save();
+            }
 
             res.redirect('/adminInventory');
-
-        } catch {
-            res.sendStatus(400);
+    
+        }catch(err){
+            console.error(err);
+            
         }
     },
 
@@ -191,27 +228,39 @@ const controller = {
 
             const pic = req.file;
             const product = req.body;
-            console.log(pic);
-            console.log(product); 
-            let path;
 
-            if (pic === undefined) {
-                path = product.init_pic;
-            }
-            else {
-                path = '/./uploads/' + pic.originalname;
-            }
+            if (pic) {
 
-            const updateStock = await Product.findByIdAndUpdate(
-                product.id,
-                { name: product.name,
-                    type: product.type,
-                    quantity: product.quantity,
-                    price: product.price,
-                    productpic: path
-                },
-                
-            );
+                const obj = {
+                    img: {
+                        data: new Buffer.from(pic.buffer, 'base64'),
+                        contentType: pic.mimeType
+                    }
+                }
+
+                const imageSave = await Image.create(obj);
+
+                const updateStock = await Product.findByIdAndUpdate(
+                    product.id,
+                    { name: product.name,
+                        type: product.type,
+                        quantity: product.stock,
+                        price: product.price,
+                        productpic: 'http://localhost:3000/image/' + imageSave._id
+                    },
+                    
+                );
+            }else{
+                const updateStock = await Product.findByIdAndUpdate(
+                    product.id,
+                    { name: product.name,
+                        type: product.type,
+                        quantity: product.stock,
+                        price: product.price,
+                    },
+                    
+                );
+            }
 
             res.redirect('/adminInventory');
 
@@ -315,7 +364,7 @@ const controller = {
 		catch{
 			console.log("Failed!");
 		}
-		res.render("adminOrders", {layout: 'adminMain',order_list: order_list, buffer: query});
+		res.render("adminOrders", {layout: 'adminMain',order_list: order_list, buffer: query, script: '/./js/adminOrders.js'});
     },
 	
     register: async function (req, res) {
@@ -581,10 +630,11 @@ const controller = {
         //console.log(user);
 
         for (let i = 0; i < items.length; i++) { //this for loop loops through the itemsCheckout array and for each one finds it in the product schema and creates an item checkout object needed in the api call
-            const item = await Product.findById(items[i]).exec();
+            const item = await Product.findById(items[i])
+            //console.log("URL"+ item.productpic)
             itemsCheckout.push({
                 currency: 'PHP',
-                images: ['https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fsearch%2Fimages%3Fk%3Dsample&psig=AOvVaw0AFGkt28PQn4zNlauG_NGx&ust=1698039665576000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCKiesur4iIIDFQAAAAAdAAAAABAE'],
+                images: [item.productpic],
                 amount: parseInt(parseFloat(item.price.toFixed(2)) * 100),
                 description: 'description',
                 name: item.name,
@@ -900,6 +950,22 @@ const controller = {
             res.sendStatus(201);
         }
 
+    },
+
+    searchProducts: async function(req,res){
+		console.log("Searching for a product!");
+		
+		var query = req.query.product_query;
+		
+		console.log("Searching for " + query);
+		
+		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {__v:0}).lean();
+		// sortProducts function
+        const sortValue = req.query.sortBy;
+        console.log(sortValue);
+        sortProducts(result, sortValue);
+		
+		res.render("search_results", {product_list: result});
     },
 
 
