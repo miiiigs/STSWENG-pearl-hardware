@@ -31,6 +31,9 @@ router.get('/searchProducts', controller.searchProducts);
 router.get('/userprofile', controller.getUserProfile);
 router.get('/userpurchases', controller.getUserPurchases);
 
+
+router.get('/searchProducts', controller.searchProducts);
+
 router.get('/image/:id', controller.image);
 
 router.get('/checkout', controller.checkout);

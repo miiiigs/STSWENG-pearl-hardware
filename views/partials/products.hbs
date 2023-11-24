@@ -1,4 +1,5 @@
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 ">	
+	{{#if product_list}}
     {{#each product_list}}
 	<a href="/product?name={{this.name}}&id={{#if this.p_id}}{{this.p_id}}{{else}}{{this._id}}{{/if}}">
 		<div class="bg-tertiary rounded shadow p-4">
@@ -8,4 +9,7 @@
 		</div>
 	</a>
     {{/each}}
+	{{else}}
+	<center> <p> No Products found! </p></center>
+	{{/if}}
 </div>
