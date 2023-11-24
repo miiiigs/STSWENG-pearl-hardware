@@ -1,17 +1,39 @@
-import db from '../model/db.js';
+import database from '../model/db.js';
 import { Product } from '../model/productSchema.js';
 import { User } from '../model/userSchema.js';
 import { Order } from '../model/orderSchema.js';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
+import mongoose from 'mongoose';
+import { Image } from '../model/imageSchema.js';
 
 const SALT_WORK_FACTOR = 10;
 
-
+/*
+    Checks if file is an image
+*/
+const isImage = (file) => {
+    const mimeType = mime.lookup(file);
+    return mimeType && mimeType.startsWith('image/');
+};
 
 const controller = {
 
+    image: async (req, res) => {
+        console.log("Image request received");
+        const { id } = req.params;
+
+        try {
+            const image = await Image.findById(id);
+
+            res.set('Content-Type', 'image/jpeg');
+            res.send(image.img.data);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send('Server error');
+        }
+      },
 
     getIndex: async function (req, res) {
         try {
@@ -155,28 +177,90 @@ const controller = {
             res.sendStatus(400);
         }
     },
+    
 
     addProduct: async function (req, res) {
+        try {
+            const pic = req.file;
+            const product = req.body;
+    
+            if (pic) {
+
+                //console.log(pic)
+
+                const obj = {
+                    img: {
+                        data: new Buffer.from(pic.buffer, 'base64'),
+                        contentType: pic.mimeType
+                    }
+                }
+
+                const imageSave = await Image.create(obj);
+                
+                new Product({
+                    name: product.name,
+                    type: product.type,
+                    quantity: product.quantity,
+                    price: product.price,
+                    productpic: 'http://localhost:3000/image/' + imageSave._id,
+                }).save();
+
+            }else {
+                new Product({
+                    name: product.name,
+                    type: product.type,
+                    quantity: product.quantity,
+                    price: product.price,
+                    productpic: './uploads/temp.png',
+                }).save();
+            }
+
+            res.redirect('/adminInventory');
+    
+        }catch(err){
+            console.error(err);
+            
+        }
+    },
+
+    editProduct: async function (req, res) {
         try {
 
             const pic = req.file;
             const product = req.body;
-            let path;
 
-            if (pic === undefined) {
-                path = 'temp.png';
-            }
-            else {
-                path = pic.originalname;
-            }
+            if (pic) {
 
-            new Product({
-                name: product.name,
-                type: product.type,
-                quantity: product.quantity,
-                price: product.price,
-                productpic: '/./uploads/' + path
-            }).save();
+                const obj = {
+                    img: {
+                        data: new Buffer.from(pic.buffer, 'base64'),
+                        contentType: pic.mimeType
+                    }
+                }
+
+                const imageSave = await Image.create(obj);
+
+                const updateStock = await Product.findByIdAndUpdate(
+                    product.id,
+                    { name: product.name,
+                        type: product.type,
+                        quantity: product.stock,
+                        price: product.price,
+                        productpic: 'http://localhost:3000/image/' + imageSave._id
+                    },
+                    
+                );
+            }else{
+                const updateStock = await Product.findByIdAndUpdate(
+                    product.id,
+                    { name: product.name,
+                        type: product.type,
+                        quantity: product.stock,
+                        price: product.price,
+                    },
+                    
+                );
+            }
 
             res.redirect('/adminInventory');
 
@@ -188,7 +272,7 @@ const controller = {
     getAdminInventory: async function (req, res) {
         try {
             var product_list = [];
-            let resp = await Product.find({});;
+            let resp = await Product.find({});
 
             console.log(resp.length)
 
@@ -207,20 +291,30 @@ const controller = {
             console.log(sortValue);
             sortProducts(product_list, sortValue);
 
-            res.render("adminInventory", {
-                layout: 'adminInven',
-                product_list: product_list
-            });
+            if (req.session.userID) {
+                const user = await User.findById(req.session.userID)
+                if (user.isAuthorized == true) {
+                    console.log("AUTHORIZED")
+                    res.render("adminInventory", {
+                        layout: 'adminInven',
+                        product_list: product_list,
+                        script: './js/adminInventory.js'
+                    });
+                } else {
+                    console.log("UNAUTHORIZED");
+                    res.sendStatus(400);
+                }
+            } else {
+                res.sendStatus(400);
+            }
 
         } catch {
             res.sendStatus(400);
         }
     },
-
-
-
-    //searchInventory
-    //specialized search and sort for Admin
+	
+	//searchInventory
+	//specialized search and sort for Admin
     searchInventory: async function (req, res) {
         console.log("Searching in inventory!");
 
@@ -238,7 +332,53 @@ const controller = {
 
         res.render("adminInventory", { layout: 'adminMain', product_list: result, buffer: query });
     },
+	
+	//searchOrders
+	//specialized search and sort for admin
+	searchOrders: async function (req, res) {
+        console.log("Searching for order!");
 
+        var query = req.query.product_query;
+
+        console.log("Searching for " + query);
+	    var resp = undefined;
+		var order_list = [];
+        // sortOrders function
+		const sortValue = req.query.sortBy;
+        console.log(sortValue);
+		try{
+			const id = new mongoose.Types.ObjectId(query);
+			console.log(id);
+			if (sortValue == "date_asc"){
+				resp = await Order.find({ _id: id }, { __v: 0 }).sort({date: 'asc'}).lean();
+			}
+			else if (sortValue == "date_desc"){
+				resp = await Order.find({ _id: id }, { __v: 0 }).sort({date: 'desc'}).lean();
+			}
+			else {
+				resp = await Order.find({ _id: id }, { __v: 0 }).lean();
+				sortOrders(resp, sortValue);
+			}
+			for(let i = 0; i < resp.length; i++) {
+                order_list.push({
+                    orderID: resp[i]._id,
+                    firstName: resp[i].firstName,
+                    lastName: resp[i].lastName,
+                    email: resp[i].email,
+                    date: resp[i].date.toISOString().slice(0,10),
+					status: resp[i].status,
+                    amount: resp[i].amount,
+                    paymongoID: resp[i].paymongoID,
+                    isCancelled: resp[i].isCancelled.toString()
+                });
+            }
+		}
+		catch{
+			console.log("Failed!");
+		}
+		res.render("adminOrders", {layout: 'adminMain',order_list: order_list, buffer: query, script: '/./js/adminOrders.js'});
+    },
+	
     register: async function (req, res) {
 
         const errors = validationResult(req);
@@ -339,7 +479,6 @@ const controller = {
         console.log(req.body);
         console.log("Attempting to add: " + req.body.id);
 
-        //const query = "ObjectId('" + req.body.p_id + "')";
         const query = req.body.id;
         const temp = await Product.find({ _id: query }, { __v: 0 });
         const product_result = temp[0];
@@ -503,10 +642,11 @@ const controller = {
         //console.log(user);
 
         for (let i = 0; i < items.length; i++) { //this for loop loops through the itemsCheckout array and for each one finds it in the product schema and creates an item checkout object needed in the api call
-            const item = await Product.findById(items[i]).exec();
+            const item = await Product.findById(items[i])
+            //console.log("URL"+ item.productpic)
             itemsCheckout.push({
                 currency: 'PHP',
-                images: ['https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fsearch%2Fimages%3Fk%3Dsample&psig=AOvVaw0AFGkt28PQn4zNlauG_NGx&ust=1698039665576000&source=images&cd=vfe&ved=0CBEQjRxqFwoTCKiesur4iIIDFQAAAAAdAAAAABAE'],
+                images: [item.productpic],
                 amount: parseInt(parseFloat(item.price.toFixed(2)) * 100),
                 description: 'description',
                 name: item.name,
@@ -655,33 +795,45 @@ const controller = {
             //getProducts function
             var order_list = [];
             let resp;
-            switch (category) {
+			const sortValue = req.query.sortBy;
+			//console.log("sort val = " + sortValue);
+			var dateVal = undefined;
+			if (sortValue == "date_asc"){
+				dateVal = "asc";
+			}
+			else if (sortValue == "date_desc"){
+				dateVal = "desc";
+			}
+			else {
+				dateVal = "asc"; //defaults to showing dates from newest to oldest
+			}
+            switch(category){
                 case 'allorders':
-                    resp = await Order.find({ isCancelled: false });
+                    resp = await Order.find({isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'awaitingpayment':
-                    resp = await Order.find({ status: 'awaiting payment', isCancelled: false });
+                    resp = await Order.find({status: 'awaiting payment', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'paymentsuccess':
-                    resp = await Order.find({ status: 'succeeded', isCancelled: false });
+                    resp = await Order.find({status: 'succeeded', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'orderpacked':
-                    resp = await Order.find({ status: 'order packed', isCancelled: false });
+                    resp = await Order.find({status: 'order packed', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'intransit':
-                    resp = await Order.find({ status: 'in transit', isCancelled: false });
+                    resp = await Order.find({status: 'in transit', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'delivered':
-                    resp = await Order.find({ status: 'delivered', isCancelled: false });
+                    resp = await Order.find({status: 'delivered', isCancelled: false}).sort({date: dateVal});
                     break;
                 case 'cancelled':
-                    resp = await Order.find({ isCancelled: true });
+                    resp = await Order.find({isCancelled: true}).sort({date: dateVal});
                     break;
             }
 
             //console.log(resp.length)
 
-            for (let i = 0; i < resp.length; i++) {
+            for(let i = 0; i < resp.length; i++) {
                 order_list.push({
                     orderID: resp[i]._id,
                     firstName: resp[i].firstName,
@@ -694,19 +846,30 @@ const controller = {
                     isCancelled: resp[i].isCancelled.toString()
                 });
             }
+            
+            // sortOrders function
+			if (sortValue == "price_asc" || sortValue == "price_desc"){ 
+				sortOrders(order_list, sortValue);
+			}
 
-            // sortProducts function
-            const sortValue = req.query.sortBy;
-            sortProducts(order_list, sortValue);
 
-
-            res.render("adminOrders", {
-                layout: 'adminMain',
-                order_list: order_list.reverse(),
-                category: category,
-                script: '/./js/adminOrders.js',
-
-            });
+            if (req.session.userID) {
+                const user = await User.findById(req.session.userID)
+                if (user.isAuthorized == true) {
+                    console.log("AUTHORIZED")
+                    res.render("adminOrders", {
+                        layout: 'adminMain',
+                        order_list: order_list.reverse(),
+                        category: category,
+                        script: '/./js/adminOrders.js',
+                    });
+                } else {
+                    console.log("UNAUTHORIZED");
+                    res.sendStatus(400);
+                }
+            } else {
+                res.sendStatus(400);
+            }
         } catch {
             res.sendStatus(400);
         }
@@ -811,6 +974,22 @@ const controller = {
 
     },
 
+    searchProducts: async function(req,res){
+		console.log("Searching for a product!");
+		
+		var query = req.query.product_query;
+		
+		console.log("Searching for " + query);
+		
+		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {__v:0}).lean();
+		// sortProducts function
+        const sortValue = req.query.sortBy;
+        console.log(sortValue);
+        sortProducts(result, sortValue);
+		
+		res.render("search_results", {product_list: result});
+    },
+
 
 
 }
@@ -872,8 +1051,30 @@ async function sortProducts(product_list, sortValue) {
             case 'name_desc':
                 product_list.sort((a, b) => b.name.localeCompare(a.name));
                 break;
+			case 'stock_asc':
+				product_list.sort((a, b) => a.quantity - b.quantity);
+				break;
+			case 'stock_desc':
+				product_list.sort((a, b) => b.quantity - a.quantity);
+				break;			
         }
     }
 }
+
+async function sortOrders(order_list, sortValue){
+    if (sortValue !== undefined) {
+        switch (sortValue) {
+            case 'def':
+                break;
+            case 'price_asc':
+                order_list.sort((a, b) => b.amount - a.amount);
+                break;
+            case 'price_desc':
+                order_list.sort((a, b) => a.amount - b.amount);
+                break;		
+        }
+    }
+}
+
 
 export default controller;
