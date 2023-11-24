@@ -291,10 +291,22 @@ const controller = {
             console.log(sortValue);
             sortProducts(product_list, sortValue);
 
-            res.render("adminInventory", {
-                layout: 'adminInven',
-                product_list: product_list
-            });
+            if (req.session.userID) {
+                const user = await User.findById(req.session.userID)
+                if (user.isAuthorized == true) {
+                    console.log("AUTHORIZED")
+                    res.render("adminInventory", {
+                        layout: 'adminInven',
+                        product_list: product_list,
+                        script: './js/adminInventory.js'
+                    });
+                } else {
+                    console.log("UNAUTHORIZED");
+                    res.sendStatus(400);
+                }
+            } else {
+                res.sendStatus(400);
+            }
 
         } catch {
             res.sendStatus(400);
@@ -841,13 +853,23 @@ const controller = {
 			}
 
 
-            res.render("adminOrders", {
-                layout: 'adminMain',
-                order_list: order_list.reverse(),
-                category: category,
-                script: '/./js/adminOrders.js',
-
-            });
+            if (req.session.userID) {
+                const user = await User.findById(req.session.userID)
+                if (user.isAuthorized == true) {
+                    console.log("AUTHORIZED")
+                    res.render("adminOrders", {
+                        layout: 'adminMain',
+                        order_list: order_list.reverse(),
+                        category: category,
+                        script: '/./js/adminOrders.js',
+                    });
+                } else {
+                    console.log("UNAUTHORIZED");
+                    res.sendStatus(400);
+                }
+            } else {
+                res.sendStatus(400);
+            }
         } catch {
             res.sendStatus(400);
         }
