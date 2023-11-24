@@ -1,7 +1,7 @@
 import express from "express";
 import exphbs from "express-handlebars";
 import routes from './routes/routes.js';
-import db from './model/db.js';
+import database from './model/db.js';
 import bodyParser from 'body-parser';
 import path from 'path';
 import tailwind from 'tailwindcss';
@@ -71,7 +71,7 @@ app.use ( express.json() );
 
 app.use(`/`, routes); 
 
-db.connect();
+database.connect();
 
 app.listen(port, function () {
     console.log(`Server is running at:`);

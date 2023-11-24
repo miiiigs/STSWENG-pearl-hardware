@@ -25,8 +25,7 @@ const productSchema = new Schema({
     },
 
     productpic: {
-        type: [String],
-        default:[],   
+        type: String
     },
 
     variations: {
