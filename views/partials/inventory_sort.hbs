@@ -1,0 +1,66 @@
+<div class="sticky top-0 z-10 bg-maincolor mx-auto my-auto px-5 mt-6 w-[98%] h-14 rounded-[10px_10px_0px_0px]">
+
+    <div class="mx-5 max-w-full px-2 sm:px-6 lg:px-8">
+        <div class="relative flex ">
+            <div class="flex mx-auto space-x-12 text-white mt-2 px-4 py-3 pt-0">
+
+                <form action="/category/allproducts" method="GET">
+                    <button type="submit"
+                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'allproducts')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-lg font-Inknut">
+                        All Products
+                    </button>
+                </form>
+
+                <form action="/category/welding" method="GET">
+                    <button type="submit"
+                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'welding')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-lg font-Inknut">
+                        Welding
+                    </button>
+                </form>
+
+
+                <form action="/category/safety" method="GET">
+                    <button type="submit"
+                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'safety')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-lg font-Inknut">
+                        Safety
+                    </button>
+                </form>
+
+                <form action="/category/cleaning" method="GET">
+                    <button type="submit"
+                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'cleaning')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-lg font-Inknut">
+                        Cleaning
+                    </button>
+                </form>
+
+                <form action="/category/industrial" method="GET">
+                    <button type="submit"
+                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'industrial')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-lg font-Inknut">
+                        Industrial
+                    </button>
+                </form>
+
+                <form action="/category/brassfittings" method="GET">
+                    <button type="submit"
+                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'brassfittings')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-lg font-Inknut">
+                        Brass Fittings
+                    </button>
+                </form>
+
+            </div>
+
+            <form action="/cart" method="GET">
+                <button type="submit"
+                    class="w-auto h-12 mt-2 px-4 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor text-white text-lg font-Inknut ml-auto mr-6">
+                    <div class="flex flex-row items-center">
+                        <img class="w-5 mr-2" src="../uploads/logout.png" alt="Logout Icon" />
+                        Logout
+                    </div>
+                </button>
+            </form>
+
+
+        </div>
+    </div>
+
+</div>

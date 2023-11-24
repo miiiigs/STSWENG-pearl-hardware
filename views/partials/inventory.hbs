@@ -1,5 +1,14 @@
-<div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+{{!-- <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <!--
+    Background backdrop, show/hide based on modal state.
 
+    Entering: "ease-out duration-300"
+      From: "opacity-0"
+      To: "opacity-100"
+    Leaving: "ease-in duration-200"
+      From: "opacity-100"
+      To: "opacity-0"
+  -->
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -56,7 +65,7 @@
     </div>
 </div>
 
-
+--}}
 
 
 <script>
@@ -110,19 +119,23 @@
 <div class="bg-white bg-opacity-80 p-1 rounded-md w-[95%] mx-auto my-auto shadow-md">
     {{#each product_list}}
     <div class="bg-tertiary flex flex-wrap items-center justify-center rounded-[10px] mb-2">
-        <div class="grid grid-cols-6 gap-48">
+        <div class="grid grid-cols-7 gap-40">
             <div class="w-32 h-32 border border-white mt-6 mb-8 ml-6">
 
-                <img src={{this.productpic.[0]}} alt="" class=" max-h-32">
+                <img src={{this.productpic.[0]}} alt="" class=" max-h-32 w-full h-full object-cover">
 
             </div>
-            <div class="font-Inknut text-secondary text-sm mt-20 ml-4">
+            <div class="font-Inknut text-secondary text-sm mt-20 ml-6">
                 {{this.name}}</div>
+            <div class="font-Inknut text-secondary text-sm mt-20 ml-6">
+                {{this.type}}</div>
             <div class="font-Inknut text-secondary text-sm mt-20 ml-8 ">
                 PHP{{this.price}}</div>
             <div class="font-Inknut text-secondary text-sm mt-20 ml-12 ">
-                10</div>
+                {{this.quantity}}</div>
+
             <div class=" grid grid-cols-3 gap-20 ml-0 mt-16">
+
 
                 <div>
                     <button onclick="showProduct('{{this.p_id}}')"
