@@ -130,8 +130,8 @@ function selectOption(option) {
 </div>
 
 <div class="bg-tertiary w-[90%] rounded-[10px] mx-auto mb-2 p-2">
-    <div class="grid grid-cols-4 gap-3 mb-2 bg-maincolor text-white h-[35px] flex flex-wrap flex-row items-center justify-center mx-auto rounded-[10px_10px_0px_0px]">
-        <div class="col-span-2 text-lg text-center">Product</div>
+    <div class="grid grid-cols-5 mb-2 bg-maincolor text-white h-[35px] flex flex-wrap flex-row items-center justify-center mx-auto rounded-[10px_10px_0px_0px]">
+        <div class="col-span-3 text-lg text-center">Product</div>
         <div class="grid grid-rows-1 grid-flow-col justify-end">
             <div class="w-[100px] text-lg border border-r-white border-l-white border-t-0 border-b-0 text-center">Quantity</div>
             <div class="w-[100px] text-lg border border-r-white border-t-0 border-l-0 border-b-0 text-center">Price</div>					
@@ -139,12 +139,12 @@ function selectOption(option) {
         <div class="w-[200px] text-lg text-right">Total</div>
     </div>
        {{#each items}}	
-    <div class="grid grid-cols-4 gap-2 gap-x-0 mb-2 p-2 bg-white rounded-lg pl-10">
+    <div class="grid grid-cols-5 gap-2 gap-x-0 mb-2 m-2 bg-white rounded-lg ">
  	
-            <div class="flex flex-wrap items-center ">
+            <div class="flex flex-wrap items-center pl-10">
                 <img class="w-[50px] h-[100%] mr-8 mb-2 py-2" src={{image}} alt="product image">
             </div>
-            <div class="flex flex-wrap items-center pl-10">
+            <div class="col-span-2 flex flex-wrap items-center pl-10">
                 <div class="text-secondary text-lg">{{this.name}}</div>
             </div>
             <div class="flex flex-wrap items-center justify-end">
