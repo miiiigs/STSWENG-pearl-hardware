@@ -64,6 +64,8 @@ router.post('/postCheckout', controller.postCheckout);
 router.post('/add-to-cart', controller.addToCart);
 router.post('/cancelChange', controller.cancelChange);
 router.post('/statusChange', controller.statusChange);
+router.post('/changePageStore/:category', controller.changePageStore);
+router.post('/changePageAdminCategory/:category', controller.changePageAdminCategory);
 
 router.post('/addProduct', upload.single('productPic'), controller.addProduct);
 router.post('/editProduct', upload.single('productPic'), controller.editProduct);

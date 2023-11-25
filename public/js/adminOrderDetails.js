@@ -35,7 +35,7 @@ cancel.forEach(button => { button.addEventListener('click', async (e) => {
 AP.forEach(button => {
     button.addEventListener('click', async (e) => {
         const orderID = e.target.closest('#dropdownMenu').dataset.index;
-        const status = "awaiting payment";
+        const status = "awaitingPayment";
 
         const jString = JSON.stringify({orderID, status});
 
@@ -81,7 +81,7 @@ PS.forEach(button => {
 OP.forEach(button => {
     button.addEventListener('click', async (e) => {
         const orderID = e.target.closest('#dropdownMenu').dataset.index;
-        const status = "order packed";
+        const status = "orderPacked";
 
         const jString = JSON.stringify({orderID, status});
 
@@ -104,7 +104,7 @@ OP.forEach(button => {
 IT.forEach(button => {
     button.addEventListener('click', async (e) => {
         const orderID = e.target.closest('#dropdownMenu').dataset.index;
-        const status = "in transit";
+        const status = "inTransit";
 
         const jString = JSON.stringify({orderID, status});
 
