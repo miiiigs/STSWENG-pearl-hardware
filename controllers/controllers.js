@@ -9,6 +9,8 @@ import mongoose from 'mongoose';
 import { Image } from '../model/imageSchema.js';
 
 const SALT_WORK_FACTOR = 10;
+let currentCategory = "allproducts";
+const pageLimit = 1;
 
 /*
     Checks if file is an image
@@ -101,12 +103,19 @@ const controller = {
     getCategory: async function (req, res) {
 
         const category = req.params.category;
-        console.log(category);
+        //console.log("CATEGORY " + req.params.category);
+        //console.log(currentCategory);
+        if((req.session.pageIndex == null || currentCategory != category) && (category == 'allproducts' || category == 'welding' || category == 'safety' || category == 'cleaning' || category == 'industrial' || category == 'brassfittings')){
+            //console.log("HERE");
+            req.session.pageIndex = 0;
+            currentCategory = category;
+        }
+        //console.log(req.session.pageIndex);
 
         try {
 
             //getProducts function
-            var product_list = await getProducts(category);
+            var product_list = await getProducts(category, req.session.pageIndex);
 
             // sortProducts function
             const sortValue = req.query.sortBy;
@@ -119,6 +128,51 @@ const controller = {
 
             });
         } catch {
+            res.sendStatus(400);
+        }
+
+    },
+
+    changePageStore: async function(req, res){
+
+        try{
+
+        let count;
+
+        //console.log(req.body);
+
+        const category = req.params.category.toLowerCase();
+        //console.log(category);
+
+        const {change} = req.body;
+        //console.log(change);
+
+        if(category == "welding" || category == "safety" || category == "cleaning" || category == "industrial" || category == "brassfittings"){
+            count = await Product.find( {type:category} );
+        }else{
+            count = await Product.find({});
+        }
+
+        //console.log(count);
+
+        if(change == "next"){
+            req.session.pageIndex = req.session.pageIndex + 1;
+        }else if(change == "prev"){
+            req.session.pageIndex = req.session.pageIndex - 1;
+        }else{
+            console.log("error fetching page");
+        }
+
+        if(req.session.pageIndex < 0 || req.session.pageIndex > Math.round(count.length / pageLimit)){
+            console.log("HERE");
+            req.session.pageIndex = 0;
+        }
+
+        currentCategory = category;
+
+        res.sendStatus(200);
+        }catch(error){
+            console.error(error);
             res.sendStatus(400);
         }
 
@@ -170,11 +224,34 @@ const controller = {
     },
 
     getUserPurchases: async function (req, res) {
+
         try {
+            var orders = [];
+            const resp = await Order.find({ userID: req.session.userID });
+
+            for(let i = 0; i < resp.length; i++) {
+                orders.push({
+                    orderID: resp[i]._id,
+                    firstName: resp[i].firstName,
+                    lastName: resp[i].lastName,
+                    email: resp[i].email,
+                    date: resp[i].date.toISOString().slice(0, 10),
+                    status: resp[i].status,
+                    amount: resp[i].amount,
+                    items: resp[i].items.length,
+                    paymongoID: resp[i].paymongoID,
+                    isCancelled: resp[i].isCancelled.toString()
+                });
+            }
+
+            //console.log(orders);
+
             res.render("userpurchases", {
+                orders: orders,
             });
         } catch {
             res.sendStatus(400);
+            console.log("Error retrieving orders");
         }
     },
     
@@ -682,7 +759,7 @@ const controller = {
                     email: user.email,
                     items: itemsDetails,
                     date: Date.now(),
-                    status: 'awaiting payment',
+                    status: 'awaitingPayment',
                     amount: parseFloat(total.toFixed(2)),
                     paymongoID: -1, //paymongoID of -1 means there is no record of a transaction in paymongo in other words it is to be ignored as the user did not even go to the checkout page of paymongo
                     line1: user.line1,
@@ -807,6 +884,12 @@ const controller = {
         const category = req.params.category;
         //console.log(category);
 
+        if((req.session.pageIndex == null || currentCategory != category) && (category == 'allOrders' || category == 'awaitingPayment' || category == 'succeeded' || category == 'orderPacked' || category == 'inTransit' || category == 'delivered' || category == 'cancelled')){
+            //console.log("HERE");
+            req.session.pageIndex = 0;
+            currentCategory = category;
+        }
+
         try {
 
             //getProducts function
@@ -825,26 +908,14 @@ const controller = {
 				dateVal = "asc"; //defaults to showing dates from newest to oldest
 			}
             switch(category){
-                case 'allorders':
-                    resp = await Order.find({isCancelled: false}).sort({date: dateVal});
+                case 'allOrders':
+                    resp = await Order.find({isCancelled: false}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
                     break;
-                case 'awaitingpayment':
-                    resp = await Order.find({status: 'awaiting payment', isCancelled: false}).sort({date: dateVal});
-                    break;
-                case 'paymentsuccess':
-                    resp = await Order.find({status: 'succeeded', isCancelled: false}).sort({date: dateVal});
-                    break;
-                case 'orderpacked':
-                    resp = await Order.find({status: 'order packed', isCancelled: false}).sort({date: dateVal});
-                    break;
-                case 'intransit':
-                    resp = await Order.find({status: 'in transit', isCancelled: false}).sort({date: dateVal});
-                    break;
-                case 'delivered':
-                    resp = await Order.find({status: 'delivered', isCancelled: false}).sort({date: dateVal});
+                default:
+                    resp = await Order.find({status: category, isCancelled: false}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
                     break;
                 case 'cancelled':
-                    resp = await Order.find({isCancelled: true}).sort({date: dateVal});
+                    resp = await Order.find({isCancelled: true}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
                     break;
             }
 
@@ -887,7 +958,53 @@ const controller = {
             } else {
                 res.sendStatus(400);
             }
-        } catch {
+        } catch(error) {
+            res.sendStatus(400);
+            console.error(error)
+        }
+
+    },
+
+    changePageAdminCategory: async function(req, res){
+
+        try{
+
+        let count;
+
+        //console.log(req.body);
+
+        const category = req.params.category;
+        //console.log(category);
+
+        const {change} = req.body;
+        //console.log(change);
+
+        if(category == "awaitingPayment" || category == "succeeded" || category == "orderPacked" || category == "inTransit" || category == "delivered"){
+            count = await Order.find( {status : category} );
+        }else if(category == "allOrders"){
+            count = await Order.find( {isCancelled : false} );
+        }else{
+            count = await Order.find({});
+        }
+
+        if(change == "next"){
+            req.session.pageIndex = req.session.pageIndex + 1;
+        }else if(change == "prev"){
+            req.session.pageIndex = req.session.pageIndex - 1;
+        }else{
+            console.log("error fetching page");
+        }
+
+        if(req.session.pageIndex < 0 || req.session.pageIndex > Math.round(count.length / pageLimit)){
+            console.log("HERE");
+            req.session.pageIndex = 0;
+        }
+
+        currentCategory = category;
+
+        res.sendStatus(200);
+        }catch(error){
+            console.error(error);
             res.sendStatus(400);
         }
 
@@ -1011,27 +1128,28 @@ const controller = {
 
 }
 
-async function getProducts(category) {
+async function getProducts(category, pageIndex) {
+    try{
     var product_list = [];
     let resp;
     switch (category) {
         case 'welding':
-            resp = await Product.find({ type: 'Welding' });
+            resp = await Product.find({ type: category }).skip(pageIndex * pageLimit).limit(pageLimit).exec();
             break;
         case 'safety':
-            resp = await Product.find({ type: 'Safety' });
+            resp = await Product.find({ type: category }).skip(pageIndex * pageLimit).limit(pageLimit).exec();
             break;
         case 'cleaning':
-            resp = await Product.find({ type: 'Cleaning' });
+            resp = await Product.find({ type: category }).skip(pageIndex * pageLimit).limit(pageLimit).exec();
             break;
         case 'industrial':
-            resp = await Product.find({ type: 'Industrial' });
+            resp = await Product.find({ type: category }).skip(pageIndex * pageLimit).limit(pageLimit).exec();
             break;
         case 'brassfittings':
-            resp = await Product.find({ type: 'Brass Fittings' });
+            resp = await Product.find({ type: category }).skip(pageIndex * pageLimit).limit(pageLimit).exec();
             break;
         default:
-            resp = await Product.find({});
+            resp = await Product.find({}).skip(pageIndex * pageLimit).limit(pageLimit).exec();
             break;
     }
     for (let i = 0; i < resp.length; i++) {
@@ -1047,6 +1165,9 @@ async function getProducts(category) {
         }
     }
     return product_list;
+}catch(error){
+    console.error(error);
+}
 }
 
 async function sortProducts(product_list, sortValue) {
