@@ -29,7 +29,7 @@ router.get('/searchProducts', controller.searchProducts);
 
 
 router.get('/userprofile', controller.getUserProfile);
-router.get('/userpurchases', controller.getUserPurchases);
+router.get('/userpurchases/:status', controller.getUserPurchases);
 
 
 router.get('/searchProducts', controller.searchProducts);

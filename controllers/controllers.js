@@ -199,6 +199,7 @@ const controller = {
 
     getUserProfile: async function (req, res) {
         try {
+            
             const user = await User.findById(req.session.userID);
             let userData = {
                 firstName: user.firstName,
@@ -216,7 +217,6 @@ const controller = {
             console.log(userData);
             res.render("userprofile", {
                 user: userData,
-
             });
         } catch {
             res.sendStatus(400);
@@ -224,11 +224,10 @@ const controller = {
     },
 
     getUserPurchases: async function (req, res) {
-
         try {
+            const status = req.params.status;
             var orders = [];
-            const resp = await Order.find({ userID: req.session.userID });
-
+            const resp = await Order.find({ userID: req.session.userID, status: status });
             for(let i = 0; i < resp.length; i++) {
                 orders.push({
                     orderID: resp[i]._id,
@@ -243,19 +242,17 @@ const controller = {
                     isCancelled: resp[i].isCancelled.toString()
                 });
             }
-
-            //console.log(orders);
-
             res.render("userpurchases", {
+                layout: 'userOrders',
                 orders: orders,
             });
+
         } catch {
             res.sendStatus(400);
             console.log("Error retrieving orders");
         }
     },
     
-
     addProduct: async function (req, res) {
         try {
             const pic = req.file;
@@ -263,15 +260,12 @@ const controller = {
     
             if (pic) {
 
-                //console.log(pic)
-
                 const obj = {
                     img: {
                         data: new Buffer.from(pic.buffer, 'base64'),
                         contentType: pic.mimeType
                     }
                 }
-
                 const imageSave = await Image.create(obj);
                 
                 new Product({
@@ -302,7 +296,6 @@ const controller = {
 
     editProduct: async function (req, res) {
         try {
-
             const pic = req.file;
             const product = req.body;
 
@@ -348,7 +341,6 @@ const controller = {
 
     getAdminInventory: async function (req, res) {
         try {
-            console.log('hi');
             const category = req.params.category;
             console.log(category);
             //var product_list = [];
