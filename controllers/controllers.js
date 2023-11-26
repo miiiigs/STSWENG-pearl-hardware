@@ -339,6 +339,15 @@ const controller = {
         }
     },
 
+    getUserOrderDetails: async function(req, res) {
+        try{
+            res.render("userorderdetails", {
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
     getAdminInventory: async function (req, res) {
         try {
             const category = req.params.category;
