@@ -1199,7 +1199,6 @@ async function getProducts(category, pageIndex) {
             });
         }
     }
-    console.log(product_list);
     return product_list;
 }catch(error){
     console.error(error);
