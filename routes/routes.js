@@ -26,7 +26,7 @@ router.get('/sortProducts', controller.sortProducts);
 router.get('/searchProducts', controller.searchProducts);
 router.get('/userprofile', controller.getUserProfile);
 router.get('/userpurchases', controller.getUserPurchases);
-
+router.get('/userorderdetails', controller.getUserOrderDetails);
 
 router.get('/checkout', controller.checkout);
 router.get('/checkoutSuccess/:orderID', controller.checkoutSuccess);
