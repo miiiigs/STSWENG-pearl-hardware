@@ -134,7 +134,7 @@
             <div class="font-Inknut text-secondary text-sm mt-20 ml-6">
                 {{this.name}}</div>
             <div class="font-Inknut text-secondary text-sm mt-20 ml-6">
-                {{this.type}}</div>
+                {{#if (eq this.type 'brassfittings')}}brass fittings {{else}}{{this.type}} {{/if}}</div>
             <div class="font-Inknut text-secondary text-sm mt-20 ml-8 ">
                 PHP{{this.price}}</div>
             <div class="font-Inknut text-secondary text-sm mt-20 ml-12 ">

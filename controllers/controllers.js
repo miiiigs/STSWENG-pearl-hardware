@@ -10,7 +10,7 @@ import { Image } from '../model/imageSchema.js';
 
 const SALT_WORK_FACTOR = 10;
 let currentCategory = "allproducts";
-const pageLimit = 1;
+const pageLimit = 20;
 
 /*
     Checks if file is an image
@@ -339,7 +339,7 @@ const controller = {
                 );
             }
 
-            res.redirect('/adminInventory');
+            res.redirect('/adminInventory/allProducts');
 
         } catch {
             res.sendStatus(400);
@@ -348,21 +348,44 @@ const controller = {
 
     getAdminInventory: async function (req, res) {
         try {
-            var product_list = [];
-            let resp = await Product.find({});
+            console.log('hi');
+            const category = req.params.category;
+            console.log(category);
+            //var product_list = [];
+            let resp;
+            var product_list = await getProducts(category, 0);
+            // switch(category){
+            //     case 'welding':
+            //         resp = await Product.find({type: 'Welding'});
+            //         break;
+            //     case 'safety':
+            //         resp = await Product.find({type: 'Safety'});
+            //         break;
+            //     case 'cleaning':
+            //         resp = await Product.find({type: 'Cleaning'});
+            //         break;
+            //     case 'industrial':
+            //         resp = await Product.find({type: 'Industrial'});
+            //         break;
+            //     case 'brass_fittings':
+            //         resp = await Product.find({type: 'Brass Fittings'});
+            //         break;
+            //     default:
+            //         resp = await Product.find({});
+                
+                
+            // }
 
-            console.log(resp.length)
-
-            for (let i = 0; i < resp.length; i++) {
-                product_list.push({
-                    name: resp[i].name,
-                    type: resp[i].type,
-                    price: resp[i].price,
-                    quantity: resp[i].quantity,
-                    productpic: resp[i].productpic,
-                    p_id: resp[i]._id,
-                });
-            }
+            // for (let i = 0; i < resp.length; i++) {
+            //     product_list.push({
+            //         name: resp[i].name,
+            //         type: resp[i].type,
+            //         price: resp[i].price,
+            //         quantity: resp[i].quantity,
+            //         productpic: resp[i].productpic,
+            //         p_id: resp[i]._id,
+            //     });
+            // }
             // sortProducts function
             const sortValue = req.query.sortBy;
             console.log(sortValue);
@@ -394,20 +417,32 @@ const controller = {
 	//specialized search and sort for Admin
     searchInventory: async function (req, res) {
         console.log("Searching in inventory!");
-
+        var product_list = [];
         var query = req.query.product_query;
 
 
         console.log("Searching for " + query);
 
-        const result = await Product.find({ name: new RegExp('.*' + query + '.*', 'i') }, { __v: 0 }).lean();
+        const resp = await Product.find({ name: new RegExp('.*' + query + '.*', 'i') }, { __v: 0 }).lean();
+        
+        for (let i = 0; i < resp.length; i++) {
+            product_list.push({
+                name: resp[i].name,
+                type: resp[i].type,
+                price: resp[i].price,
+                quantity: resp[i].quantity,
+                productpic: resp[i].productpic,
+                p_id: resp[i]._id
+            });
+            
+        }
 
         // sortProducts function
         const sortValue = req.query.sortBy;
         console.log(sortValue);
-        sortProducts(result, sortValue);
+        sortProducts(product_list, sortValue);
 
-        res.render("adminInventory", { layout: 'adminInven', product_list: result, buffer: query });
+        res.render("adminInventory", { layout: 'adminInven', product_list: product_list, buffer: query });
     },
 	
 	//searchOrders
@@ -1164,6 +1199,7 @@ async function getProducts(category, pageIndex) {
             });
         }
     }
+    console.log(product_list);
     return product_list;
 }catch(error){
     console.error(error);
