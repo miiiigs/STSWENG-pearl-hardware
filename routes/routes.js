@@ -30,7 +30,7 @@ router.get('/searchProducts', controller.searchProducts);
 
 router.get('/userprofile', controller.getUserProfile);
 router.get('/userpurchases', controller.getUserPurchases);
-
+router.get('/userorderdetails', controller.getUserOrderDetails);
 
 router.get('/searchProducts', controller.searchProducts);
 
