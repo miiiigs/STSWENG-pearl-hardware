@@ -46,8 +46,8 @@ router.get('/product', controller.getProduct);
 
 router.get('/adminInventory/:category', controller.getAdminInventory);
 router.get('/searchInventory', controller.searchInventory);
-router.get('/remove-from-cart',controller.removeFromCart);
-router.get('/admin',controller.getAdmin);
+router.get('/remove-from-cart', controller.removeFromCart);
+router.get('/admin', controller.getAdmin);
 router.get('/getCartItems', controller.getCartItems)
 router.get('/AdminOrderDetails/:orderID', controller.getOrderDetails)
 router.get('/searchOrders', controller.searchOrders);
