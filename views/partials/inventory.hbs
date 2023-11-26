@@ -2,14 +2,8 @@
 {{!-- <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <!--
     Background backdrop, show/hide based on modal state.
+<div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
 
-    Entering: "ease-out duration-300"
-      From: "opacity-0"
-      To: "opacity-100"
-    Leaving: "ease-in duration-200"
-      From: "opacity-100"
-      To: "opacity-0"
-  -->
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
 
     <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
@@ -36,6 +30,17 @@
                                     <label for="name" class="block text-sm font-medium text-gray-600 mt-5">Price:
                                     </label>
                                     <input type="text" id="price" name="price" class="mt-1 p-2 w-full border rounded">
+                                </div>
+
+                                <div class="mb-4 mt-5">
+                                    <label for="type" class="block text-sm font-medium text-gray-600">Type:</label>
+                                    <select id="type" name="type" class="mt-1 p-2 w-full border rounded">
+                                        <option value="Welding">Welding</option>
+                                        <option value="Safety">Safety</option>
+                                        <option value="Cleaning">Cleaning</option>
+                                        <option value="Industrial">Industrial</option>
+                                        <option value="Brass Fittings">Brass Fittings</option>
+                                    </select>
                                 </div>
 
                                 <div>
@@ -71,6 +76,8 @@
 
 
 <script>
+
+
     async function showProduct(id) {
         const jString = JSON.stringify({ id });
         const response = await fetch('/showProduct', {
@@ -256,3 +263,14 @@
 	{{/if}}
 </div>
 
+    <div class="flex justify-center mt-6 space-x-4">
+        <button
+            class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg h-[35px] text-center">
+            Prev
+        </button>
+        <button
+            class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg h-[35px] text-center">
+            Next
+        </button>
+    </div>
+</div>

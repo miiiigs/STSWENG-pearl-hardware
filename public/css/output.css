@@ -1207,10 +1207,6 @@ video {
   max-width: 20rem;
 }
 
-.flex-auto{
-  flex: 1 1 auto;
-}
-
 .origin-top-right{
   transform-origin: top right;
 }
