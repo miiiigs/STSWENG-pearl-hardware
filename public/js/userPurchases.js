@@ -1,6 +1,7 @@
-const title = document.querySelector('#title');
 const nextPage = document.querySelector('#nextPage');
 const prevPage = document.querySelector('#prevPage');
+const orderInstance = document.querySelectorAll('#orderInstance');
+const title = document.querySelector('#title');
 
 function checkPages() {
     if(nextPage.dataset.index == "false"){
@@ -21,26 +22,6 @@ function checkPages() {
 
 checkPages();
 
-title.addEventListener('click', async (e) => {
-    e.preventDefault();
-
-    console.log("TITLE CLICKED");
-
-    const response = await fetch('/getUser', {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
-
-    if(response.status == 200){
-        window.location.href = '/admin';
-    }else{
-        console.log("error has occured");
-    }
-
-})
-
 nextPage.addEventListener('click', async (e) => {
     e.preventDefault();
 
@@ -58,7 +39,7 @@ nextPage.addEventListener('click', async (e) => {
 
     const jString = JSON.stringify({change});
 
-    const response = await fetch('/changePageStore/' + lastWord, {
+    const response = await fetch('/changePageUserPurchases/' + lastWord, {
         method: "POST",
         body: jString,
         headers: {
@@ -91,7 +72,7 @@ prevPage.addEventListener('click', async (e) => {
 
     const jString = JSON.stringify({change});
 
-    const response = await fetch('/changePageStore/' + lastWord, {
+    const response = await fetch('/changePageUserPurchases/' + lastWord, {
         method: "POST",
         body: jString,
         headers: {
@@ -104,4 +85,30 @@ prevPage.addEventListener('click', async (e) => {
     }else{
         console.log("error next page");
     }
+})
+
+orderInstance.forEach(button => {
+    button.addEventListener('click', async (e) => {
+        const orderID = button.dataset.index;
+
+        const response = await fetch('/userorderdetails/' + orderID, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        if(response.status == 200){
+            window.location.href = '/userorderdetails/' + orderID;
+        }else{
+            console.log("error has occured");
+        }
+
+    });
+});
+
+title.addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    window.location.href = '/';
 })
