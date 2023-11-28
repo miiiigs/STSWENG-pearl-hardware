@@ -36,6 +36,10 @@ const productSchema = new Schema({
     isShown: {
         type: Boolean,
         default: true,
+    },
+
+    description:{
+        type: String,
     }
 
 });

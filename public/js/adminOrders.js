@@ -11,6 +11,25 @@ const prevPage = document.querySelector('#prevPage');
 
 console.log(cancel)
 
+function checkPages() {
+    if(nextPage.dataset.index == "false"){
+        console.log("FALSE");
+        nextPage.style.visibility = "hidden";
+    }else{
+        console.log("TRUE");
+        nextPage.style.visibility = "visible";
+    }
+    if(prevPage.dataset.index == "false"){
+        console.log("FALSE");
+        prevPage.style.visibility = "hidden";
+    }else{
+        console.log("TRUE");
+        prevPage.style.visibility = "visible";
+    }
+}
+
+checkPages();
+
 cancel.forEach(button => { button.addEventListener('click', async (e) => {
         e.preventDefault();
 

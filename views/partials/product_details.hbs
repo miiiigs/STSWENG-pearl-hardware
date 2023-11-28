@@ -27,7 +27,7 @@
             <h2 class="font-Inknut text-secondary text-[32px] mt-5">{{product.name}}</h2>
             <p class="font-Inknut text-secondary text-2xl pb-2">&#8369; {{product.price}}</p>
         
-            <span class="text-[17px] pb-2">[Product Description!!]</span>
+            <textarea class="text-[17px] pb-2">{{product.description}}</textarea>
             <span class="text-[17px] pb-3">In Stock: {{product.quantity}}</span>
         
             <form method="post" action="/add-to-cart" id="add" class="flex flex-col item-left w-[100%]">

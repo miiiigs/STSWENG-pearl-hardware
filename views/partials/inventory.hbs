@@ -1,7 +1,7 @@
 
 {{!-- 
 {{<div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <!--
+    
     Background backdrop, show/hide based on modal state.
 <div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
 
@@ -213,6 +213,12 @@
                                             </div>
 
                                             <div>
+                                                <label for="name" class="block text-sm font-medium text-gray-600 mt-5">Description:
+                                                </label>
+                                                <textarea row="10" cols="100" id="description" name="description" class="mt-1 p-2 w-full border rounded">{{this.description}}</textarea>
+                                            </div>
+
+                                            <div>
                                                 <label for="name" class="block text-sm font-medium text-gray-600 mt-5">Price:
                                                 </label>
                                                 <input type="text" id="price" name="price" value="{{this.price}}" class="mt-1 p-2 w-full border rounded">
@@ -255,14 +261,14 @@
 	{{/if}}
 </div>
 
-    <div class="flex justify-center mt-6 space-x-4">
+    <div class="flex space-x-0 my-10 mx-auto justify-center">
         <button
-            class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg h-[35px] text-center">
-            Prev
+            class="w-[120px] h-10 bg-maincolor text-white rounded-l-full hover:bg-white hover:border-black hover:text-maincolor focus:outline-none" id="prevPage" data-index={{prevPage}}>
+            PREV PAGE
         </button>
         <button
-            class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg h-[35px] text-center">
-            Next
+            class="w-[120px] h-10 bg-maincolor text-white rounded-r-full hover:bg-white hover:border hover:text-maincolor focus:outline-none" id="nextPage" data-index={{nextPage}}>
+            NEXT PAGE
         </button>
     </div>
 </div>
