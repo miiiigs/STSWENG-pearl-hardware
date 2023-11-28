@@ -1,26 +1,60 @@
 <div class="flex flex-col items-center mb-20">
 
     <div class="font-Inika text-4xl w-7x1 h-auto mt-7 text-center =">{{user.firstName}} {{user.lastName}}</div>
-    <div class="font-Inika text-4xl text-white bg-maincolor w-2/6 mx-auto rounded-lg p-5 mt-7 h-14 flex items-center justify-center ">
+    <div class="font-Inika text-4xl text-white bg-maincolor w-2/6 mx-auto rounded-lg p-5 mt-3 h-14 flex items-center justify-center ">
         {{user.firstName}}{{user.lastName}}
     </div>
-    <div class="font-Inika text-4xl text-white bg-maincolor w-2/6 mx-auto rounded-lg p-5 mt-7 h-14 flex items-center justify-center ">
+    <div class="font-Inika text-4xl text-white bg-maincolor w-2/6 mx-auto rounded-lg p-5 mt-3 h-14 flex items-center justify-center ">
         Email: {{user.email}}
     </div>
-    <div class="font-Inika text-4xl text-white bg-maincolor w-2/6 mx-auto rounded-lg p-5 mt-7 h-14 flex items-center justify-center ">
+    <div class="font-Inika text-4xl text-white bg-maincolor w-2/6 mx-auto rounded-lg p-5 mt-3 h-14 flex items-center justify-center ">
         Gender: Female
     </div>
-    <div class="font-Inika text-4xl text-white bg-maincolor w-2/6 mx-auto rounded-lg p-5 mt-7 h-14 flex items-center justify-center ">
+    <div class="font-Inika text-4xl text-white bg-maincolor w-2/6 mx-auto rounded-lg p-5 mt-3 h-14 flex items-center justify-center ">
         Phone Number: 09081989130   
     </div>
 
-    <div class="font-Inika text-4xl text-white w-2/6 mx-auto rounded-lg  mt-7 h-14 flex flex-row gap-x-20 items-center justify-center ">
-        <a href="#" class="bg-secondary py-2 px-3 w-full rounded-lg flex items-center justify-center">
+    <div class="font-Inika text-4xl text-white w-2/6 mx-auto rounded-lg  mt-3 h-14 flex flex-row gap-x-20 items-center justify-center ">
+        <a href="#" class="bg-secondary py-2 px-3 w-full rounded-lg flex items-center justify-center border border-secondary hover:bg-white hover:text-secondary hover:border">
             Edit Profile
         </a>
-        <a href="/userpurchases/allOrders" class="bg-secondary py-2 px-3 w-full rounded-lg flex items-center justify-center">
+        <a href="/userpurchases/allOrders" class="bg-secondary py-2 px-3 w-full rounded-lg flex items-center justify-center border border-secondary hover:bg-white hover:text-secondary hover:border">
             My Purchases
         </a>
     </div>
+        <div class="flex flex-col font-Inika text-4xl text-white bg-maincolor w-2/6 mx-auto rounded-lg p-2 mt-3 flex items-center justify-center ">
+            <div class=" mb-1">Address Details</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-lg mr-2">State:</div>
+        		<div class="pr-5 text-lg text-center">{{state}}</div>
+    		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-lg mr-2">City:</div>
+        		<div class="pr-5 text-lg text-center">{{city}}</div>
+    		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-lg mr-2">Postal Code:</div>
+        		<div class="pr-5 text-lg text-center">{{postalCode}}</div>
+    		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-lg mr-2">Address 1:</div>
+        		<div class="pr-5 text-lg text-center">{{line1}}</div>
+    		</div>
+
+			<div class=" flex flex-row items-start">
+        		<div class="text-lg mr-2">Address 2:</div>
+        		<div class="pr-5 text-lg text-center">{{line2}}</div>
+    		</div>
+			
+        </div>
+    
+
+    <button class="font-Inika text-4xl text-white bg-maincolor mx-auto rounded-lg p-5 mt-3 h-14 flex items-center justify-center border border-maincolor hover:bg-white hover:text-maincolor hover:border">
+        Back to Home
+    </button>
 
 </div>

@@ -131,58 +131,45 @@
 {{#if product_list}}
     {{#each product_list}}
     <div class="bg-tertiary flex flex-wrap items-center justify-center rounded-[10px] mb-2">
-        <div class="grid grid-cols-7 gap-40">
+        <div class="grid grid-cols-7 w-full px-2">
             <div class="w-32 h-32 border border-white mt-6 mb-8 ml-6">
 
                 <img src={{this.productpic}} alt="" class=" max-h-32 w-full h-full object-cover">
 
 
             </div>
-            <div class="font-Inknut text-secondary text-sm mt-20 ml-6">
+            <div class="font-Inknut text-secondary text-sm flex items-center justify-center ">
                 {{this.name}}</div>
-            <div class="font-Inknut text-secondary text-sm mt-20 ml-6">
+            <div class="font-Inknut text-secondary text-sm flex items-center justify-center ">
                 {{#if (eq this.type 'brassfittings')}}brass fittings {{else}}{{this.type}} {{/if}}</div>
-            <div class="font-Inknut text-secondary text-sm mt-20 ml-8 ">
+            <div class="font-Inknut text-secondary text-sm flex items-center justify-center">
                 PHP{{this.price}}</div>
-            <div class="font-Inknut text-secondary text-sm mt-20 ml-12 ">
+            <div class="font-Inknut text-secondary text-sm flex items-center justify-center">
                 {{this.quantity}}</div>
 
-            <div class=" grid grid-cols-3 gap-20 ml-0 mt-16">
-
-
-                <div>
+            <div class=" grid grid-cols-3 gap-1 flex items-center justify-center">
                     <button onclick="showProduct('{{this.p_id}}')"
-                        class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                        class="border border-maincolor bg-white text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-2 rounded-lg h-[35px]">
                         Show
                     </button>
-                </div>
 
-
-                <div>
                     <button onclick="hideProduct('{{this.p_id}}')"
-                        class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                        class="border border-maincolor bg-white text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-2 rounded-lg h-[35px]">
                         Hide
                     </button>
 
-                </div>
-
-                <div>
                     <button onclick="deleteProduct('{{this.p_id}}')"
-                        class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                        class="border border-maincolor bg-white text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-2 rounded-lg h-[35px]">
                         Delete
                     </button>
-                </div>
-
-
-
             </div>
-
-            <div class="mt-16">
+            <div class=" flex items-center justify-center">
                 <button onclick="toggleEditWindow('{{this.p_id}}')"
-                    class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">
+                    class="mx-auto bg-white border border-maincolor text-maincolor hover:bg-maincolor hover:text-white px-4 rounded-lg h-[35px]">
                     Edit
-                </button>
+                </button>                
             </div>
+
 
 
         </div>
@@ -263,11 +250,11 @@
 
     <div class="flex space-x-0 my-10 mx-auto justify-center">
         <button
-            class="w-[120px] h-10 bg-maincolor text-white rounded-l-full hover:bg-white hover:border-black hover:text-maincolor focus:outline-none" id="prevPage" data-index={{prevPage}}>
+            class="w-[120px] h-10 bg-maincolor text-white rounded-l-full hover:bg-white hover:border border-maincolor hover:text-maincolor focus:outline-none" id="prevPage" data-index={{prevPage}}>
             PREV PAGE
         </button>
         <button
-            class="w-[120px] h-10 bg-maincolor text-white rounded-r-full hover:bg-white hover:border hover:text-maincolor focus:outline-none" id="nextPage" data-index={{nextPage}}>
+            class="w-[120px] h-10 bg-maincolor text-white rounded-r-full hover:bg-white hover:border border-maincolor hover:text-maincolor focus:outline-none" id="nextPage" data-index={{nextPage}}>
             NEXT PAGE
         </button>
     </div>

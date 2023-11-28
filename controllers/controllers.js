@@ -220,6 +220,7 @@ const controller = {
             }
             console.log(userData);
             res.render("userprofile", {
+                layout: 'userprofile',
                 user: userData,
                 script: './js/userProfile.js'
             });
