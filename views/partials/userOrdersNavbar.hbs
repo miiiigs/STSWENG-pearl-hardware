@@ -1,0 +1,58 @@
+
+<div class="sticky top-0 z-10 bg-maincolor mx-auto my-auto px-5 mt-6 w-[98%] h-14 rounded-[10px_10px_0px_0px]">
+
+    <div class=" max-w-full">
+        <div class="relative flex ">
+            <div class="flex space-x-10 text-white mt-2 py-3 pt-0 mx-auto">
+
+                <form action="/userpurchases/allOrders" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'allOrders')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                        All Orders
+                    </button>
+                </form>
+
+                <form action="/userpurchases/awaitingPayment" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'awaitingPayment')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                        Awaiting Payment
+                    </button>
+                </form>
+
+
+                <form action="/userpurchases/succeeded" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'succeeded')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                        Payment Succesful
+                    </button>
+                </form>
+
+                <form action="/userpurchases/orderPacked" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'orderPacked')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                        Order Packed
+                    </button>
+                </form>
+                
+                <form action="/userpurchases/inTransit" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'inTransit')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                        Order In Transit
+                    </button>
+                </form>
+
+                <form action="/userpurchases/delivered" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'delivered')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                        Delivered
+                    </button>
+                </form>
+
+                <form action="/userpurchases/cancelled" method="GET">
+                    <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'cancelled')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
+                        Cancelled Order
+                    </button>
+                </form>
+                
+                
+            </div>
+
+
+        </div>
+    </div>
+
+</div>

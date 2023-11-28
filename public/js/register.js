@@ -3,6 +3,11 @@ const regFName = document.querySelector('#regfname');
 const regLName = document.querySelector('#reglname');
 const regEmail = document.querySelector('#regemail');
 const regPassword = document.querySelector('#regpassword');
+const regLine1 = document.querySelector('#regline1');
+const regLine2 = document.querySelector('#regline2');
+const regCity = document.querySelector('#regcity');
+const regState = document.querySelector('#regstate');
+const regPostalCode = document.querySelector('#regpostalcode');
 const errorDisplay = document.querySelector("#errors");
 
 const regLog = document.querySelector('#regLog'); //we remove the myaccount and register buttons in the register/login pages
@@ -21,8 +26,13 @@ registerSubmit.addEventListener('click', async (e) => {
     const lname = regLName.value;
     const email = regEmail.value;
     const password = regPassword.value;
+    const line1 = regLine1.value;
+    const line2 = regLine2.value;
+    const state = regState.value;
+    const city = regCity.value;
+    const postalCode = regPostalCode.value;
 
-    const jString = JSON.stringify({fname,lname, email, password});
+    const jString = JSON.stringify({fname,lname, email, password, line1, line2, state, city, postalCode});
 
     const response = await fetch('/register', {
         method: "POST",
@@ -53,17 +63,23 @@ registerSubmit.addEventListener('click', async (e) => {
 
     }else if(response.status == 405) { //displays email already taken message
         console.error(`An error has occurred, Status code = ${response.status}`);
-        errorDisplay.textContent = "Email already Exists!";
+        errorDisplay.textContent = "Email already exists!";
         errorDisplay.style.color = "red";
     }else if(response.status == 406){ //displays invalid email format message
+        console.log("OKAY")
         console.error(`An error has occurred, Status code = ${response.status}`);
         errorDisplay.textContent = "Invalid email format!";
+        errorDisplay.style.color = "red";
+    }else if(response.status == 410){ //displays invalid email format message
+        console.log("OKAY")
+        console.error(`An error has occurred, Status code = ${response.status}`);
+        errorDisplay.textContent = "Invalid postal code!";
         errorDisplay.style.color = "red";
     }
 })
 
 function checkInputs() { //this function disables the register submit button until all fields have values
-    if(regFName.value.trim() !== '' && regLName.value.trim() !== '' && regEmail.value.trim() !== '' && regPassword.value.trim() !== ''){
+    if(regFName.value.trim() !== '' && regLName.value.trim() !== '' && regEmail.value.trim() !== '' && regPassword.value.trim() !== '' && regLine1.value.trim() !== '' && regCity.value.trim() !== '' && regState.value.trim() !== '' && regPostalCode.value.trim() !== ''){
         registerSubmit.disabled = false;
         registerSubmit.textContent = "Submit";
         registerSubmit.style.color = "black";
@@ -80,3 +96,7 @@ regFName.addEventListener('input', checkInputs); //everytime the user inputs a f
 regLName.addEventListener('input', checkInputs)
 regEmail.addEventListener('input', checkInputs);
 regPassword.addEventListener('input', checkInputs);
+regLine1.addEventListener('input', checkInputs);
+regCity.addEventListener('input', checkInputs);
+regState.addEventListener('input', checkInputs);
+regPostalCode.addEventListener('input', checkInputs);

@@ -9,6 +9,8 @@ import mongoose from 'mongoose';
 import { Image } from '../model/imageSchema.js';
 
 const SALT_WORK_FACTOR = 10;
+let currentCategory = "allproducts";
+const pageLimit = 2;
 
 /*
     Checks if file is an image
@@ -101,12 +103,21 @@ const controller = {
     getCategory: async function (req, res) {
 
         const category = req.params.category;
-        console.log(category);
+        //console.log("CATEGORY " + req.params.category);
+        //console.log(currentCategory);
+        if((req.session.pageIndex == null || currentCategory != category) && (category == 'allproducts' || category == 'welding' || category == 'safety' || category == 'cleaning' || category == 'industrial' || category == 'brassfittings')){
+            //console.log("HERE");
+            req.session.prevPage = false;
+            req.session.nextPage = true;
+            req.session.pageIndex = 0;
+            currentCategory = category;
+        }
+        //console.log(req.session.pageIndex);
 
         try {
 
             //getProducts function
-            var product_list = await getProducts(category);
+            var product_list = await getProducts(category, req);
 
             // sortProducts function
             const sortValue = req.query.sortBy;
@@ -116,9 +127,56 @@ const controller = {
                 product_list: product_list,
                 category: category,
                 script: '/./js/sort.js',
+                nextPage: req.session.nextPage,
+                prevPage: req.session.prevPage
 
             });
         } catch {
+            res.sendStatus(400);
+        }
+
+    },
+
+    changePageStore: async function(req, res){
+
+        try{
+
+        let count;
+
+        //console.log(req.body);
+
+        const category = req.params.category.toLowerCase();
+        //console.log(category);
+
+        const {change} = req.body;
+        //console.log(change);
+
+        if(category == "welding" || category == "safety" || category == "cleaning" || category == "industrial" || category == "brassfittings"){
+            count = await Product.find( {type:category} );
+        }else{
+            count = await Product.find({});
+        }
+
+        //console.log(count);
+
+        if(change == "next"){
+            req.session.pageIndex = req.session.pageIndex + 1;
+        }else if(change == "prev"){
+            req.session.pageIndex = req.session.pageIndex - 1;
+        }else{
+            console.log("error fetching page");
+        }
+
+        if(req.session.pageIndex < 0 || req.session.pageIndex > Math.round(count.length / pageLimit)){
+            console.log("HERE");
+            req.session.pageIndex = 0;
+        }
+
+        currentCategory = category;
+
+        res.sendStatus(200);
+        }catch(error){
+            console.error(error);
             res.sendStatus(400);
         }
 
@@ -145,6 +203,7 @@ const controller = {
 
     getUserProfile: async function (req, res) {
         try {
+            
             const user = await User.findById(req.session.userID);
             let userData = {
                 firstName: user.firstName,
@@ -162,7 +221,7 @@ const controller = {
             console.log(userData);
             res.render("userprofile", {
                 user: userData,
-
+                script: './js/userProfile.js'
             });
         } catch {
             res.sendStatus(400);
@@ -170,15 +229,80 @@ const controller = {
     },
 
     getUserPurchases: async function (req, res) {
+
+        const category = req.params.status;
+
+        if((req.session.pageIndex == null || currentCategory != category) && (category == 'allOrders' || category == 'awaitingPayment' || category == 'succeeded' || category == 'orderPacked' || category == 'inTransit' || category == 'delivered' || category == 'cancelled')){
+            //console.log("HERE");
+            req.session.prevPage = false;
+            req.session.nextPage = true;
+            req.session.pageIndex = 0;
+            currentCategory = category;
+        }
+
         try {
+            let resp;
+            let testNext;
+            var orders = [];
+            switch(category){
+                case 'allOrders':
+                    resp = await Order.find({isCancelled: false, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
+                    testNext = await Order.find({isCancelled: false, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
+                    break;
+                default:
+                    resp = await Order.find({status: category, isCancelled: false, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
+                    testNext = await Order.find({status: category, isCancelled: false, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
+                    break;
+                case 'cancelled':
+                    resp = await Order.find({isCancelled: true, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
+                    testNext = await Order.find({isCancelled: true, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
+                    break;
+            }
+
+            if(testNext.length == 0)
+                req.session.nextPage = false;
+            else
+                req.session.nextPage = true;
+    
+            if(req.session.pageIndex == 0)
+                req.session.prevPage = false;
+            else    
+                req.session.prevPage = true;
+    
+            console.log(req.session.pageIndex);
+            console.log(req.session.nextPage);
+            console.log(req.session.prevPage);
+
+            console.log(resp)
+            for(let i = 0; i < resp.length; i++) {
+                orders.push({
+                    orderID: resp[i]._id,
+                    firstName: resp[i].firstName,
+                    lastName: resp[i].lastName,
+                    email: resp[i].email,
+                    date: resp[i].date.toISOString().slice(0, 10),
+                    status: resp[i].status,
+                    amount: resp[i].amount,
+                    items: resp[i].items.length,
+                    paymongoID: resp[i].paymongoID,
+                    isCancelled: resp[i].isCancelled.toString()
+                });
+            }
             res.render("userpurchases", {
+                layout: 'userOrders',
+                script: '/./js/userPurchases.js',
+                orders: orders,
+                category: category,
+                nextPage: req.session.nextPage,
+                prevPage: req.session.prevPage
             });
-        } catch {
+
+        } catch(error) {
             res.sendStatus(400);
+            console.error(error);
         }
     },
     
-
     addProduct: async function (req, res) {
         try {
             const pic = req.file;
@@ -186,15 +310,12 @@ const controller = {
     
             if (pic) {
 
-                //console.log(pic)
-
                 const obj = {
                     img: {
                         data: new Buffer.from(pic.buffer, 'base64'),
                         contentType: pic.mimeType
                     }
                 }
-
                 const imageSave = await Image.create(obj);
                 
                 new Product({
@@ -203,6 +324,7 @@ const controller = {
                     quantity: product.quantity,
                     price: product.price,
                     productpic: 'http://localhost:3000/image/' + imageSave._id,
+                    description: product.description
                 }).save();
 
             }else {
@@ -212,10 +334,11 @@ const controller = {
                     quantity: product.quantity,
                     price: product.price,
                     productpic: './uploads/temp.png',
+                    description: product.description
                 }).save();
             }
 
-            res.redirect('/adminInventory');
+            res.redirect('/adminInventory/' + product.type);
     
         }catch(err){
             console.error(err);
@@ -225,7 +348,6 @@ const controller = {
 
     editProduct: async function (req, res) {
         try {
-
             const pic = req.file;
             const product = req.body;
 
@@ -246,7 +368,8 @@ const controller = {
                         type: product.type,
                         quantity: product.stock,
                         price: product.price,
-                        productpic: 'http://localhost:3000/image/' + imageSave._id
+                        productpic: 'http://localhost:3000/image/' + imageSave._id,
+                        description: product.description
                     },
                     
                 );
@@ -257,35 +380,98 @@ const controller = {
                         type: product.type,
                         quantity: product.stock,
                         price: product.price,
+                        description: product.description
                     },
                     
                 );
             }
 
-            res.redirect('/adminInventory');
+            res.redirect('/adminInventory/' + currentCategory);
 
         } catch {
             res.sendStatus(400);
         }
     },
 
+    getUserOrderDetails: async function(req, res) {
+
+        const orderID = req.params.orderID;
+
+        try{
+
+            const order = await Order.findById(orderID);
+
+            res.render("userorderdetails", {
+                layout: 'userOrders',
+                orderID: order._id,
+                orderDate: order.date,
+                fname: order.firstName,
+                lname: order.lastName,
+                email: order.email,
+                status: order.status,
+                city: order.city,
+                postalCode: order.postalCode,
+                state: order.state,
+                line1: order.line1,
+                line2: order.line2,
+                isCancelled: order.isCancelled,
+                items: order.items,
+                amount: order.amount,
+                paymongoID: order.paymongoID,
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
     getAdminInventory: async function (req, res) {
+
+        const category = req.params.category;
+
+        if((req.session.pageIndex == null || currentCategory != category) && (category == 'allproducts' || category == 'welding' || category == 'safety' || category == 'cleaning' || category == 'industrial' || category == 'brassfittings')){
+            //console.log("HERE");
+            req.session.nextPage = true;
+            req.session.prevPage = false;
+            req.session.pageIndex = 0;
+            currentCategory = category;
+        }
+
         try {
-            var product_list = [];
-            let resp = await Product.find({});
+            let resp;
+            var product_list = await getProducts(category, req);
+            console.log(product_list)
+            // switch(category){
+            //     case 'welding':
+            //         resp = await Product.find({type: 'Welding'});
+            //         break;
+            //     case 'safety':
+            //         resp = await Product.find({type: 'Safety'});
+            //         break;
+            //     case 'cleaning':
+            //         resp = await Product.find({type: 'Cleaning'});
+            //         break;
+            //     case 'industrial':
+            //         resp = await Product.find({type: 'Industrial'});
+            //         break;
+            //     case 'brass_fittings':
+            //         resp = await Product.find({type: 'Brass Fittings'});
+            //         break;
+            //     default:
+            //         resp = await Product.find({});
+                
+                
+            // }
 
-            console.log(resp.length)
-
-            for (let i = 0; i < resp.length; i++) {
-                product_list.push({
-                    name: resp[i].name,
-                    type: resp[i].type,
-                    price: resp[i].price,
-                    quantity: resp[i].quantity,
-                    productpic: resp[i].productpic,
-                    p_id: resp[i]._id,
-                });
-            }
+            // for (let i = 0; i < resp.length; i++) {
+            //     product_list.push({
+            //         name: resp[i].name,
+            //         type: resp[i].type,
+            //         price: resp[i].price,
+            //         quantity: resp[i].quantity,
+            //         productpic: resp[i].productpic,
+            //         p_id: resp[i]._id,
+            //     });
+            // }
             // sortProducts function
             const sortValue = req.query.sortBy;
             console.log(sortValue);
@@ -298,7 +484,10 @@ const controller = {
                     res.render("adminInventory", {
                         layout: 'adminInven',
                         product_list: product_list,
-                        script: './js/adminInventory.js'
+                        script: '/./js/adminInventory.js',
+                        category: category,
+                        nextPage: req.session.nextPage,
+                        prevPage: req.session.prevPage
                     });
                 } else {
                     console.log("UNAUTHORIZED");
@@ -317,20 +506,32 @@ const controller = {
 	//specialized search and sort for Admin
     searchInventory: async function (req, res) {
         console.log("Searching in inventory!");
-
+        var product_list = [];
         var query = req.query.product_query;
 
 
         console.log("Searching for " + query);
 
-        const result = await Product.find({ name: new RegExp('.*' + query + '.*', 'i') }, { __v: 0 }).lean();
+        const resp = await Product.find({ name: new RegExp('.*' + query + '.*', 'i') }, { __v: 0 }).lean();
+        
+        for (let i = 0; i < resp.length; i++) {
+            product_list.push({
+                name: resp[i].name,
+                type: resp[i].type,
+                price: resp[i].price,
+                quantity: resp[i].quantity,
+                productpic: resp[i].productpic,
+                p_id: resp[i]._id
+            });
+            
+        }
 
         // sortProducts function
         const sortValue = req.query.sortBy;
         console.log(sortValue);
-        sortProducts(result, sortValue);
+        sortProducts(product_list, sortValue);
 
-        res.render("adminInventory", { layout: 'adminInven', product_list: result, buffer: query });
+        res.render("adminInventory", { layout: 'adminInven', product_list: product_list, buffer: query });
     },
 	
 	//searchOrders
@@ -402,17 +603,20 @@ const controller = {
         //console.log(errors)
         if (!errors.isEmpty()) {
             if (errors.array().at(0).msg === "Email already exists!") {
-                console.log(errors.array().at(0).msg)
-                return res.sendStatus(405) //405 is for email that exists already
-            } else {
-                console.log(errors.array().at(0).msg + " of " + errors.array().at(0).path)
-                return res.sendStatus(406) //406 is for invalid email value
+                console.log(errors.array().at(0).msg);
+                return res.sendStatus(405); //405 is for email that exists already
+            }else if (errors.array().at(0).msg + " of " + errors.array().at(0).path === "Invalid value of postalCode") {
+                console.log(errors.array().at(0).msg + " of " + errors.array().at(0).path);
+                return res.sendStatus(410); //405 is for email that exists already
+            }else {
+                console.log(errors.array().at(0).msg + " of " + errors.array().at(0).path);
+                return res.sendStatus(406); //406 is for invalid email value
             }
         }
 
         console.log("Register request received");
         console.log(req.body);
-        const { fname, lname, email, password } = req.body
+        const { fname, lname, email, password, line1, line2, state, city, postalCode } = req.body
 
         const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
         const hash = await bcrypt.hash(password, salt);
@@ -422,11 +626,11 @@ const controller = {
             lastName: lname,
             email: email,
             password: hash,
-            line1: "sample",
-            line2: "sample",
-            city: "sample",
-            state: "sample",
-            postalCode: 1111,
+            line1: line1,
+            line2: line2,
+            city: city,
+            state: state,
+            postalCode: postalCode,
             country: "PH"
         });
 
@@ -682,7 +886,7 @@ const controller = {
                     email: user.email,
                     items: itemsDetails,
                     date: Date.now(),
-                    status: 'awaiting payment',
+                    status: 'awaitingPayment',
                     amount: parseFloat(total.toFixed(2)),
                     paymongoID: -1, //paymongoID of -1 means there is no record of a transaction in paymongo in other words it is to be ignored as the user did not even go to the checkout page of paymongo
                     line1: user.line1,
@@ -807,11 +1011,20 @@ const controller = {
         const category = req.params.category;
         //console.log(category);
 
+        if((req.session.pageIndex == null || currentCategory != category) && (category == 'allOrders' || category == 'awaitingPayment' || category == 'succeeded' || category == 'orderPacked' || category == 'inTransit' || category == 'delivered' || category == 'cancelled')){
+            //console.log("HERE");
+            req.session.prevPage = false;
+            req.session.nextPage = true;
+            req.session.pageIndex = 0;
+            currentCategory = category;
+        }
+
         try {
 
             //getProducts function
             var order_list = [];
             let resp;
+            let testNext;
 			const sortValue = req.query.sortBy;
 			//console.log("sort val = " + sortValue);
 			var dateVal = undefined;
@@ -825,28 +1038,33 @@ const controller = {
 				dateVal = "asc"; //defaults to showing dates from newest to oldest
 			}
             switch(category){
-                case 'allorders':
-                    resp = await Order.find({isCancelled: false}).sort({date: dateVal});
+                case 'allOrders':
+                    resp = await Order.find({isCancelled: false}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
+                    testNext = await Order.find({isCancelled: false}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({date: dateVal});
                     break;
-                case 'awaitingpayment':
-                    resp = await Order.find({status: 'awaiting payment', isCancelled: false}).sort({date: dateVal});
-                    break;
-                case 'paymentsuccess':
-                    resp = await Order.find({status: 'succeeded', isCancelled: false}).sort({date: dateVal});
-                    break;
-                case 'orderpacked':
-                    resp = await Order.find({status: 'order packed', isCancelled: false}).sort({date: dateVal});
-                    break;
-                case 'intransit':
-                    resp = await Order.find({status: 'in transit', isCancelled: false}).sort({date: dateVal});
-                    break;
-                case 'delivered':
-                    resp = await Order.find({status: 'delivered', isCancelled: false}).sort({date: dateVal});
+                default:
+                    resp = await Order.find({status: category, isCancelled: false}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
+                    testNext = await Order.find({status: category, isCancelled: false}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({date: dateVal});
                     break;
                 case 'cancelled':
-                    resp = await Order.find({isCancelled: true}).sort({date: dateVal});
+                    resp = await Order.find({isCancelled: true}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
+                    testNext = await Order.find({isCancelled: true}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({date: dateVal});
                     break;
             }
+
+            if(testNext.length == 0)
+                req.session.nextPage = false;
+            else
+                req.session.nextPage = true;
+    
+            if(req.session.pageIndex == 0)
+                req.session.prevPage = false;
+            else    
+                req.session.prevPage = true;
+    
+            console.log(req.session.pageIndex);
+            console.log(req.session.nextPage);
+            console.log(req.session.prevPage);
 
             //console.log(resp.length)
 
@@ -860,7 +1078,7 @@ const controller = {
                     status: resp[i].status,
                     amount: resp[i].amount,
                     paymongoID: resp[i].paymongoID,
-                    isCancelled: resp[i].isCancelled.toString()
+                    isCancelled: resp[i].isCancelled.toString(),
                 });
             }
             
@@ -879,6 +1097,8 @@ const controller = {
                         order_list: order_list.reverse(),
                         category: category,
                         script: '/./js/adminOrders.js',
+                        nextPage: req.session.nextPage,
+                        prevPage: req.session.prevPage
                     });
                 } else {
                     console.log("UNAUTHORIZED");
@@ -887,7 +1107,98 @@ const controller = {
             } else {
                 res.sendStatus(400);
             }
-        } catch {
+        } catch(error) {
+            res.sendStatus(400);
+            console.error(error)
+        }
+
+    },
+
+    changePageAdminCategory: async function(req, res){
+
+        try{
+
+        let count;
+
+        //console.log(req.body);
+
+        const category = req.params.category;
+        //console.log(category);
+
+        const {change} = req.body;
+        //console.log(change);
+
+        if(category == "awaitingPayment" || category == "succeeded" || category == "orderPacked" || category == "inTransit" || category == "delivered"){
+            count = await Order.find( {status : category} );
+        }else if(category == "allOrders"){
+            count = await Order.find( {isCancelled : false} );
+        }else{
+            count = await Order.find({});
+        }
+
+        if(change == "next"){
+            req.session.pageIndex = req.session.pageIndex + 1;
+        }else if(change == "prev"){
+            req.session.pageIndex = req.session.pageIndex - 1;
+        }else{
+            console.log("error fetching page");
+        }
+
+        if(req.session.pageIndex < 0 || req.session.pageIndex > Math.round(count.length / pageLimit)){
+            console.log("HERE");
+            req.session.pageIndex = 0;
+        }
+
+        currentCategory = category;
+
+        res.sendStatus(200);
+        }catch(error){
+            console.error(error);
+            res.sendStatus(400);
+        }
+
+    },
+
+    changePageUserPurchases: async function(req, res){
+
+        try{
+
+        let count;
+
+        //console.log(req.body);
+
+        const category = req.params.category;
+        //console.log(category);
+
+        const {change} = req.body;
+        //console.log(change);
+
+        if(category == "awaitingPayment" || category == "succeeded" || category == "orderPacked" || category == "inTransit" || category == "delivered"){
+            count = await Order.find( {status : category, userID : req.session.userID, isCancelled: false} );
+        }else if(category == "allOrders"){
+            count = await Order.find( {isCancelled : false, userID : req.session.userID} );
+        }else{
+            count = await Order.find({userID : req.session.userID, isCancelled: true});
+        }
+
+        if(change == "next"){
+            req.session.pageIndex = req.session.pageIndex + 1;
+        }else if(change == "prev"){
+            req.session.pageIndex = req.session.pageIndex - 1;
+        }else{
+            console.log("error fetching page");
+        }
+
+        if(req.session.pageIndex < 0 || req.session.pageIndex > Math.round(count.length / pageLimit)){
+            console.log("HERE");
+            req.session.pageIndex = 0;
+        }
+
+        currentCategory = category;
+
+        res.sendStatus(200);
+        }catch(error){
+            console.error(error);
             res.sendStatus(400);
         }
 
@@ -1011,29 +1322,57 @@ const controller = {
 
 }
 
-async function getProducts(category) {
+async function getProducts(category, req) {
+    try{
     var product_list = [];
     let resp;
+    let testNext;
+    //console.log(category)
     switch (category) {
         case 'welding':
-            resp = await Product.find({ type: 'Welding' });
+            resp = await Product.find({ type: category, isShown: true }).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
+            testNext = await Product.find({ type: category, isShown: true }).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
             break;
         case 'safety':
-            resp = await Product.find({ type: 'Safety' });
+            resp = await Product.find({ type: category, isShown: true }).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
+            testNext = await Product.find({ type: category, isShown: true }).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
+
+            //testNext = await Order.find({isCancelled: false}).skip(req.session.pageIndex + 1 * pageLimit).limit(pageLimit).sort({date: dateVal});
             break;
         case 'cleaning':
-            resp = await Product.find({ type: 'Cleaning' });
+            resp = await Product.find({ type: category, isShown: true}).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
+            testNext = await Product.find({ type: category, isShown: true }).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
             break;
         case 'industrial':
-            resp = await Product.find({ type: 'Industrial' });
+            resp = await Product.find({ type: category, isShown: true }).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
+            testNext = await Product.find({ type: category, isShown: true }).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
             break;
         case 'brassfittings':
-            resp = await Product.find({ type: 'Brass Fittings' });
+            resp = await Product.find({ type: category, isShown: true }).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
+            testNext = await Product.find({ type: category, isShown: true }).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
             break;
         default:
-            resp = await Product.find({});
+            resp = await Product.find({isShown: true}).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
+            testNext = await Product.find({isShown: true}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
             break;
     }
+
+    //console.log(testNext)
+
+    if(testNext.length == 0)
+        req.session.nextPage = false;
+    else
+        req.session.nextPage = true;
+    
+    if(req.session.pageIndex == 0)
+        req.session.prevPage = false;
+    else    
+        req.session.prevPage = true;
+    
+    console.log(req.session.pageIndex);
+    console.log(req.session.nextPage);
+    console.log(req.session.prevPage);
+
     for (let i = 0; i < resp.length; i++) {
         if (resp[i].isShown) {
             product_list.push({
@@ -1042,11 +1381,15 @@ async function getProducts(category) {
                 price: resp[i].price,
                 quantity: resp[i].quantity,
                 productpic: resp[i].productpic,
-                p_id: resp[i]._id
+                p_id: resp[i]._id,
+                description: resp[i].description
             });
         }
     }
     return product_list;
+}catch(error){
+    console.error(error);
+}
 }
 
 async function sortProducts(product_list, sortValue) {

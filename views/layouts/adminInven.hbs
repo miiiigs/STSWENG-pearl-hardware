@@ -9,12 +9,14 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
     <script src="{{script}}" defer></script>
+    <script src="../js/sort_inventory.js" defer></script>
 </head>
 
 <body class="flex flex-col">
 
     {{> back_to_admin}}
     <div class="flex flex-col mb-16">
+
         <div class="flex flex-row">
             {{> title}}
             <div class="ml-auto my-auto mr-16">
@@ -22,8 +24,9 @@
             </div>
         </div>
 
-
-        <div class="bg-maincolor w-[98%] h-[45px] mt-2 flex flex-auto items-center rounded-[10px_10px_0px_0px] mx-auto">
+        {{> inventory_sort}}
+        
+        {{!-- <div class="bg-maincolor w-[98%] h-[45px] mt-2 flex flex-auto items-center rounded-[10px_10px_0px_0px] mx-auto">
             {{#if buffer}}
 				<form action="/adminInventory" method="GET">
                     <button type="submit" class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'allorders')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Inika">
@@ -31,7 +34,7 @@
                     </button>
                 </form>
 			{{/if}}
-        </div>
+        </div> --}}
 
 
 
