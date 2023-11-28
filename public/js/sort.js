@@ -3,6 +3,25 @@ const myAccount = document.querySelector('#myAccount')
 const nextPage = document.querySelector('#nextPage');
 const prevPage = document.querySelector('#prevPage');
 
+function checkPages() {
+    if(nextPage.dataset.index == "false"){
+        console.log("FALSE");
+        nextPage.style.visibility = "hidden";
+    }else{
+        console.log("TRUE");
+        nextPage.style.visibility = "visible";
+    }
+    if(prevPage.dataset.index == "false"){
+        console.log("FALSE");
+        prevPage.style.visibility = "hidden";
+    }else{
+        console.log("TRUE");
+        prevPage.style.visibility = "visible";
+    }
+}
+
+checkPages();
+
 async function initializeUserStatus(){
     const response = await fetch('/getUser', {
         method: "GET",
