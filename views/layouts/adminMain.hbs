@@ -12,29 +12,30 @@
 </head>
 
 <body class="flex flex-col">
-	
+    {{> back_to_admin}}
     <div class="flex flex-col mb-16">
         <div class="flex flex-row">
+
             {{> title}}
             <div class="ml-auto my-auto mr-16">
                 {{> search_inventory}}
-				<script>
-					window.onload = function() {
-						const urlSearchParams = new URLSearchParams(window.location.search);
-					};
-					const currentUrl = window.location.pathname.split("/");
-					console.log(currentUrl[1]);
-					if(currentUrl[1] == "adminCategory" || currentUrl[1] == "searchOrders" || currentUrl[1] == "adminOrderDetails"){
-						const searchbox = document.querySelector('#search_inventory_query_box');
-						searchbox.action = "/searchOrders";
-						const searchboxText = document.querySelector('#product_query');
-						searchboxText.placeholder = "Search for order";
-					}
-				</script>
-            </div> 
+                <script>
+                    window.onload = function () {
+                        const urlSearchParams = new URLSearchParams(window.location.search);
+                    };
+                    const currentUrl = window.location.pathname.split("/");
+                    console.log(currentUrl[1]);
+                    if (currentUrl[1] == "adminCategory" || currentUrl[1] == "searchOrders" || currentUrl[1] == "adminOrderDetails") {
+                        const searchbox = document.querySelector('#search_inventory_query_box');
+                        searchbox.action = "/searchOrders";
+                        const searchboxText = document.querySelector('#product_query');
+                        searchboxText.placeholder = "Search for order";
+                    }
+                </script>
+            </div>
         </div>
         {{> adminNavbar}}
-        
+
         {{{body}}}
     </div>
 
