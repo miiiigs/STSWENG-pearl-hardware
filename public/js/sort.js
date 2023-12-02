@@ -4,6 +4,7 @@ const nextPage = document.querySelector('#nextPage');
 const prevPage = document.querySelector('#prevPage');
 
 function checkPages() {
+	try{
     if(nextPage.dataset.index == "false"){
         console.log("FALSE");
         nextPage.style.visibility = "hidden";
@@ -18,6 +19,7 @@ function checkPages() {
         console.log("TRUE");
         prevPage.style.visibility = "visible";
     }
+	}catch{}
 }
 
 checkPages();
@@ -55,7 +57,7 @@ sortSelect.addEventListener('change', async (e) => {
     e.preventDefault();
     var sortValue = sortSelect.value;
     const currentURL = window.location.pathname;
-     var queryVal = document.querySelector('#product_query').value;
+    var queryVal = document.querySelector('#product_query').value;
 	let actionURL;
 	if(currentURL == "/searchProducts"){
 		actionURL = '/.' + currentURL + '?product_query=' + queryVal + '&sortBy=' + sortValue;

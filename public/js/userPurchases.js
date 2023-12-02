@@ -3,24 +3,56 @@ const prevPage = document.querySelector('#prevPage');
 const orderInstance = document.querySelectorAll('#orderInstance');
 const title = document.querySelector('#title');
 
+window.onload = function() {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const query = urlSearchParams.get('sortBy');
+    const selectedOption = document.querySelector(`#sort option[value="${query}"]`);
+    selectedOption.selected = true;
+};
+
 function checkPages() {
-    if(nextPage.dataset.index == "false"){
-        console.log("FALSE");
-        nextPage.style.visibility = "hidden";
-    }else{
-        console.log("TRUE");
-        nextPage.style.visibility = "visible";
-    }
-    if(prevPage.dataset.index == "false"){
-        console.log("FALSE");
-        prevPage.style.visibility = "hidden";
-    }else{
-        console.log("TRUE");
-        prevPage.style.visibility = "visible";
-    }
+	try{
+		if(nextPage.dataset.index == "false"){
+			console.log("FALSE");
+			nextPage.style.visibility = "hidden";
+		}else{
+			console.log("TRUE");
+			nextPage.style.visibility = "visible";
+		}
+		if(prevPage.dataset.index == "false"){
+			console.log("FALSE");
+			prevPage.style.visibility = "hidden";
+		}else{
+			console.log("TRUE");
+			prevPage.style.visibility = "visible";
+		}
+	}catch{}
 }
 
 checkPages();
+
+try{ //if sort box even exists
+	const sortSelect = document.querySelector('#sort');
+	sortSelect.addEventListener('change', async (e) => {
+		e.preventDefault();
+		var sortValue = sortSelect.value;
+		const currentURL = window.location.pathname;
+		var queryVal = document.querySelector('#product_query').value;
+		const URLSplit = currentURL.split("/");
+		console.log(currentURL);
+		if(URLSplit[1] == "userpurchases"){
+			var actionURL = '/.' + currentURL + '?sortBy=' + sortValue;
+		}
+		console.log(actionURL);
+		
+		const response = await fetch(actionURL, {
+			method: 'GET',
+		});
+		
+		window.location.href = actionURL; 
+	});
+}
+catch{}
 
 nextPage.addEventListener('click', async (e) => {
     e.preventDefault();
