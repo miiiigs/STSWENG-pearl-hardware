@@ -74,6 +74,7 @@ router.post('/editProduct', upload.single('productPic'), controller.editProduct)
 router.post('/showProduct', controller.showProduct);
 router.post('/hideProduct', controller.hideProduct);
 router.post('/deleteProduct', controller.deleteProduct);
+router.post('/editProfile/:id', controller.editProfile);
 
 
 export default router;

@@ -1,6 +1,7 @@
 const loginSubmit = document.querySelector('#logsubmit');
 const logEmail = document.querySelector('#logemail');
 const logPassword = document.querySelector('#logpassword');
+const errorDisplay = document.querySelector("#errors");
 //const logErrorDisplay = document.querySelector('#login_errors');
 
 const regLog = document.querySelector('#regLog'); //we remove the myaccount and register buttons in the register/login pages
@@ -56,9 +57,9 @@ loginSubmit.addEventListener('click', async (e) => {
             window.location.href = '/admin';
         }
         else if(response.status == 500){ 
-            logErrorDisplay.textContent = "Invalid email or password";
-            logErrorDisplay.style.color = "red";
-            console.log("login error!");
+            console.error(`An error has occurred, Status code = ${response.status}`);
+            errorDisplay.textContent = "Incorrect email or password!";
+            errorDisplay.style.color = "red";
         }
     }
     
