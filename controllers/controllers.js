@@ -10,7 +10,7 @@ import { Image } from '../model/imageSchema.js';
 
 const SALT_WORK_FACTOR = 10;
 let currentCategory = "allproducts";
-const pageLimit = 2;
+const pageLimit = 15;
 
 /*
     Checks if file is an image
@@ -191,16 +191,6 @@ const controller = {
         }
     },
 
-    getCart: async function (req, res) {
-        try {
-            res.render("add_to_cart", {
-
-            });
-        } catch {
-            res.sendStatus(400);
-        }
-    },
-
     getUserProfile: async function (req, res) {
         try {
             
@@ -245,20 +235,76 @@ const controller = {
             let resp;
             let testNext;
             var orders = [];
-            switch(category){
+			
+			const sortValue = req.query.sortBy;
+			console.log("sort val = " + sortValue);
+			let dateVal;
+			let priceVal;
+			//I DON'T KNOW WHY THEY'RE reversed
+			//PLEASE KNOW THAT
+			//DESC = Newest to Oldest
+			//ASC = Oldest to Newest			
+			if(sortValue == "date_asc" || sortValue == "date_desc" || sortValue == null){
+				console.log("Should be here for: " + sortValue);
+				if (sortValue == "date_desc"){
+					dateVal = "asc";
+				}
+				else{
+					dateVal = "desc";
+				}
+				switch(category){
+					case 'allOrders':
+						resp = await Order.find({isCancelled: false, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
+						testNext = await Order.find({isCancelled: false, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({date: dateVal});
+						break;
+					default:
+						resp = await Order.find({status: category, isCancelled: false, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
+						testNext = await Order.find({status: category, isCancelled: false, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({date: dateVal});
+						break;
+					case 'cancelled':
+						resp = await Order.find({isCancelled: true, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
+						testNext = await Order.find({isCancelled: true, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({date: dateVal});
+						break;
+				}
+			}
+			else if(sortValue == "price_asc" || sortValue == "price_desc"){
+				console.log("Should be here for: " + sortValue);
+				if (sortValue == "price_asc"){
+					priceVal = "asc";
+				}
+				else if (sortValue == "price_desc"){
+					priceVal = "desc";
+				}
+				switch(category){
+					case 'allOrders':
+						resp = await Order.find({isCancelled: false, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({amount: priceVal});
+						testNext = await Order.find({isCancelled: false, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({amount: priceVal});
+						break;
+					default:
+						resp = await Order.find({status: category, isCancelled: false, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({amount: priceVal});
+						testNext = await Order.find({status: category, isCancelled: false, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({amount: priceVal});
+						break;
+					case 'cancelled':
+						resp = await Order.find({isCancelled: true, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({amount: priceVal});
+						testNext = await Order.find({isCancelled: true, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({amount: priceVal});
+						break;
+				}
+			}
+			
+            /*switch(category){
                 case 'allOrders':
-                    resp = await Order.find({isCancelled: false, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
-                    testNext = await Order.find({isCancelled: false, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
+                    resp = await Order.find({isCancelled: false, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
+                    testNext = await Order.find({isCancelled: false, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({date: dateVal});
                     break;
                 default:
-                    resp = await Order.find({status: category, isCancelled: false, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
-                    testNext = await Order.find({status: category, isCancelled: false, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
+                    resp = await Order.find({status: category, isCancelled: false, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
+                    testNext = await Order.find({status: category, isCancelled: false, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({date: dateVal});
                     break;
                 case 'cancelled':
-                    resp = await Order.find({isCancelled: true, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit);
-                    testNext = await Order.find({isCancelled: true, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit);
+                    resp = await Order.find({isCancelled: true, userID: req.session.userID}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).sort({date: dateVal});
+                    testNext = await Order.find({isCancelled: true, userID: req.session.userID}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).sort({date: dateVal});
                     break;
-            }
+            }*/
 
             if(testNext.length == 0)
                 req.session.nextPage = false;
@@ -270,11 +316,11 @@ const controller = {
             else    
                 req.session.prevPage = true;
     
-            console.log(req.session.pageIndex);
-            console.log(req.session.nextPage);
-            console.log(req.session.prevPage);
+            //console.log(req.session.pageIndex);
+            //console.log(req.session.nextPage);
+            //console.log(req.session.prevPage);
 
-            console.log(resp)
+            //console.log(resp)
             for(let i = 0; i < resp.length; i++) {
                 orders.push({
                     orderID: resp[i]._id,
@@ -289,6 +335,7 @@ const controller = {
                     isCancelled: resp[i].isCancelled.toString()
                 });
             }
+			
             res.render("userpurchases", {
                 layout: 'userOrders',
                 script: '/./js/userPurchases.js',
@@ -303,6 +350,71 @@ const controller = {
             console.error(error);
         }
     },
+	
+	//specialized search for user orders
+	searchUserPurchases: async function(req,res){
+		console.log("Searching for order!");
+
+        var query = req.query.product_query;
+
+        console.log("Searching for " + query);
+	    var resp = undefined;
+		let testNext;
+		var orders = [];
+        // sortOrders function
+		const sortValue = req.query.sortBy;
+        console.log(sortValue);
+		try{
+			const id = new mongoose.Types.ObjectId(query);
+			console.log(id);
+			if (sortValue == "date_asc"){
+				resp = await Order.find({userID: req.session.userID, _id: id }, { __v: 0 }).sort({date: 'asc'}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).lean();
+				//testNext = await Order.find({userID: req.session.userID, _id: id }, { __v: 0 }).sort({date: 'asc'}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).lean();
+			}   
+			else if (sortValue == "date_desc"){
+				resp = await Order.find({userID: req.session.userID, _id: id }, { __v: 0 }).sort({date: 'desc'}).skip(req.session.pageIndex * pageLimit).limit(pageLimit).lean();
+				//testNext = await Order.find({userID: req.session.userID, _id: id }, { __v: 0 }).sort({date: 'desc'}).skip((req.session.pageIndex + 1) * pageLimit).limit(pageLimit).lean();
+			}
+			else {
+				resp = await Order.find({userID: req.session.userID, _id: id }, { __v: 0 }).skip(req.session.pageIndex * pageLimit).limit(pageLimit).lean();
+				sortOrders(resp, sortValue);
+			}
+			for(let i = 0; i < resp.length; i++) {
+                orders.push({
+                    orderID: resp[i]._id,
+                    firstName: resp[i].firstName,
+                    lastName: resp[i].lastName,
+                    email: resp[i].email,
+                    date: resp[i].date.toISOString().slice(0, 10),
+                    status: resp[i].status,
+                    amount: resp[i].amount,
+                    items: resp[i].items.length,
+                    paymongoID: resp[i].paymongoID,
+                    isCancelled: resp[i].isCancelled.toString()
+                });
+            }
+			if(testNext.length == 0)
+                req.session.nextPage = false;
+            else
+                req.session.nextPage = true;
+    
+            if(req.session.pageIndex == 0)
+                req.session.prevPage = false;
+            else    
+                req.session.prevPage = true;
+		}
+		catch{
+			console.log("Failed!");
+		}
+		res.render("userpurchases", {
+			layout: 'userOrders',
+			orders: orders,
+			buffer: query,
+			script: '/./js/userPurchases.js',
+			nextPage: req.session.nextPage,
+			prevPage: req.session.prevPage
+		});
+	},
     
     addProduct: async function (req, res) {
         try {
@@ -585,17 +697,17 @@ const controller = {
 	searchProducts: async function(req,res){
 		console.log("Searching for a product!");
 		
-		var query = req.query.product_query;
+		const query = req.query.product_query;
 		
 		console.log("Searching for " + query);
 		
 		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {__v:0}).lean();
 		// sortProducts function
-	const sortValue = req.query.sortBy;
-	console.log(sortValue);
-	sortProducts(result, sortValue);
+		const sortValue = req.query.sortBy;
+		console.log(sortValue);
+		sortProducts(result, sortValue);
 		
-		res.render("search_results", {product_list: result, script: '/./js/sort.js', buffer: query});
+		res.render("search_results", {product_list: result, buffer: query, script: '/./js/sort.js'});
     },
 	
     register: async function (req, res) {
@@ -682,45 +794,65 @@ const controller = {
             console.log("Failed to get current user");
         }
     },
-
-    //getCart
-    //gets the cart of the current user.
-    getCart: async function (req, res) {
-        console.log("getting " + req.session.userID + "(" + req.session.fName + ")'s cart");
-
-        const result = await User.find({ _id: req.session.userID }, { cart: 1 });
-        //console.log(result[0].cart);
-        //console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
-        res.render("add_to_cart", { cart_result: result[0].cart });
-    },
-
+	
     //addToCart
     //will add to cart using the product ID (mongodb ID)
     addToCart: async function (req, res) {
         console.log("Adding to cart");
         console.log(req.body);
         console.log("Attempting to add: " + req.body.id);
+		if(req.session.userID){
+			const query = req.body.id;
+			const temp = await Product.find({ _id: query }, { __v: 0 });
+			const product_result = temp[0];
+			var quant = req.body.quant;
+			const id = req.session.userID + ":" + query;
+			
+			//see if user has product in the cart and get the quantity
+			var existingItem = await User.find(
+				{_id: req.session.userID, cart: { $elemMatch: { uniqueID: id } }},
+				{_id: 0, 'cart.quantity.$': 1}
+			);
+			console.log(existingItem);
 
-        const query = req.body.id;
-        const temp = await Product.find({ _id: query }, { __v: 0 });
-        const product_result = temp[0];
-        const quant = req.body.quant;
-        const id = req.session.userID + ":" + query;
-        await User.updateOne(
-            { _id: req.session.userID },
-            {
-                $push: {
-                    cart: { product: product_result, quantity: quant, uniqueID: id }
-                }
-            }
-        );
-        console.log(product_result);
-        //console.log(user_cart[0].cart);
+			if(existingItem.length !== 0 ){
+				
+				var currentQuantity = existingItem[0].cart[0].quantity;
+				console.log(currentQuantity);
+				console.log("Found something!");
+				
+				//Remove already existing item
+				await User.updateOne(
+					{ _id: req.session.userID, cart: { $elemMatch: { uniqueID: id} } },
+					{
+						$pull: {
+							cart: { uniqueID: id }
+						}
+					}
+				);
+				
+				console.log("Should have removed it!");
+			}
+			await User.updateOne(
+				{ _id: req.session.userID },
+				{
+					$push: {
+						cart: { product: product_result, quantity: quant, uniqueID: id }
+					}
+				}
+			);
+			
+			//console.log(product_result);
+			//console.log(user_cart[0].cart);
 
-        //user_cart[0].cart.push(product_result);
-        console.log("DId it work?");
-        console.log("Should have added " + product_result.name + " to " + req.session.fName + "'s cart");
-        res.redirect("/cart?");
+			//user_cart[0].cart.push(product_result);
+			console.log("Should have added " + product_result.name + " to " + req.session.fName + "'s cart");
+		}
+        else{
+			console.log("Not logged in! Nothing added.");
+		}
+		res.redirect("/cart?");
+        
     },
 
     //getCart
@@ -751,37 +883,7 @@ const controller = {
         res.status(200).send(result[0].cart)
     },
 
-    //addToCart
-    //will add to cart using the product ID (mongodb ID)
-    addToCart: async function (req, res) {
-        console.log("Adding to cart");
-        console.log(req.body);
-        console.log("Attempting to add: " + req.body.id);
-
-        //const query = "ObjectId('" + req.body.p_id + "')";
-        const query = req.body.id;
-        const temp = await Product.find({ _id: query }, { __v: 0 });
-        const product_result = temp[0];
-        const quant = req.body.quant;
-        const id = req.session.userID + ":" + query;
-        await User.updateOne(
-            { _id: req.session.userID },
-            {
-                $push: {
-                    cart: { product: product_result, quantity: quant, uniqueID: id }
-                }
-            }
-        );
-        console.log(product_result);
-        //console.log(user_cart[0].cart);
-
-        //user_cart[0].cart.push(product_result);
-        console.log("DId it work?");
-        console.log("Should have added " + product_result.name + " to " + req.session.fName + "'s cart");
-        res.redirect("/cart?");
-    },
-
-    //getProduct
+    //getproduct
     //using the product ID in the query, it will send the data to products.hbs to render
     //the webpage for that specific product
     getProduct: async function (req, res) {
@@ -807,14 +909,7 @@ const controller = {
         var query = req.query;
         console.log(query);
 
-        const product_result = await Product.find({ _id: query.id }, { __v: 0 });
-        /*const result = await User.find(
-            { _id: req.session.userID, cart:{ $elemMatch: {uniqueID: query.uid }}},
-            {__v: 0}
-        );
-    	
-        console.log(result);*/
-
+        //const product_result = await Product.find({ _id: query.id }, { __v: 0 });
         await User.updateOne(
             { _id: req.session.userID, cart: { $elemMatch: { uniqueID: query.uid } } },
             {
@@ -1302,24 +1397,6 @@ const controller = {
         }
 
     },
-
-    searchProducts: async function(req,res){
-		console.log("Searching for a product!");
-		
-		var query = req.query.product_query;
-		
-		console.log("Searching for " + query);
-		
-		const result = await Product.find({name: new RegExp('.*' + query + '.*', 'i')}, {__v:0}).lean();
-		// sortProducts function
-        const sortValue = req.query.sortBy;
-        console.log(sortValue);
-        sortProducts(result, sortValue);
-		
-		res.render("search_results", {product_list: result});
-    },
-
-
 
 }
 
