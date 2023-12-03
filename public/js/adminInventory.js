@@ -3,17 +3,17 @@ const nextPage = document.querySelector('#nextPage');
 const prevPage = document.querySelector('#prevPage');
 
 function checkPages() {
-    if(nextPage.dataset.index == "false"){
+    if (nextPage.dataset.index == "false") {
         console.log("FALSE");
         nextPage.style.visibility = "hidden";
-    }else{
+    } else {
         console.log("TRUE");
         nextPage.style.visibility = "visible";
     }
-    if(prevPage.dataset.index == "false"){
+    if (prevPage.dataset.index == "false") {
         console.log("FALSE");
         prevPage.style.visibility = "hidden";
-    }else{
+    } else {
         console.log("TRUE");
         prevPage.style.visibility = "visible";
     }
@@ -33,9 +33,9 @@ title.addEventListener('click', async (e) => {
         }
     })
 
-    if(response.status == 200){
+    if (response.status == 200) {
         window.location.href = '/admin';
-    }else{
+    } else {
         console.log("error has occured");
     }
 
@@ -56,7 +56,7 @@ nextPage.addEventListener('click', async (e) => {
 
     const change = "next";
 
-    const jString = JSON.stringify({change});
+    const jString = JSON.stringify({ change });
 
     const response = await fetch('/changePageStore/' + lastWord, {
         method: "POST",
@@ -66,10 +66,10 @@ nextPage.addEventListener('click', async (e) => {
         }
     })
 
-    if(response.status == 200){
+    if (response.status == 200) {
         //console.log(currentURL);
         window.location.href = currentURL;
-    }else{
+    } else {
         console.log("error next page");
     }
 })
@@ -89,7 +89,7 @@ prevPage.addEventListener('click', async (e) => {
 
     const change = "prev";
 
-    const jString = JSON.stringify({change});
+    const jString = JSON.stringify({ change });
 
     const response = await fetch('/changePageStore/' + lastWord, {
         method: "POST",
@@ -99,9 +99,9 @@ prevPage.addEventListener('click', async (e) => {
         }
     })
 
-    if(response.status == 200){
+    if (response.status == 200) {
         window.location.href = currentURL;
-    }else{
+    } else {
         console.log("error next page");
     }
 })
