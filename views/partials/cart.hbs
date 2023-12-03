@@ -4,19 +4,25 @@
 
 	{{#if cart_result}}
 		{{#each cart_result}}
+		
 		<div class="flex flex-col bg-tertiary p-2 mx-5 rounded-md ">
+			
 			<div class="grid grid-cols-5 gap-2 h-[300px]">
-
-
+			
+				
 				<div class="flex flex-wrap my-auto justify-center">
+				<a href="/product?name={{this.product.name}}&id={{this.product._id}}">
 					<img  class="w-auto max-h-[300px] mx-auto my-auto" src={{this.product.productpic}}>
+				</a>
 				</div>
 
 				<div class="col-span-4 ">
 					<div class="bg-dirty-white h-[60px] w-full mt-[70px] mb-[50px] rounded-md">
 						<div class="grid grid-cols-4 gap-4 h-full">
     						<div class="flex items-center justify-center h-[80%] my-auto w-full border border-l-0 border-t-0 border-b-0 border-maincolor">
+							<a href="/product?name={{this.product.name}}&id={{this.product._id}}">
         						{{this.product.name}}
+							</a>
     						</div>
     						<div class="flex items-center justify-center h-[80%] my-auto w-full border border-l-0 border-t-0 border-b-0 border-maincolor">
     						    &#8369; {{this.product.price}}
@@ -38,8 +44,8 @@
 					<div class="bg-maincolor w-32 py-3 text-center ml-auto mr-10 mt-10 text-white rounded-md" fun="row-price">
     					&#8369; {{multiply this.product.price this.quantity }}
 					</div>
-				</div>				
-			</div>
+				</div>	
+			</div>	
 		</div>
 		{{/each}}
 	{{else}}

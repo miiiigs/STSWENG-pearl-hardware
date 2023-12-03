@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<head>
+{{> head}}
+
+    <link rel="stylesheet" href="../css/output.css" />
+    <script src="{{script}}" defer></script>
+</head>
+
+<body class="flex flex-col ">
+    <button type="submit" class="flex item-left {{#if isHomePage}}{{/if}}">
+        {{> title}}
+    </button>
+
+    {{{body}}}
+
+</body>
+
+</html>

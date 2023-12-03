@@ -31,6 +31,7 @@ router.get('/searchProducts', controller.searchProducts);
 router.get('/userprofile', controller.getUserProfile);
 router.get('/userpurchases/:status', controller.getUserPurchases);
 router.get('/userorderdetails/:orderID', controller.getUserOrderDetails);
+router.get('/userSearchPurchases', controller.searchUserPurchases);
 
 router.get('/searchProducts', controller.searchProducts);
 
@@ -73,6 +74,7 @@ router.post('/editProduct', upload.single('productPic'), controller.editProduct)
 router.post('/showProduct', controller.showProduct);
 router.post('/hideProduct', controller.hideProduct);
 router.post('/deleteProduct', controller.deleteProduct);
+router.post('/editProfile/:id', controller.editProfile);
 
 
 export default router;

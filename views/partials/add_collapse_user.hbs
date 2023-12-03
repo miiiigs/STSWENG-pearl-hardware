@@ -1,0 +1,67 @@
+
+
+<div class="mx-10">
+
+    <div class="font-Inika text-4xl text-white w-2/6 mx-auto rounded-lg  mt-3 h-14 flex flex-row gap-x-20 items-center justify-center ">
+        <button onclick="toggleCollapse()" class="bg-secondary py-2 px-3 w-full rounded-lg flex items-center justify-center border border-secondary hover:bg-white hover:text-secondary hover:border">
+            Edit Profile
+        </button>
+        <a href="/userpurchases/allOrders" class="bg-secondary py-2 px-3 w-full rounded-lg flex items-center justify-center border border-secondary hover:bg-white hover:text-secondary hover:border">
+            My Purchases
+        </a>
+    </div>
+
+    <div id="collapsible" class="hidden mt-4">
+        <div class="bg-white p-8 rounded shadow-md w-96">
+    <h1 class="text-2xl font-semibold mb-4">Profile Information</h1>
+
+
+    <form action="/editProfile/{{user.id}}" method="POST" enctype="application/x-www-form-urlencoded">
+        <div class="mb-4">
+            <label for="fname" class="block text-sm font-medium text-gray-600">First Name</label>
+            <input type="text" id="fname" name="fname" class="mt-1 p-2 w-full border rounded" value="{{user.firstName}}">
+        </div>
+
+        <div class="mb-4">
+            <label for="lname" class="block text-sm font-medium text-gray-600">Last Name</label>
+            <input type="text" id="lname" name="lname" class="mt-1 p-2 w-full border rounded" value="{{user.lastName}}">
+        </div>
+
+        <div class="mb-4">
+            <label for="state" class="block text-sm font-medium text-gray-600">State</label>
+            <input type="text" id="state" name="state" class="mt-1 p-2 w-full border rounded" value="{{user.state}}">
+        </div>
+
+        <div class="mb-6">
+            <label for="city" class="block text-sm font-medium text-gray-600">City</label>
+            <input type="text" id="city" name="city" class="mt-1 p-2 w-full border rounded" value="{{user.city}}">
+          </div>
+
+          <div class="mb-6">
+            <label for="postalCode" class="block text-sm font-medium text-gray-600">Postal Code</label>
+            <input type="number" id="postalCode" name="postalCode" class="mt-1 p-2 w-full border rounded" value="{{user.postalCode}}">
+          </div>
+      
+        <div class="mb-6">
+            <label for="line1" class="block text-sm font-medium text-gray-600">Address line 1</label>
+            <input type="text" id="line1" name="line1" class="mt-1 p-2 w-full border rounded" value="{{user.line1}}">
+          </div>
+
+          <div class="mb-6">
+            <label for="line2" class="block text-sm font-medium text-gray-600">Address line 2</label>
+            <input type="text" id="line2" name="line2" class="mt-1 p-2 w-full border rounded" value="{{user.line2}}">
+          </div>
+
+      <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">Add</button>
+    </form>
+  </div>
+    </div> 
+</div>
+
+
+<script>
+    function toggleCollapse() {
+        const collapsible = document.getElementById('collapsible');
+        collapsible.style.display = (collapsible.style.display === 'none' || collapsible.style.display === '') ? 'block' : 'none';
+    }
+</script>
