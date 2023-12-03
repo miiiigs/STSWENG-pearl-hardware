@@ -238,7 +238,7 @@ const controller = {
             var orders = [];
 			
 			const sortValue = req.query.sortBy;
-			console.log("sort val = " + sortValue);
+			//console.log("sort val = " + sortValue);
 			let dateVal;
 			let priceVal;
 			//I DON'T KNOW WHY THEY'RE reversed
@@ -246,7 +246,7 @@ const controller = {
 			//DESC = Newest to Oldest
 			//ASC = Oldest to Newest			
 			if(sortValue == "date_asc" || sortValue == "date_desc" || sortValue == null){
-				console.log("Should be here for: " + sortValue);
+				//console.log("Should be here for: " + sortValue);
 				if (sortValue == "date_desc"){
 					dateVal = "asc";
 				}
@@ -269,7 +269,7 @@ const controller = {
 				}
 			}
 			else if(sortValue == "price_asc" || sortValue == "price_desc"){
-				console.log("Should be here for: " + sortValue);
+				//console.log("Should be here for: " + sortValue);
 				if (sortValue == "price_asc"){
 					priceVal = "asc";
 				}
