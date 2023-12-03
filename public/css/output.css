@@ -756,10 +756,13 @@ video {
   margin-bottom: 50px;
 }
 
+.ml-0{
+  margin-left: 0px;
+}
+
 .ml-10{
   margin-left: 2.5rem;
 }
-
 
 .ml-12{
   margin-left: 3rem;
@@ -768,7 +771,6 @@ video {
 .ml-16{
   margin-left: 4rem;
 }
-
 
 .ml-28{
   margin-left: 7rem;
@@ -830,8 +832,16 @@ video {
   margin-top: 3rem;
 }
 
+.mt-16{
+  margin-top: 4rem;
+}
+
 .mt-2{
   margin-top: 0.5rem;
+}
+
+.mt-20{
+  margin-top: 5rem;
 }
 
 .mt-3{
@@ -930,12 +940,6 @@ video {
   height: 18rem;
 }
 
-
-.h-96{
-  height: 24rem;
-
-}
-
 .h-\[100\%\]{
   height: 100%;
 }
@@ -972,8 +976,8 @@ video {
   height: 80%;
 }
 
-.h-\[95\%\]{
-  height: 95%;
+.h-auto{
+  height: auto;
 }
 
 .h-full{
@@ -1136,6 +1140,10 @@ video {
   width: 50%;
 }
 
+.w-\[500px\]{
+  width: 500px;
+}
+
 .w-\[50px\]{
   width: 50px;
 }
@@ -1273,10 +1281,12 @@ video {
   justify-content: space-between;
 }
 
-
 .gap-0{
   gap: 0px;
+}
 
+.gap-1{
+  gap: 0.25rem;
 }
 
 .gap-2{
@@ -1285,6 +1295,10 @@ video {
 
 .gap-4{
   gap: 1rem;
+}
+
+.gap-40{
+  gap: 10rem;
 }
 
 .gap-8{
@@ -1345,9 +1359,7 @@ video {
   margin-left: calc(0.75rem * calc(1 - var(--tw-space-x-reverse)));
 }
 
-
 .space-y-3 > :not([hidden]) ~ :not([hidden]){
-
   --tw-space-y-reverse: 0;
   margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
@@ -1399,10 +1411,6 @@ video {
   border-radius: 0.375rem;
 }
 
-.rounded-\[10px_10\]{
-  border-radius: 10px 10;
-}
-
 .rounded-l-full{
   border-top-left-radius: 9999px;
   border-bottom-left-radius: 9999px;
@@ -1428,6 +1436,10 @@ video {
 
 .border{
   border-width: 1px;
+}
+
+.border-0{
+  border-width: 0px;
 }
 
 .border-2{
@@ -1897,14 +1909,14 @@ video {
   border-width: 1px;
 }
 
-.hover\:border-white:hover{
-  --tw-border-opacity: 1;
-  border-color: rgb(255 255 255 / var(--tw-border-opacity));
-}
-
 .hover\:border-maincolor:hover{
   --tw-border-opacity: 1;
   border-color: rgb(9 128 211 / var(--tw-border-opacity));
+}
+
+.hover\:border-white:hover{
+  --tw-border-opacity: 1;
+  border-color: rgb(255 255 255 / var(--tw-border-opacity));
 }
 
 .hover\:bg-maincolor:hover{
