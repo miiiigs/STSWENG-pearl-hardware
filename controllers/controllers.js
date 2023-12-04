@@ -901,7 +901,7 @@ const controller = {
         if (req.session.userID != null) {
             const result = await User.find({ _id: req.session.userID }, { cart: 1 });
             for(let x = 0; x < result[0].cart.length; x++){
-                total = total + (result[0].cart[x].quantity * result[0].cart[x].product.price);
+                total = total + (parseInt(result[0].cart[x].quantity) * result[0].cart[x].product.price);
             }
             //console.log(result[0].cart);
             //console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
