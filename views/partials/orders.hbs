@@ -44,9 +44,9 @@ function selectOption(option) {
 	{{> orders_bar}}
 
 	
-	<div class="bg-white bg-opacity-80 py-2 rounded-md w-[95%] mx-auto my-auto shadow-md">
+	<div class="bg-white bg-opacity-80 py-2  px-1 rounded-md w-[95%] mx-auto my-auto shadow-md">
 	{{#each order_list}}
-		<div class="grid grid-cols-9 bg-tertiary w-full h-[45px] flex flex-wrap items-center justify-start rounded-[10px] mb-2 px-2 hover:bg-white hover:border border-maincolor">
+		<div class="grid grid-cols-9 bg-tertiary w-full h-[45px] flex flex-wrap items-center justify-start rounded-[10px] mb-2 px-1 hover:bg-white hover:border border-maincolor">
 			<button class="col-span-5 flex flex-wrap" id="orderInstance" data-index={{this.orderID}}>
 				<div class="grid grid-cols-5 w-full flex flex-wrap items-center justify-center">
 					<div class="px-1 text-secondary text-m text-center border border-t-0 border-b-0 border-maincolor truncate" >{{this.orderID}}</div> 
