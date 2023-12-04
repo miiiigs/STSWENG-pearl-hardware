@@ -482,7 +482,7 @@ const controller = {
                         type: product.type,
                         quantity: product.stock,
                         price: product.price,
-                        productpic: 'http://localhost:3000/image/' + imageSave._id,
+                        productpic: 'https://pearl-hardware-ph.onrender.com/image/' + imageSave._id,
                         description: product.description
                     },
                     
@@ -1051,12 +1051,12 @@ const controller = {
                                 send_email_receipt: false,
                                 show_description: false,
                                 show_line_items: true,
-                                cancel_url: 'http:/localhost:3000/',
+                                cancel_url: 'https://pearl-hardware-ph.onrender.com',
                                 description: 'description',
                                 line_items: itemsCheckout,
                                 payment_method_types: ['card', 'gcash'],
                                 reference_number: result._id, //store the order _id in database as the reference number
-                                success_url: 'http://localhost:3000/checkoutSuccess/' + result._id
+                                success_url: 'https://pearl-hardware-ph.onrender.com/checkoutSuccess/' + result._id
                             }
                         }
                     })
