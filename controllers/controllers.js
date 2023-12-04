@@ -897,15 +897,31 @@ const controller = {
         console.log("getting " + req.session.userID + "(" + req.session.fName + ")'s cart");
 
         let total = 0;
+        let newResult = [];
 
         if (req.session.userID != null) {
             const result = await User.find({ _id: req.session.userID }, { cart: 1 });
             for(let x = 0; x < result[0].cart.length; x++){
-                total = total + (parseInt(result[0].cart[x].quantity) * result[0].cart[x].product.price);
+                const result2 = await Product.find({ _id: result[0].cart[x].product._id, isShown: true})
+                //console.log(result2);
+                if(result2.length > 0){
+                    total = total + (parseInt(result[0].cart[x].quantity) * result[0].cart[x].product.price);
+                    newResult.push(result[0].cart[x]);
+                }else{
+                    await User.updateOne(
+                        { _id: req.session.userID, cart: { $elemMatch: { uniqueID: result[0].cart[x].uniqueID } } },
+                        {
+                            $pull: {
+                                cart: { uniqueID: result[0].cart[x].uniqueID }
+                            }
+                        }
+                    );
+                }
             }
+            console.log(newResult);
             //console.log(result[0].cart);
             //console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
-            res.render("add_to_cart", { cart_result: result[0].cart, total: total, script: './js/checkout.js' });
+            res.render("add_to_cart", { cart_result: newResult, total: total.toFixed(2), script: './js/checkout.js' });
         } else {
             try {
                 res.render("login", {
