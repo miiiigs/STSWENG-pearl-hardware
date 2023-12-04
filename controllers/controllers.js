@@ -896,7 +896,7 @@ const controller = {
 
         console.log("getting " + req.session.userID + "(" + req.session.fName + ")'s cart");
 
-        let total;
+        let total = 0;
 
         if (req.session.userID != null) {
             const result = await User.find({ _id: req.session.userID }, { cart: 1 });
