@@ -974,7 +974,7 @@ const controller = {
     postCheckout: async function (req, res) { //gets all the items in the cart using its mongodb id then adds them all up for a total to be redirected and paid in paymongo website using paymongo api
         //console.log(req.body);      
         const { items, amount } = req.body
-        const paymongoAPIkey = "sk_test_w5Y6STecLuzzZifC23r2HRnZ"
+        const paymongoAPIkey = process.env.paymongoKey;
 
         let total = 0; //the total amount the user has to pay
 
@@ -1096,7 +1096,7 @@ const controller = {
     },
 
     checkoutSuccess: async function (req, res) { //this is to update the order in the database, as of now only 2 status' exist (Awaiting payment, succeeded)
-        const paymongoAPIkey = "sk_test_w5Y6STecLuzzZifC23r2HRnZ"
+        const paymongoAPIkey = process.env.paymongoKey;
 
         const options = { method: 'GET', headers: { accept: 'application/json', 'Content-Type': 'application/json', 'Authorization': `Basic ${btoa(paymongoAPIkey)}` } };
 
