@@ -896,11 +896,16 @@ const controller = {
 
         console.log("getting " + req.session.userID + "(" + req.session.fName + ")'s cart");
 
+        let total;
+
         if (req.session.userID != null) {
             const result = await User.find({ _id: req.session.userID }, { cart: 1 });
+            for(let x = 0; x < result[0].cart.length; x++){
+                total = total + (result[0].cart[x].quantity * result[0].cart[x].product.price);
+            }
             //console.log(result[0].cart);
             //console.log("Cart has been found? Can be accessed in handlebars using {{cart_result}}");
-            res.render("add_to_cart", { cart_result: result[0].cart, script: './js/checkout.js' });
+            res.render("add_to_cart", { cart_result: result[0].cart, total: total, script: './js/checkout.js' });
         } else {
             try {
                 res.render("login", {
