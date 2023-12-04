@@ -44,7 +44,7 @@ function selectOption(option) {
 
 		{{#each orders}}
 	
-		<div class="grid grid-cols-7 bg-tertiary w-full h-[45px] flex flex-wrap items-center justify-start rounded-[10px] mb-2 px-1 hover:bg-white hover:border border-maincolor" id="orderInstance", data-index={{this.orderID}}>
+		<button class="grid grid-cols-7 bg-tertiary w-full h-[45px] flex flex-wrap items-center justify-start rounded-[10px] mb-2 px-1 hover:bg-white hover:border border-maincolor" id="orderInstance", data-index={{this.orderID}}>
 			<div class="px-1 text-secondary text-m text-center border border-t-0 border-b-0 border-maincolor truncate">{{this.orderID}}</div>
 			<div class="px-1 text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor">{{this.email}}</div>
  	   		<div class="px-1 text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor">{{this.date}}</div>
@@ -53,7 +53,7 @@ function selectOption(option) {
  	   		<div class="px-1 text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.paymongoID}}</div>
 			<div class="px-1 text-secondary text-m text-center border border-l-0 border-t-0 border-b-0 border-maincolor truncate">{{this.isCancelled}}</div>
 
-		</div>
+		</button>
 		{{/each}}
 	<!--
 	{{#each order_list}}
