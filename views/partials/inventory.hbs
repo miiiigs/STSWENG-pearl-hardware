@@ -84,6 +84,10 @@
             }
         })
 
+        if(response.status == 200){
+            window.location.reload();
+        }
+
     }
 
     async function hideProduct(id) {
@@ -95,6 +99,10 @@
                 "Content-Type": "application/json"
             }
         })
+
+        if(response.status == 200){
+            window.location.reload();
+        }
 
     }
 
@@ -148,15 +156,20 @@
                 {{this.quantity}}</div>
 
             <div class=" grid grid-cols-3 gap-1 flex items-center justify-center">
+
+                {{#if (eq this.isShown false)}}
                     <button onclick="showProduct('{{this.p_id}}')"
                         class="border border-maincolor bg-white text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-2 rounded-lg h-[35px]">
                         Show
                     </button>
+                {{else}}
 
                     <button onclick="hideProduct('{{this.p_id}}')"
                         class="border border-maincolor bg-white text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-2 rounded-lg h-[35px]">
                         Hide
                     </button>
+
+                {{/if}}
 
                     <button onclick="deleteProduct('{{this.p_id}}')"
                         class="border border-maincolor bg-white text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-2 rounded-lg h-[35px]">
