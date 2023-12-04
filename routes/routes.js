@@ -69,8 +69,8 @@ router.post('/changePageStore/:category', controller.changePageStore);
 router.post('/changePageAdminCategory/:category', controller.changePageAdminCategory);
 router.post('/changePageUserPurchases/:category', controller.changePageUserPurchases);
 
-router.post('/addProduct', upload.single('productPic'), controller.addProduct);
-router.post('/editProduct', upload.single('productPic'), controller.editProduct);
+router.post('/addProduct', upload.single('productPic'), body('name').notEmpty(), body('quantity').notEmpty().isNumeric(), body('price').notEmpty(), controller.addProduct);
+router.post('/editProduct', upload.single('productPic'), body('name').notEmpty(), body('quantity').notEmpty().isNumeric(), body('price').notEmpty(), controller.editProduct);
 router.post('/showProduct', controller.showProduct);
 router.post('/hideProduct', controller.hideProduct);
 router.post('/deleteProduct', controller.deleteProduct);
