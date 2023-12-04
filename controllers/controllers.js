@@ -10,7 +10,7 @@ import { Image } from '../model/imageSchema.js';
 
 const SALT_WORK_FACTOR = 10;
 let currentCategory = "allproducts";
-const pageLimit = 2;
+const pageLimit = 15;
 
 /*
     Checks if file is an image
