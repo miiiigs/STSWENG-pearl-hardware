@@ -40,7 +40,22 @@ const productSchema = new Schema({
 
     description:{
         type: String,
-    }
+    },
+
+    isDiscounted:{
+        type: Boolean,
+        default: false,
+    },
+
+    discountType: {
+        type: String,
+        default: 'None'
+    },
+
+    discountValue: {
+        type: Number,
+        default: 0
+    },
 
 });
 

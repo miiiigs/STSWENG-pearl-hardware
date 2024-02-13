@@ -464,6 +464,22 @@ const controller = {
         try {
             const pic = req.file;
             const product = req.body;
+            console.log(product);
+            var isDiscounted, dvalue, discountType;
+            discountType = product.discount;
+            switch(discountType) {
+                case 'none':
+                    isDiscounted = false;
+                    break;
+                case 'exact':
+                    isDiscounted = true;
+                    dvalue = product.dvalue;
+                    break;
+                case 'percent':
+                    isDiscounted = true;
+                    dvalue = product.price - (product.dvalue * product.price);
+                    break;
+            }
 
             if (pic) {
 
@@ -483,10 +499,15 @@ const controller = {
                         quantity: product.stock,
                         price: product.price,
                         productpic: 'https://pearl-hardware-ph.onrender.com/image/' + imageSave._id,
-                        description: product.description
+                        description: product.description,
+                        isDiscounted: isDiscounted,
+                        discountValue: dvalue,
+                        discountType: discountType,
                     },
                     
                 );
+
+                
             }else{
                 const updateStock = await Product.findByIdAndUpdate(
                     product.id,
@@ -494,11 +515,16 @@ const controller = {
                         type: product.type,
                         quantity: product.stock,
                         price: product.price,
-                        description: product.description
+                        description: product.description,
+                        isDiscounted: isDiscounted,
+                        discountValue: dvalue,
+                        discountType: discountType,
                     },
                     
                 );
+
             }
+            
 
             res.redirect('/adminInventory/' + currentCategory);
 
@@ -1518,7 +1544,10 @@ async function getProducts(category, req) {
                 quantity: resp[i].quantity,
                 productpic: resp[i].productpic,
                 p_id: resp[i]._id,
-                description: resp[i].description
+                description: resp[i].description,
+                isDiscounted: resp[i].isDiscounted,
+                discountType: resp[i].discountType,
+                discountValue: resp[i].discountValue,
             });
         }
     }
@@ -1588,7 +1617,10 @@ async function getProductsAdmin(category, req) {
                 productpic: resp[i].productpic,
                 p_id: resp[i]._id,
                 description: resp[i].description,
-                isShown: resp[i].isShown
+                isShown: resp[i].isShown,
+                isDiscounted: resp[i].isDiscounted,
+                discountType: resp[i].discountType,
+                discountValue: resp[i].discountValue,
             });
     }
     return product_list;
