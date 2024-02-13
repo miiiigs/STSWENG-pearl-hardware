@@ -1,0 +1,202 @@
+<style>
+    /* Additional Styles */
+    .step-container {
+        display: none;
+    }
+
+    .step-container.active {
+        display: block;
+    }
+
+    .btn-container {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #1a8cd8;
+        color: #ffffff;
+    }
+
+    .btn-secondary {
+        background-color: #e2e8f0;
+        color: #4a5568;
+    }
+</style>
+
+<div class="mx-10">
+            
+    <button onclick="toggleCollapse()" class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center flex flex-row items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+
+        ADD BUNDLE
+    </button>
+
+    <div id="collapsible" class="hidden mt-4">
+        <div class="flex items-center justify-center ">
+            <div class="bg-white p-8 rounded shadow-md w-96">
+
+                <div id="step1" class="step-container active">
+                    <h2 class="text-2xl font-bold mb-4">Step 1: Select Items</h2>
+                    <!-- Step 1 Content -->
+                    <label class="block text-gray-700 font-bold mb-2">Search Items:</label>
+                    <input type="text" id="searchInput" class="border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full mb-2" placeholder="Search...">
+
+                    <div class="mb-4 max-h-64 overflow-auto">
+                        <label class="block text-gray-700 font-bold mb-2">Select Items:</label>
+                        <div>
+                            <div class="flex flex-col" id="itemList">
+                                {{#if product_list}}
+                                    {{#each product_list}}
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="{{this.name}}" name="{{this.name}}" class="form-checkbox h-5 w-5 text-blue-600">
+                                        <label for="{{this.name}}" class="ml-2">{{this.name}}</label>
+                                    </div>
+                                    {{/each}}
+                                {{/if}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="btn-container">
+                        <button class="btn btn-primary" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <div id="step2" class="step-container">
+                    <h2 class="text-2xl font-bold mb-4">Step 2: Shipping Address</h2>
+                    <!-- Step 2 Content -->
+                    <div class="mb-4">
+                        <label for="address" class="block text-gray-700 font-bold mb-2">Address:</label>
+                        <input type="text" id="address" name="address" class="border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full">
+                    </div>
+                    <div class="mb-4">
+                        <label for="city" class="block text-gray-700 font-bold mb-2">City:</label>
+                        <input type="text" id="city" name="city" class="border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full">
+                    </div>
+                    <div class="btn-container">
+                        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button class="btn btn-primary" onclick="nextStep()">Next</button>
+                    </div>
+                </div>
+
+                <div id="step3" class="step-container">
+                    <h2 class="text-2xl font-bold mb-4">Step 3: Payment</h2>
+                    <!-- Step 3 Content -->
+                    <p>Payment options go here...</p>
+                    <div class="btn-container">
+                        <button class="btn btn-secondary" onclick="prevStep()">Back</button>
+                        <button class="btn btn-primary">Complete Order</button>
+                    </div>
+                </div>
+
+                <script>
+                    document.getElementById('searchInput').addEventListener('input', function(event) {
+                        const searchTerm = event.target.value.toLowerCase();
+                        const productElements = document.querySelectorAll('#itemList .flex');
+
+                        productElements.forEach(productElement => {
+                            const productName = productElement.querySelector('label').textContent.toLowerCase();
+                            if (productName.includes(searchTerm)) {
+                                productElement.style.display = 'flex'; // Show the product
+                            } else {
+                                productElement.style.display = 'none'; // Hide the product
+                            }
+                        });
+                    });
+
+                    // Initial display setup
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const productElements = document.querySelectorAll('#itemList .flex');
+                        productElements.forEach(productElement => {
+                            productElement.style.display = 'flex'; // Initially show all products
+                        });
+                    });
+
+
+                    let currentStep = 1;
+                    const totalSteps = 3;
+
+                    function nextStep() {
+                        if (currentStep < totalSteps) {
+                            document.getElementById(`step${currentStep}`).classList.remove('active');
+                            currentStep++;
+                            document.getElementById(`step${currentStep}`).classList.add('active');
+                        }
+                    }
+
+                    function prevStep() {
+                        if (currentStep > 1) {
+                            document.getElementById(`step${currentStep}`).classList.remove('active');
+                            currentStep--;
+                            document.getElementById(`step${currentStep}`).classList.add('active');
+                        }
+                    }
+                </script>
+
+                <!--
+                <h1 class="text-2xl font-semibold mb-4">Product Information</h1>
+
+
+                <form action="/addProduct" method="POST" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label for="name" class="block text-sm font-medium text-gray-600">Name</label>
+                        <input type="text" id="name" name="name" class="mt-1 p-2 w-full border rounded">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="name" class="block text-sm font-medium text-gray-600">Description</label>
+                        <textarea rows="10" cols="100" id="description" name="description" class="mt-1 p-2 w-full border rounded"></textarea>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="type" class="block text-sm font-medium text-gray-600">Type</label>
+                        <select id="type" name="type" class="mt-1 p-2 w-full border rounded">
+                            <option value="welding">Welding</option>
+                            <option value="safety">Safety</option>
+                            <option value="cleaning">Cleaning</option>
+                            <option value="industrial">Industrial</option>
+                            <option value="brassfittings">Brass Fittings</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="quantity" class="block text-sm font-medium text-gray-600">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" class="mt-1 p-2 w-full border rounded">
+                    </div>
+
+                    <div class="mb-6">
+                        <label for="price" class="block text-sm font-medium text-gray-600">Price</label>
+                        <input type="number" id="price" name="price" class="mt-1 p-2 w-full border rounded" step="any">
+                    </div>
+                
+                    <div class = "attachmedia">
+                        <label for="formFile" class="block text-sm font-medium text-gray-600">Product Picture</label>
+                        <input class="form-control" type="file" name="productPic" id="formFile" accept = "image/*" >
+                    </div>
+
+                    <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">Add</button>
+                </form>
+                -->
+
+
+
+
+            </div>
+        </div> 
+    </div>
+</div>
+
+
+<script>
+    function toggleCollapse() {
+        const collapsible = document.getElementById('collapsible');
+        collapsible.style.display = (collapsible.style.display === 'none' || collapsible.style.display === '') ? 'block' : 'none';
+    }
+</script>

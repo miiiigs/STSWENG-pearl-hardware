@@ -5,8 +5,11 @@
         
         {{> sort_inventory}}
     </div>
+    {{#if isBundles}}
+    {{> add_bundles}}
+    {{else}}
     {{> add_collapse}}
-
+    {{/if}}
 
 
 
