@@ -1,0 +1,54 @@
+<nav class="bg-maincolor">
+    <div class=" max-w-full px-2 sm:px-6 lg:px-8">
+        <div class="relative flex h-16 items-center justify-between">
+            <div class="flex space-x-10 ">
+
+                <form action="/">
+                    <button type="submit"
+                        class="font-Lato text-xl w-auto h-12 px-4 bg-sky-600 bg-maincolor text-white hover:bg-white hover:pt-2 hover:text-maincolor rounded-tl-lg rounded-tr-lg hover:pt-0">
+                        Home
+                    </button>
+                </form>
+
+                {{#if session.userID}}
+
+                <form action="/userprofile">
+                    <button type="submit"
+                        class="font-Lato text-xl w-auto h-12 px-4 bg-sky-600 bg-maincolor text-white hover:bg-white hover:pt-2 hover:text-maincolor rounded-tl-lg rounded-tr-lg hover:pt-0">
+                        Welcome, {{session.fName}}!
+                    </button>
+                </form>
+
+                <form action="/logout">
+                    <button type="submit"
+                        class="font-Lato text-xl w-auto h-12 px-4 bg-sky-600 bg-maincolor text-white hover:bg-white hover:pt-2 hover:text-maincolor rounded-tl-lg rounded-tr-lg hover:pt-0">
+                        <div class="flex flex-row items-center">
+                            <img class="w-5 mr-2" src="../uploads/logout.png" alt="Logout Icon" />
+                            Logout
+                        </div>
+                    </button>
+                </form>
+
+
+
+                {{else}}
+
+                <form action="/login">
+                    <button type="submit"
+                        class="font-Lato text-xl w-auto h-12 px-4 bg-sky-600 bg-maincolor text-white hover:bg-white hover:pt-2 hover:text-maincolor rounded-tl-lg rounded-tr-lg hover:pt-0">
+                        <div class="flex flex-row items-center">
+                            <img class="w-5 mr-2" src="../uploads/login.png" alt="Login Icon" />
+                            Register/Login
+                        </div>
+
+                    </button>
+                </form>
+
+
+                {{/if}}
+            </div>
+
+
+        </div>
+    </div>
+</nav>

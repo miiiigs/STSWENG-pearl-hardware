@@ -1,0 +1,88 @@
+{{#if product}}
+
+<style>
+    #originalBtn:hover {
+        display: none;
+    }
+
+    #originalBtn:hover+#hoverBtn {
+        display: flex;
+    }
+
+    #originalBtn,
+    #hoverBtn {
+        transition: opacity 0.3s ease;
+    }
+</style>
+
+<script>
+    console.log("Recieved product: ");
+</script>
+<div class=" bg-white bg-opacity-80 p-1 rounded-md  w-[98%] mx-auto my-auto"
+    style="box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.1), -10px -10px 10px rgba(0, 0, 0, 0.1);">
+
+    <div class=" my-5 mx-5 py-0 pl-2 border-b-4 border-b-maincolor font-Inika text-2xl w-48 ">Product Detail</div>
+
+    <div class="container mx-auto mt-8 p-5 border border-4 border-maincolor rounded-3xl">
+
+        <div class="flex">
+            <div class="ml-16 mt-6 mb-6">
+                <img class=" h-72" src={{product.productpic}} alt="Product Image">
+            </div>
+
+            <div class="ml-16">
+                <h2 class="font-Inknut text-secondary text-5xl mt-5">{{product.name}}</h2>
+                <p class="font-Inknut text-secondary text-2xl pb-2 mb-4">Php {{product.price}}</p>
+                <p class="font-Inknut text-secondary text-lg mt-2 mb-4">In Stock: {{product.quantity}}</p>
+
+                <form method="post" action="/add-to-cart" id="add" class="flex flex-col item-left w-[100%]">
+                    <div class="flex">
+                        <label for="quantity" class="font-Inknut text-secondary text-base add">Quantity: </label>
+
+                        <input type="text" id="quantity" value=0 class="add w-[30%] rounded bg-tertiary"
+                            data-index={{product.quantity}}>
+                    </div>
+
+                    <p id="err"></p>
+                    <input type="hidden" id="p_id" value="{{product._id}}">
+
+                    <div class="relative mt-5 mb-2" form="add">
+                        <button id="submitBtn"
+                            class="flex items-center w-auto h-12 px-4 bg-maincolor rounded-full text-white text-2xl font-Inika ml-auto mr-5">
+                            <img class="w-5 mr-2" src="../uploads/cart.png" alt="Cart Icon" />
+                            Add to Cart
+                        </button>
+
+                        <button id="hoverBtn" type="submit"
+                            class="w-auto h-12 px-4 pt-2 bg-white hidden border border-maincolor border-2 rounded-full text-maincolor text-2xl font-Inika ml-auto mr-5">
+                            <img class="w-5 mr-2 pt-1" src="../uploads/basket.png" alt="Cart Icon" />
+                            Add to Cart
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="container mx-auto mt-8 p-4 border border-4 border-maincolor rounded-3xl mb-16">
+
+        <h2 class="font-Inknut text-secondary text-3xl mt-5">Product Overview</h2>
+
+        <p class="font-Inknut text-secondary text-sm mt-3 ">{{product.description}}</p>
+
+    </div>
+
+</div>
+
+
+
+</div>
+{{else}}
+<h1>No product found!</h1>
+{{/if}}

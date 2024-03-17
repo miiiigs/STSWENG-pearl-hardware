@@ -1,0 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Coustard:wght@400;900&family=Inknut+Antiqua&family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inika&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
