@@ -614,13 +614,14 @@ const controller = {
                 isBundles = true;
                 
             }
-            var product_list = await getProductsAdmin(category, req);
-            console.log(product_list)
+            else{
+                var product_list = await getProductsAdmin(category, req);
+                console.log(product_list)
 
-            const sortValue = req.query.sortBy;
-            console.log(sortValue);
-            sortProducts(product_list, sortValue);
-
+                const sortValue = req.query.sortBy;
+                console.log(sortValue);
+                sortProducts(product_list, sortValue);
+            }
             if (req.session.userID) {
                 const user = await User.findById(req.session.userID)
                 if (user.isAuthorized == true) {
@@ -638,9 +639,13 @@ const controller = {
                     console.log("UNAUTHORIZED");
                     res.sendStatus(400);
                 }
+            
+            
             } else {
                 res.sendStatus(400);
             }
+            
+            
 
         } catch {
             res.sendStatus(400);

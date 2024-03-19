@@ -1,5 +1,6 @@
 import { Router } from "express";
 import controller from '../controllers/controllers.js';
+import adminController from '../controllers/adminController.js';
 import bodyParser from 'body-parser';
 import { body, validationResult } from 'express-validator';
 import { User } from '../model/userSchema.js';
@@ -53,6 +54,8 @@ router.get('/getCartItems', controller.getCartItems)
 router.get('/AdminOrderDetails/:orderID', controller.getOrderDetails)
 router.get('/searchOrders', controller.searchOrders);
 
+
+
 //POSTS
 router.post('/register', body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
     if (await User.findOne({ email: value }).exec()) {
@@ -75,6 +78,8 @@ router.post('/showProduct', controller.showProduct);
 router.post('/hideProduct', controller.hideProduct);
 router.post('/deleteProduct', controller.deleteProduct);
 router.post('/editProfile/:id', controller.editProfile);
+
+router.post('/createBundle', adminController.createBundle);
 
 
 export default router;

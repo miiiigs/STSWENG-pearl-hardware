@@ -70,20 +70,15 @@
                 </div>
 
                 <div id="step2" class="step-container">
-                    <h2 class="text-2xl font-bold mb-4">Step 2: Shipping Address</h2>
+                    <h2 class="text-2xl font-bold mb-4">Step 2: Chosen Items</h2>
                     <!-- Step 2 Content -->
-                    <div class="mb-4">
-                        <label for="address" class="block text-gray-700 font-bold mb-2">Address:</label>
-                        <input type="text" id="address" name="address" class="border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full">
-                    </div>
-                    <div class="mb-4">
-                        <label for="city" class="block text-gray-700 font-bold mb-2">City:</label>
-                        <input type="text" id="city" name="city" class="border-gray-300 rounded-md shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 w-full">
+                    <div id="step2Content">
+                        <!-- Chosen items will be displayed here -->
                     </div>
                     <div class="btn-container">
                         <button class="btn btn-secondary" onclick="prevStep()">Back</button>
-                        <button class="btn btn-primary" onclick="nextStep()">Next</button>
-                    </div>
+                        <button id="submitBundleBtn" class="btn btn-primary">Submit Bundle</button>
+                     </div>
                 </div>
 
                 <div id="step3" class="step-container">
@@ -118,6 +113,110 @@
                             productElement.style.display = 'flex'; // Initially show all products
                         });
                     });
+
+                    // Array to store chosen items
+                    let chosenItems = [];
+
+                    // Function to update Step 2 content with chosen items
+                    function updateStep2() {
+                        const step2Content = document.getElementById('step2Content');
+                        step2Content.innerHTML = '';
+
+                        if (chosenItems.length > 0) {
+                            // Create headers for name and quantity
+                            const headerDiv = document.createElement('div');
+                            headerDiv.classList.add('flex', 'items-center', 'font-bold', 'mb-2');
+                            const nameLabel = document.createElement('div');
+                            nameLabel.textContent = 'Product Name';
+                            nameLabel.classList.add('mr-4', 'flex-1');
+                            headerDiv.appendChild(nameLabel);
+                            const quantityLabel = document.createElement('div');
+                            quantityLabel.textContent = 'Quantity';
+                            headerDiv.appendChild(quantityLabel);
+                            step2Content.appendChild(headerDiv);
+
+                            chosenItems.forEach(item => {
+                                const itemDiv = document.createElement('div');
+                                itemDiv.classList.add('flex', 'items-center', 'mb-2');
+
+                                const itemNameDiv = document.createElement('div');
+                                itemNameDiv.textContent = item.name;
+                                itemNameDiv.classList.add('mr-4', 'flex-1'); // Adjusting alignment
+                                itemDiv.appendChild(itemNameDiv);
+
+                                const quantityInput = document.createElement('input');
+                                quantityInput.type = 'number';
+                                quantityInput.min = 1;
+                                quantityInput.value = item.quantity || 1;
+                                quantityInput.classList.add('form-input', 'w-16');
+                                quantityInput.addEventListener('input', function(event) {
+                                    item.quantity = parseInt(event.target.value);
+                                });
+                                itemDiv.appendChild(quantityInput);
+
+                                step2Content.appendChild(itemDiv);
+                            });
+                        } else {
+                            const noItemsDiv = document.createElement('div');
+                            noItemsDiv.textContent = 'No items chosen.';
+                            step2Content.appendChild(noItemsDiv);
+                        }
+                    }
+
+                    // Event listener for checkbox changes
+                    document.querySelectorAll('#itemList input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.addEventListener('change', function(event) {
+                            const itemName = event.target.name;
+                            const isChecked = event.target.checked;
+
+                            if (isChecked) {
+                                // Check if the item already exists in chosenItems
+                                const existingItem = chosenItems.find(item => item.name === itemName);
+                                if (!existingItem) {
+                                    chosenItems.push({ name: itemName });
+                                }
+                            } else {
+                                // Remove the item from chosenItems
+                                chosenItems = chosenItems.filter(item => item.name !== itemName);
+                            }
+                            updateStep2();
+                        });
+                    });
+                    // Initial update of Step 2 content
+                    updateStep2();
+
+
+                    document.getElementById('submitBundleBtn').addEventListener('click', function() {
+                    // Assuming chosenItems is an array containing chosen products and their quantities
+                    const newBundleData = {
+                        name: 'Your Bundle Name', // Replace with the actual bundle name
+                        description: 'Your Bundle Description', // Replace with the actual bundle description
+                        products: chosenItems // Array of chosen products and quantities
+                    };
+
+                    // Perform API request to create a new bundle
+                    fetch('/createBundle', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(newBundleData)
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Failed to create bundle.');
+                    })
+                    .then(data => {
+                        console.log('Bundle created successfully:', data);
+                        // Redirect or perform other actions after successful bundle creation
+                    })
+                    .catch(error => {
+                        console.error('Error creating bundle:', error);
+                        // Handle error
+                    });
+                });
 
 
                     let currentStep = 1;
