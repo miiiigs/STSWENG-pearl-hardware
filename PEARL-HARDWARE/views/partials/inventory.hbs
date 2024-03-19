@@ -1,0 +1,274 @@
+
+{{!-- 
+{{<div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    
+    Background backdrop, show/hide based on modal state.
+<div class="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+
+    <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+
+    <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+
+            <div
+                class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                            <h3 class="text-2xl font-semibold leading-6 text-gray-900" id="modal-title">
+                                Edit Product </h3>
+                            <div class="mt-6">
+
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-600 mt">Product Name:
+                                    </label>
+                                    <input type="text" id="name" name="name" class="mt-1 p-2 w-full border rounded">
+                                </div>
+
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-600 mt-5">Price:
+                                    </label>
+                                    <input type="text" id="price" name="price" class="mt-1 p-2 w-full border rounded">
+                                </div>
+
+                                <div class="mb-4 mt-5">
+                                    <label for="type" class="block text-sm font-medium text-gray-600">Type:</label>
+                                    <select id="type" name="type" class="mt-1 p-2 w-full border rounded">
+                                        <option value="Welding">Welding</option>
+                                        <option value="Safety">Safety</option>
+                                        <option value="Cleaning">Cleaning</option>
+                                        <option value="Industrial">Industrial</option>
+                                        <option value="Brass Fittings">Brass Fittings</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="name" class="block text-sm font-medium text-gray-600 mt-5">Current
+                                        Stock:
+                                    </label>
+                                    <input type="text" id="stock" name="stock" class="mt-1 p-2 w-full border rounded">
+                                </div>
+
+                                <div class="attachmedia">
+                                    <label for="formFile" class="block text-sm font-medium text-gray-600 mt-5">Product
+                                        Picture</label>
+                                    <input class="form-control" type="file" name="productPic" id="formFile"
+                                        accept="image/*">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                    <button type="button"
+                        class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">Done</button>
+                    <button type="button"
+                        class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> --}}
+
+
+<script>
+
+
+    async function showProduct(id) {
+        const jString = JSON.stringify({ id });
+        const response = await fetch('/showProduct', {
+            method: "POST",
+            body: jString,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        if(response.status == 200){
+            window.location.reload();
+        }
+
+    }
+
+    async function hideProduct(id) {
+        const jString = JSON.stringify({ id });
+        const response = await fetch('/hideProduct', {
+            method: "POST",
+            body: jString,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+
+        if(response.status == 200){
+            window.location.reload();
+        }
+
+    }
+
+    async function deleteProduct(id) {
+        const jString = JSON.stringify({ id });
+        const response = await fetch('/deleteProduct', {
+            method: "POST",
+            body: jString,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        console.log(response);
+        if (response.status == 200) {
+            window.location.reload();
+        }
+
+    }
+
+    async function toggleEditWindow(id) {
+
+        const editWindow = document.getElementById('edit_' + id);
+        editWindow.style.display = (editWindow.style.display === 'none' || editWindow.style.display === '') ? 'block' : 'none';
+
+    }
+
+</script>
+
+
+
+{{> inventory_bar}}
+
+<div class="bg-white bg-opacity-80 p-1 rounded-md w-[95%] mx-auto my-auto shadow-md">
+{{#if product_list}}
+    {{#each product_list}}
+    <div class="bg-tertiary flex flex-wrap items-center justify-center rounded-[10px] mb-2">
+        <div class="grid grid-cols-7 w-full px-2">
+            <div class="w-32 h-32 border border-white mt-6 mb-8 ml-6">
+
+                <img src={{this.productpic}} alt="" class=" max-h-32 w-full h-full object-cover">
+
+
+            </div>
+            <div class="font-Inknut text-secondary text-sm flex items-center justify-center ">
+                {{this.name}}</div>
+            <div class="font-Inknut text-secondary text-sm flex items-center justify-center ">
+                {{#if (eq this.type 'brassfittings')}}brass fittings {{else}}{{this.type}} {{/if}}</div>
+            <div class="font-Inknut text-secondary text-sm flex items-center justify-center">
+                PHP{{this.price}}</div>
+            <div class="font-Inknut text-secondary text-sm flex items-center justify-center">
+                {{this.quantity}}</div>
+
+            <div class=" grid grid-cols-3 gap-1 flex items-center justify-center">
+
+                {{#if (eq this.isShown false)}}
+                    <button onclick="showProduct('{{this.p_id}}')"
+                        class="border border-maincolor bg-white text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-2 rounded-lg h-[35px]">
+                        Show
+                    </button>
+                {{else}}
+
+                    <button onclick="hideProduct('{{this.p_id}}')"
+                        class="border border-maincolor bg-white text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-2 rounded-lg h-[35px]">
+                        Hide
+                    </button>
+
+                {{/if}}
+
+                    <button onclick="deleteProduct('{{this.p_id}}')"
+                        class="border border-maincolor bg-white text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-2 rounded-lg h-[35px]">
+                        Delete
+                    </button>
+            </div>
+            <div class=" flex items-center justify-center">
+                <button onclick="toggleEditWindow('{{this.p_id}}')"
+                    class="mx-auto bg-white border border-maincolor text-maincolor hover:bg-maincolor hover:text-white px-4 rounded-lg h-[35px]">
+                    Edit
+                </button>                
+            </div>
+
+
+
+        </div>
+    
+
+        <div id="edit_{{this.p_id}}" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true" >
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+                <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+
+                    <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                        
+                        <form action="/editProduct" method="POST" enctype="multipart/form-data">
+                            <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                                <div class="sm:flex sm:items-start">
+                                    <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                        <h3 class="text-2xl font-semibold leading-6 text-gray-900" id="modal-title">
+                                            Edit Product </h3>
+                                        <div class="mt-6">
+
+                                            {{!-- edit nlang mga values --}}
+                                            <input type="hidden" name="id" value="{{this.p_id}}">
+                                            <input type="hidden" name="init_pic" value="{{this.productpic}}">
+
+                                            <div>
+                                                <label for="name" class="block text-sm font-medium text-gray-600 mt">Product Name:
+                                                </label>
+                                                <input type="text" id="name" name="name" value="{{this.name}}" class="mt-1 p-2 w-full border rounded" >
+                                            </div>
+
+                                            <div>
+                                                <label for="name" class="block text-sm font-medium text-gray-600 mt-5">Description:
+                                                </label>
+                                                <textarea row="10" cols="100" id="description" name="description" class="mt-1 p-2 w-full border rounded">{{this.description}}</textarea>
+                                            </div>
+
+                                            <div>
+                                                <label for="name" class="block text-sm font-medium text-gray-600 mt-5">Price:
+                                                </label>
+                                                <input type="text" id="price" name="price" value="{{this.price}}" class="mt-1 p-2 w-full border rounded"  step="any">
+                                            </div>
+
+                                            <div>
+                                                <label for="name" class="block text-sm font-medium text-gray-600 mt-5">Current
+                                                    Stock:
+                                                </label>
+                                                <input type="text" id="stock" name="stock" value="{{this.quantity}}" class="mt-1 p-2 w-full border rounded">
+                                            </div>
+
+                                            <div class="attachmedia">
+                                                <img class="max-h-32" src="{{this.productpic}}">
+                                                <label for="formFile" class="block text-sm font-medium text-gray-600 mt-5">Product
+                                                    Picture</label>
+                                                <input class="form-control" type="file" name="productPic" id="formFile"
+                                                    accept="image/*">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div  class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                <button type="submit" 
+                                    class="border border-maincolor text-maincolor hover:bg-maincolor hover:text-white hover:border-white px-4 rounded-lg mx-[5px] h-[35px] text-center">Done</button>
+                                <button type="button" onclick="toggleEditWindow('{{this.p_id}}')"
+                                    class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+
+	{{else}}
+		<center><p> No Products found! </p> </center>
+	{{/if}}
+</div>
+
+    <div class="flex space-x-0 my-10 mx-auto justify-center">
+        <button
+            class="w-[120px] h-10 bg-maincolor text-white rounded-l-full hover:bg-white hover:border border-maincolor hover:text-maincolor focus:outline-none" id="prevPage" data-index={{prevPage}}>
+            PREV PAGE
+        </button>
+        <button
+            class="w-[120px] h-10 bg-maincolor text-white rounded-r-full hover:bg-white hover:border border-maincolor hover:text-maincolor focus:outline-none" id="nextPage" data-index={{nextPage}}>
+            NEXT PAGE
+        </button>
+    </div>
+</div>
