@@ -54,6 +54,10 @@ window.onload = function() {
     }
 };
 
+window.onload = function() {
+    setSortOptionInDropdown(); // Set the sorting option when the window loads
+};
+
 const sortSelect = document.querySelector('#sort');
 sortSelect.addEventListener('change', async (e) => {
     e.preventDefault();
@@ -66,7 +70,6 @@ sortSelect.addEventListener('change', async (e) => {
     } else {
         actionURL = '/.' + currentURL + '?sortBy=' + sortValue;
     }
-    console.log(actionURL);
 
     const response = await fetch(actionURL, {
         method: 'GET',
@@ -93,9 +96,6 @@ function setSortOptionInDropdown() {
     }
 }
 
-window.onload = function() {
-    setSortOptionInDropdown();
-};
 
 nextPage.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -123,12 +123,14 @@ nextPage.addEventListener('click', async (e) => {
     })
 
     if(response.status == 200){
-        //console.log(currentURL);
-        window.location.href = currentURL;
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        urlSearchParams.set('sortBy', getSortOptionFromStorage());
+        window.location.href = currentURL.split('?')[0] + '?' + urlSearchParams.toString();
     }else{
         console.log("error next page");
     }
 })
+
 
 prevPage.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -138,7 +140,8 @@ prevPage.addEventListener('click', async (e) => {
     const currentURL = window.location.pathname;
     const parts = currentURL.split('/'); 
     const lastPart = parts[parts.length - 1]; 
-
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    urlSearchParams.set('sortBy', getSortOptionFromStorage());
 
     // If there's a query string, remove it
     const lastWord = lastPart.split('?')[0];
@@ -154,11 +157,11 @@ prevPage.addEventListener('click', async (e) => {
         headers: {
             "Content-Type": "application/json"
         }
-    })
+    });
 
     if(response.status == 200){
-        window.location.href = currentURL;
-    }else{
-        console.log("error next page");
+        window.location.href = currentURL.split('?')[0] + '?' + urlSearchParams.toString();
+    } else {
+        console.log("error previous page");
     }
 })

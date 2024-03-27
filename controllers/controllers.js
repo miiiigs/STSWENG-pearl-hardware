@@ -37,16 +37,19 @@ const controller = {
         }
       },
 
-    getIndex: async function (req, res) {
+      getIndex: async function (req, res) {
         try {
             console.log("USER ID" + req.session.userID);
             //getProducts function
             var product_list = await getProducts();
-
+    
             // sortProducts function
             const sortValue = req.query.sortBy;
             sortProducts(product_list, sortValue);
-
+    
+            // Store sorting option in session
+            req.session.sortOption = sortValue;
+    
             res.render("index", {
                 product_list: product_list,
                 script: './js/index.js',
@@ -101,7 +104,6 @@ const controller = {
 
 
     getCategory: async function (req, res) {
-
         const category = req.params.category;
         //console.log("CATEGORY " + req.params.category);
         //console.log(currentCategory);
@@ -113,28 +115,28 @@ const controller = {
             currentCategory = category;
         }
         //console.log(req.session.pageIndex);
-
+    
         try {
-
             //getProducts function
             var product_list = await getProducts(category, req);
-
+    
             // sortProducts function
             const sortValue = req.query.sortBy;
             sortProducts(product_list, sortValue);
-
+    
+            // Store sorting option in session
+            req.session.sortOption = sortValue;
+    
             res.render("all_products", {
                 product_list: product_list,
                 category: category,
                 script: '/./js/sort.js',
                 nextPage: req.session.nextPage,
                 prevPage: req.session.prevPage
-
             });
         } catch {
             res.sendStatus(400);
         }
-
     },
 
     changePageStore: async function(req, res){
