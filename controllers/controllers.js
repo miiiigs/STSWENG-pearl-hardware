@@ -593,6 +593,18 @@ const controller = {
         }
     },
 
+    adminInsights: async function (req, res) {
+        try {
+    
+            res.render("AdminInsights", {
+                layout: 'Admin_insight'
+            });
+        } catch (error) {
+            console.error(error);
+            res.sendStatus(500); 
+        }
+    },
+    
     getAdminInventory: async function (req, res) {
 
         const category = req.params.category;
@@ -845,6 +857,7 @@ const controller = {
         req.session.destroy();
         res.redirect('/');
     },
+
 
     getUser: async function (req, res) {
         if (req.session.userID) {
@@ -1183,6 +1196,7 @@ const controller = {
             res.sendStatus(400);
         }
     },
+
 
     getAdminCategory: async function (req, res) {
 
@@ -1672,6 +1686,9 @@ async function sortOrders(order_list, sortValue){
         }
     }
 }
+
+
+
 
 
 export default controller;

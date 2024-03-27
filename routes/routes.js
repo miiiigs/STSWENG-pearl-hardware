@@ -52,6 +52,8 @@ router.get('/admin', controller.getAdmin);
 router.get('/getCartItems', controller.getCartItems)
 router.get('/AdminOrderDetails/:orderID', controller.getOrderDetails)
 router.get('/searchOrders', controller.searchOrders);
+router.get('/AdminInsights', controller.adminInsights);
+
 
 //POSTS
 router.post('/register', body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
