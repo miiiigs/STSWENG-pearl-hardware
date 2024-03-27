@@ -49,8 +49,10 @@ window.onload = function() {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const query = urlSearchParams.get('sortBy');
     const selectedOption = document.querySelector(`#sort option[value="${query}"]`);
-    selectedOption.selected = true;
-  };
+    if (selectedOption) {
+        selectedOption.selected = true;
+    }
+};
 
 const sortSelect = document.querySelector('#sort');
 sortSelect.addEventListener('change', async (e) => {
@@ -58,23 +60,42 @@ sortSelect.addEventListener('change', async (e) => {
     var sortValue = sortSelect.value;
     const currentURL = window.location.pathname;
     var queryVal = document.querySelector('#product_query').value;
-	let actionURL;
-	if(currentURL == "/searchProducts"){
-		actionURL = '/.' + currentURL + '?product_query=' + queryVal + '&sortBy=' + sortValue;
-	}
-	else{
-		actionURL = '/.' + currentURL + '?sortBy=' + sortValue;
-		
-	}
+    let actionURL;
+    if (currentURL == "/searchProducts") {
+        actionURL = '/.' + currentURL + '?product_query=' + queryVal + '&sortBy=' + sortValue;
+    } else {
+        actionURL = '/.' + currentURL + '?sortBy=' + sortValue;
+    }
     console.log(actionURL);
-	
-	const response = await fetch(actionURL, {
-		method: 'GET',
-	});
-	
+
+    const response = await fetch(actionURL, {
+        method: 'GET',
+    });
+
+    window.sessionStorage.setItem('sortOption', sortValue); // Store selected sorting option in session storage
+
     window.location.href = actionURL;
-    
 });
+
+// Function to get sort option from session storage
+function getSortOptionFromStorage() {
+    return window.sessionStorage.getItem('sortOption');
+}
+
+// Function to set sort option in select dropdown
+function setSortOptionInDropdown() {
+    const sortOption = getSortOptionFromStorage();
+    if (sortOption) {
+        const selectedOption = document.querySelector(`#sort option[value="${sortOption}"]`);
+        if (selectedOption) {
+            selectedOption.selected = true;
+        }
+    }
+}
+
+window.onload = function() {
+    setSortOptionInDropdown();
+};
 
 nextPage.addEventListener('click', async (e) => {
     e.preventDefault();
@@ -115,8 +136,9 @@ prevPage.addEventListener('click', async (e) => {
     console.log("Prev Page");
 
     const currentURL = window.location.pathname;
-    const parts = currentURL.split('/'); // Split the URL by '/'
-    const lastPart = parts[parts.length - 1]; // Get the last part after the last '/'
+    const parts = currentURL.split('/'); 
+    const lastPart = parts[parts.length - 1]; 
+
 
     // If there's a query string, remove it
     const lastWord = lastPart.split('?')[0];
