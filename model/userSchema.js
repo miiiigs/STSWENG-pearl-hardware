@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-
     isAuthorized:{
         type: Boolean,
         required: true,
@@ -12,7 +11,7 @@ const userSchema = new Schema({
 
     firstName: {
         type: String,
-        required:true
+        required: true
     },
 
     lastName: {
@@ -22,8 +21,9 @@ const userSchema = new Schema({
 
     password: {
         type: String, 
-        required:true
+        required: true
     },
+
     email: {
         type: String, 
         required: true, 
@@ -35,9 +35,10 @@ const userSchema = new Schema({
         default: Date.now()
     },
 
+    // Define profilepic as Buffer type to store binary data
     profilepic: {
-        type: String,
-        default: './images/assets/default_user.png'   
+        data: Buffer,
+        contentType: String
     },
 
     cart: {
@@ -70,19 +71,17 @@ const userSchema = new Schema({
         required: false,
         validate: {
             validator: function(value) {
-              // Convert the number to a string and check its length
-              return value.toString().length <= 4;
+                // Convert the number to a string and check its length
+                return value.toString().length <= 4;
             },
             message: 'Number must have at most 4 digits.',
-          },
+        },
     },
 
     country:{
         type: String,
         required: false
     }
-
-
 });
 
 export const User = mongoose.model('User', userSchema);

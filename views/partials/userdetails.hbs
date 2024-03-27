@@ -14,21 +14,19 @@
 
 
 
-<div
-	class="container fixed-container flex flex-col items-center justify-center mx-auto w-auto ml-auto mt-12 border border-4 border-maincolor rounded-3xl mb-16">
+<div class="container fixed-container flex flex-col items-center justify-center mx-auto w-auto ml-auto mt-12 border border-4 border-maincolor rounded-3xl mb-16">
+    <div class="container mx-auto p-8">
+        <div class="font-Lato p-8">
+            <div class="flex flex-col items-center relative overflow-hidden">
+                <img id="profileImage" src="../uploads/nylon_brush.jpg" alt="{{user.firstName}} {{user.lastName}}" class="rounded-full w-40 h-48">
+            </div>
+            <div class="flex items-center justify-center text-center mt-2">
+                <form id="uploadForm" action="/updateProfilePic/{{user.id}}" method="POST" enctype="multipart/form-data">
+				<input type="file" accept="image/*" id="uploadInput" name="profilePic" class="hidden" onchange="previewImage(event)">
+				<label for="uploadInput" class="bg-secondary text-white py-2 px-3 rounded-lg border border-secondary hover:bg-white hover:text-secondary hover:border cursor-pointer">Upload/Change Picture</label>
+			</form>
+            </div>
 
-	<div class="container mx-auto p-8">
-		<div class=" font-Lato p-8">
-
-			<div class=" flex flex-col items-center relative overflow-hidden">
-				<img src="../uploads/nylon_brush.jpg" alt="{{user.firstName}} {{user.lastName}}"
-					class="rounded-full w-40 h-48">
-			</div>
-			<div class="flex items-center justify-center text-center mt-2">
-				<button onclick=""
-					class="bg-secondary text-white py-2 px-3 rounded-lg  border border-secondary hover:bg-white hover:text-secondary hover:border">Upload/Change
-					Picture</button>
-			</div>
 
 			<div class="text-5xl text-secondary rounded-lg p-5 mt-3 h-14 flex items-center justify-center ">
 				{{user.firstName}} {{user.lastName}}
@@ -85,7 +83,7 @@
 				</div>
 			</div>
 
-			{{!-- EDIT PROFILE PART --}}
+
 
 			<div class="mx-10">
 				<div
@@ -177,6 +175,40 @@
 				function closeModal() {
 					const modal = document.getElementById('modal');
 					modal.classList.add('hidden');
+				}
+
+				// Function to preview the selected image
+				function previewImage(event) {
+					const input = event.target;
+					if (input.files && input.files[0]) {
+						const reader = new FileReader();
+						reader.onload = function (e) {
+							const profileImage = document.getElementById('profileImage');
+							profileImage.src = e.target.result;
+						}
+						reader.readAsDataURL(input.files[0]);
+					}
+				}
+
+				// Function to save the uploaded image to local storage
+				function saveImageToLocal(event) {
+					const input = event.target;
+					if (input.files && input.files[0]) {
+						const reader = new FileReader();
+						reader.onload = function (e) {
+							localStorage.setItem('profileImage', e.target.result);
+						}
+						reader.readAsDataURL(input.files[0]);
+					}
+				}
+
+				// Function to load the profile image from local storage when the page is loaded
+				window.onload = function () {
+					const profileImage = document.getElementById('profileImage');
+					const savedImage = localStorage.getItem('profileImage');
+					if (savedImage) {
+						profileImage.src = savedImage;
+					}
 				}
 			</script>
 		</div>

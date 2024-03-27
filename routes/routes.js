@@ -77,6 +77,6 @@ router.post('/showProduct', controller.showProduct);
 router.post('/hideProduct', controller.hideProduct);
 router.post('/deleteProduct', controller.deleteProduct);
 router.post('/editProfile/:id', controller.editProfile);
-
+router.post('/updateProfilePic/:userId', upload.single('profilePic'), controller.updateProfilePic);
 
 export default router;

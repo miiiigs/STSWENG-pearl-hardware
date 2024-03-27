@@ -7,6 +7,9 @@ import bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import { Image } from '../model/imageSchema.js';
+import multer from 'multer'; 
+const multerStorage = multer.memoryStorage();
+
 
 const SALT_WORK_FACTOR = 10;
 let currentCategory = "allproducts";
@@ -870,6 +873,39 @@ const controller = {
             console.log("Failed to get current user");
         }
     },
+
+    updateProfilePic: async (req, res) => {
+        const { id } = req.params; // Updated from userId to id
+        const profilePic = req.file; // Access the uploaded image file
+        if (!profilePic) {
+            return res.status(400).json({ message: 'No image file provided' });
+        }
+    
+        try {
+            // Find the user by ID
+            const user = await User.findById(id); // Updated from userId to id
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+    
+            // Update the profile picture fields in the user document
+            user.profilepic = {
+                data: profilePic.buffer, // Store the buffer data
+                contentType: profilePic.mimetype // Store the MIME type
+            };
+    
+            // Save the updated user document
+            await user.save();
+    
+            res.status(200).json({ message: 'Profile picture updated successfully' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+
+
+
 	
     //addToCart
     //will add to cart using the product ID (mongodb ID)
