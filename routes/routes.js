@@ -54,6 +54,11 @@ router.get('/AdminOrderDetails/:orderID', controller.getOrderDetails)
 router.get('/searchOrders', controller.searchOrders);
 router.get('/AdminInsights', controller.adminInsights);
 
+router.get('/bundles', controller.getAllBundles);
+router.get('/bundlespage', controller.BundlesPage);
+router.get('/bundleproducts', controller.BundlesAllProducts);
+
+
 
 //POSTS
 router.post('/register', body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
@@ -70,6 +75,7 @@ router.post('/statusChange', controller.statusChange);
 router.post('/changePageStore/:category', controller.changePageStore);
 router.post('/changePageAdminCategory/:category', controller.changePageAdminCategory);
 router.post('/changePageUserPurchases/:category', controller.changePageUserPurchases);
+router.post('/cbundles', controller.createBundle);
 
 router.post('/addProduct', upload.single('productPic'), body('name').notEmpty(), body('quantity').notEmpty().isNumeric(), body('price').notEmpty(), controller.addProduct);
 router.post('/editProduct', upload.single('productPic'), body('name').notEmpty(), body('quantity').notEmpty().isNumeric(), body('price').notEmpty(), controller.editProduct);
@@ -78,5 +84,7 @@ router.post('/hideProduct', controller.hideProduct);
 router.post('/deleteProduct', controller.deleteProduct);
 router.post('/editProfile/:id', controller.editProfile);
 router.post('/updateProfilePic/:userId', upload.single('profilePic'), controller.updateProfilePic);
+
+router.put('/bundles/:bundleId', controller.updateBundlePrice);
 
 export default router;

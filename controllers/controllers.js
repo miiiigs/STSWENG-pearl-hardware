@@ -9,6 +9,8 @@ import mongoose from 'mongoose';
 import { Image } from '../model/imageSchema.js';
 import multer from 'multer'; 
 const multerStorage = multer.memoryStorage();
+import { cBundles } from '../model/BundleSchema.js';
+
 
 
 const SALT_WORK_FACTOR = 10;
@@ -105,6 +107,88 @@ const controller = {
         }
     },
 
+    BundlesPage: async function (req, res) {
+        try {
+            if (req.session.userID) {
+                const user = await User.findById(req.session.userID)
+                if (user.isAuthorized == true) {
+                    console.log("AUTHORIZED")
+                    res.render("adminBundles", { // Assuming the view for managing bundles is named "adminBundles"
+                        layout: 'adminBundles',
+                        script: './js/adminBundles.js', // Assuming you have a separate script file for bundle management
+                    });
+                } else {
+                    console.log("UNAUTHORIZED");
+                    res.sendStatus(400);
+                }
+            } else {
+                res.sendStatus(400);
+            }
+        } catch (error) {
+            console.error(error);
+            res.sendStatus(400);
+        }
+    },
+    
+    getAllBundles: async (req, res) => {
+        try {
+            const bundles = await cBundles.find();
+            res.status(200).json(bundles);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+    
+    createBundle: async function (req, res) {
+        try {
+            // Extract necessary data from the request
+            const { name, description, price, products } = req.body;
+            console.log("Received Data:", { name, description, price, products });
+    
+            // Create a new bundle with the provided data
+            const newBundle = await cBundles.create({
+                name,
+                description,
+                price,
+                products  // Assuming products is an array of product IDs
+            });
+            console.log("New Bundle:", newBundle);
+    
+            res.status(201).json(newBundle);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+    
+    
+    
+    
+    updateBundlePrice: async (req, res) => {
+        try {
+            const { bundleId } = req.params;
+            const { price } = req.body;
+            const updatedBundle = await cBundles.findByIdAndUpdate(bundleId, { price }, { new: true });
+            if (!updatedBundle) {
+                return res.status(404).json({ message: 'Bundle not found' });
+            }
+            res.status(200).json(updatedBundle);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+
+    BundlesAllProducts: async (req, res) => {
+        try {
+            const products = await Product.find();
+            res.status(200).json(products);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
 
     getCategory: async function (req, res) {
         const category = req.params.category;
