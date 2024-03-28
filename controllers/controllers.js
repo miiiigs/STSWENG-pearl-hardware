@@ -10,8 +10,12 @@ import { Image } from '../model/imageSchema.js';
 import multer from 'multer'; 
 const multerStorage = multer.memoryStorage();
 import { cBundles } from '../model/BundleSchema.js';
+import express from 'express';
 
+const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const SALT_WORK_FACTOR = 10;
 let currentCategory = "allproducts";
@@ -143,15 +147,15 @@ const controller = {
     createBundle: async function (req, res) {
         try {
             // Extract necessary data from the request
-            const { name, description, price, products } = req.body;
-            console.log("Received Data:", { name, description, price, products });
+            const { name, description, price } = req.body;
+            console.log("Received Data:", { name, description, price });
     
             // Create a new bundle with the provided data
             const newBundle = await cBundles.create({
                 name,
                 description,
                 price,
-                products  // Assuming products is an array of product IDs
+                // You may need to extract and process additional data here
             });
             console.log("New Bundle:", newBundle);
     
@@ -163,8 +167,7 @@ const controller = {
     },
     
     
-    
-    
+    /*
     updateBundlePrice: async (req, res) => {
         try {
             const { bundleId } = req.params;
@@ -179,6 +182,8 @@ const controller = {
             res.status(500).json({ message: 'Internal server error' });
         }
     },
+    */
+
 
     BundlesAllProducts: async (req, res) => {
         try {

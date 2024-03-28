@@ -3,7 +3,6 @@ import controller from '../controllers/controllers.js';
 import bodyParser from 'body-parser';
 import { body, validationResult } from 'express-validator';
 import { User } from '../model/userSchema.js';
-
 import multer from 'multer';
 const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage });
@@ -75,7 +74,7 @@ router.post('/statusChange', controller.statusChange);
 router.post('/changePageStore/:category', controller.changePageStore);
 router.post('/changePageAdminCategory/:category', controller.changePageAdminCategory);
 router.post('/changePageUserPurchases/:category', controller.changePageUserPurchases);
-router.post('/cbundles', controller.createBundle);
+router.post('/cbundles',body('name').notEmpty(), body('description').notEmpty(), body('price').notEmpty(), controller.createBundle);
 
 router.post('/addProduct', upload.single('productPic'), body('name').notEmpty(), body('quantity').notEmpty().isNumeric(), body('price').notEmpty(), controller.addProduct);
 router.post('/editProduct', upload.single('productPic'), body('name').notEmpty(), body('quantity').notEmpty().isNumeric(), body('price').notEmpty(), controller.editProduct);
@@ -85,6 +84,6 @@ router.post('/deleteProduct', controller.deleteProduct);
 router.post('/editProfile/:id', controller.editProfile);
 router.post('/updateProfilePic/:userId', upload.single('profilePic'), controller.updateProfilePic);
 
-router.put('/bundles/:bundleId', controller.updateBundlePrice);
+//router.put('/bundles/:bundleId', controller.updateBundlePrice);
 
 export default router;

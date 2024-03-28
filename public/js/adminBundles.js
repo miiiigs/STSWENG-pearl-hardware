@@ -6,6 +6,43 @@ document.addEventListener("DOMContentLoaded", async function () {
     const productList = document.getElementById("productList");
 
 
+    // Handle form submission
+bundlesForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    // Retrieve form data
+    const formData = new FormData(bundlesForm);
+
+    // Collect IDs of selected products
+    const selectedProducts = Array.from(productList.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+    // Add selected products to form data
+    formData.append('products', selectedProducts.join(','));
+
+    // Convert formData to JSON
+    const formDataJSON = Object.fromEntries(formData.entries());
+
+    try {
+        // Send form data to server to create a new bundle
+        const response = await fetch("/cbundles", {
+            method: "POST",
+            body: JSON.stringify(formDataJSON), // Convert to JSON
+            headers: {
+                'Content-Type': 'application/json' // Specify content type
+            }
+        });
+
+        if (response.ok) {
+            window.location.reload(); 
+        } else {
+            console.error("Failed to create bundle");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+    }
+});
+
+
     // Function to fetch and display existing bundles
     async function displayBundles() {
         try {
@@ -92,39 +129,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Close modal when "Cancel" button is clicked
     closeModalBtn.addEventListener("click", function () {
         bundleModal.classList.add("hidden");
-    });
-
-       // Handle form submission
-       bundlesForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
-    
-        // Retrieve form data
-        console.log(bundlesForm)
-        const formData = new FormData(bundlesForm);
-    
-        // Collect IDs of selected products
-        const selectedProducts = Array.from(productList.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
-    
-        // Add selected products to form data
-        formData.append('products', selectedProducts.join(','));
-    
-        // Log the form data
-        console.log("Form Data:", formData);
-    
-        try {
-            // Send form data to server to create a new bundle
-            const response = await fetch("/cbundles", {
-                method: "POST",
-                body: formData,
-            });
-            if (response.ok) {
-                window.location.reload();
-            } else {
-                console.error("Failed to create bundle");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        }
     });
 
     // Display existing bundles and products when the page is loaded

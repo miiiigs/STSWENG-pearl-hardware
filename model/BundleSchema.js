@@ -1,8 +1,6 @@
 import mongoose from 'mongoose';
 
-const Schema = mongoose.Schema;
-
-const bundleSchema = new Schema({
+const bundleSchema =  new mongoose.Schema({
     bname: {
         type: String,
     },
@@ -19,7 +17,7 @@ const bundleSchema = new Schema({
     },
 });
 
-export const cBundles = mongoose.model('bundles', bundleSchema);
+export const cBundles = new mongoose.model('bundles', bundleSchema);
 
 
 

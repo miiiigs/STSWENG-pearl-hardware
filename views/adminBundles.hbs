@@ -19,7 +19,7 @@
         </div>
 
         <!-- Modal for Creating/Editing Bundle -->
-<div id="bundleModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
+    <div id="bundleModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden">
     <div class="bg-white p-8 rounded shadow-md w-96">
         <h1 class="text-2xl font-semibold mb-4" id="bundleModalTitle">Create New Bundle</h1>
 
@@ -28,32 +28,22 @@
             <div class="mb-4">
                 <label for="bundleName" class="block text-sm font-medium text-gray-600">Bundle Name</label>
                 <input type="text" id="bundleName" name= "name" class="mt-1 p-2 w-full border rounded">
-            </div>
 
-            <div class="mb-6">
                 <label for="bundleDescription" class="block text-sm font-medium text-gray-600">Description</label>
                 <textarea id="bundleDescription" name= "description" class="mt-1 p-2 w-full border rounded"></textarea>
-            </div>
 
-            <div class="mb-6">
                 <label for="bundlePrice" class="block text-sm font-medium text-gray-600">Price</label>
                 <input type="number" id="bundlePrice" name= "price" class="mt-1 p-2 w-full border rounded">
-            </div>
 
-            <div class="mb-6">
                 <label class="block text-sm font-medium text-gray-600">Select Products</label>
                 <div class="grid grid-cols-1 gap-2 mt-2 max-h-60 overflow-y-auto" id="productList">
                     <!-- Products will be dynamically added here -->
                 </div>
-            </div>
-
-            <div class="mt-4">
-                <button type="submit" id="saveBundleBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                    Save Bundle
-                </button>
+                <input type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
                 <button type="button" id="closeModalBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded ml-2">
                     Cancel
                 </button>
             </div>
         </form>
     </div>
+</div>
