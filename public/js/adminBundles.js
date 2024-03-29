@@ -4,39 +4,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     const closeModalBtn = document.getElementById("closeModalBtn");
     const bundlesForm = document.getElementById("bundlesForm");
     const productList = document.getElementById("productList");
+    const createBundleSubmitBtn = document.getElementById("createBundleSubmitBtn");
+    const updateBundleSubmitBtn = document.getElementById("updateBundleSubmitBtn");
     
-    /*
-    // Function to handle bundle editing
-    async function editBundle(bundleId) {
-        try {
-            // Fetch bundle data for editing
-            const response = await fetch(`/bundles/${bundleId}`);
-            if (response.ok) {
-                const bundleData = await response.json();
-                // Populate form fields with bundle data
-                document.getElementById("bundleName").value = bundleData.name;
-                document.getElementById("bundleDescription").value = bundleData.description;
-                document.getElementById("bundlePrice").value = bundleData.price;
-                // Clear previous product selections
-                document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => checkbox.checked = false);
-                // Select products that belong to the bundle
-                bundleData.products.forEach(productId => {
-                    document.querySelector(`input[value="${productId}"]`).checked = true;
-                });
-                // Show the modal for editing bundle
-                bundleModal.classList.remove("hidden");
-                // Change modal title to indicate editing
-                document.getElementById("bundleModalTitle").textContent = "Edit Bundle";
-                // Add bundle ID to form data for editing
-                bundlesForm.querySelector('input[name="bundleId"]').value = bundleId;
-            } else {
-                console.error("Failed to fetch bundle data");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    }
-    */
 
     async function displayBundles() {
         try {
@@ -62,20 +32,81 @@ document.addEventListener("DOMContentLoaded", async function () {
                     </div>
                 `;
                 bundlesContainer.appendChild(bundleElement);
+
     
-                // Add event listener for "Edit Bundle" button
-                const editButton = bundleElement.querySelector(`#editBundleBtn_${bundle._id}`);
-                editButton.addEventListener('click', function(event) {
-                    const bundleId = this.getAttribute('data-bundle-id');
-                    console.log('Clicked on Edit Bundle button with id:', this.id, 'for bundle ID:', bundleId);
-                    openEditForm(bundleId);
+        // Add event listener for "Edit Bundle" button
+        const editButton = bundleElement.querySelector(`#editBundleBtn_${bundle._id}`);
+        editButton.addEventListener('click', async function(event) {
+            const bundleId = this.getAttribute('data-bundle-id');
+            console.log('Clicked on Edit Bundle button with id:', this.id, 'for bundle ID:', bundleId);
+            
+            // Open edit form
+            try {
+                // Fetch the bundles again to get the latest data
+                const response = await fetch("/bundles");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch bundles for editing");
+                }
+                const bundles = await response.json();
+                
+                // Find the index of the bundle being edited
+                const bundleIndex = bundles.findIndex(bundle => bundle._id === bundleId);
+                if (bundleIndex === -1) {
+                    throw new Error("Bundle not found for editing");
+                }
+                const bundleData = bundles[bundleIndex];
+                
+                // Populate form fields with bundle data
+                document.getElementById("bundleName").value = bundleData.name;
+                document.getElementById("bundleDescription").value = bundleData.description;
+                document.getElementById("bundlePrice").value = bundleData.price;
+                // Store bundleId as a data attribute on the form
+                document.getElementById("bundlesForm").setAttribute('data-bundle-id', bundleId);
+                // Change modal title to indicate editing
+                document.getElementById("bundleModalTitle").textContent = "Edit Bundle";
+                createBundleSubmitBtn.classList.add("hidden");
+                updateBundleSubmitBtn.classList.remove("hidden");
+                // Show the modal for editing bundle
+                bundleModal.classList.remove("hidden");
+
+                document.getElementById("updateBundleSubmitBtn").addEventListener("click", async function(event) {
+                    event.preventDefault();
+                    const formData = new FormData(document.getElementById("bundlesForm"));
+                    const bundleId = document.getElementById("bundlesForm").getAttribute('data-bundle-id'); 
+                
+                    // Convert formData to JSON
+                    const formDataJSON = Object.fromEntries(formData.entries());
+                
+                    try {
+                        // Send form data to server to update the bundle
+                        const response = await fetch(`/ebundles/${bundleId}`, {
+                            method: "PUT",
+                            body: JSON.stringify(formDataJSON), // Convert to JSON
+                            headers: {
+                                'Content-Type': 'application/json' // Specify content type
+                            }
+                        });
+                
+                        if (response.ok) {
+                            window.location.reload(); // Reload the page to reflect changes
+                        } else {
+                            console.error("Failed to update bundle");
+                        }
+                    } catch (error) {
+                        console.error("Error:", error);
+                    }
                 });
-    
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        });
+
+
+
                 // Add event listener for "Delete Bundle" button
                 const deleteButton = bundleElement.querySelector(`#deleteBundleBtn_${bundle._id}`);
                 deleteButton.addEventListener('click', async function(event) {
                     const bundleId = this.getAttribute('data-bundle-id');
-                    console.log('Clicked on Delete Bundle button with id:', this.id, 'for bundle ID:', bundleId);
                     const confirmDelete = confirm("Are you sure you want to delete this bundle?");
                     if (confirmDelete) {
                         try {
@@ -84,8 +115,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                             });
                             if (response.ok) {
                                 console.log('Bundle deleted successfully');
-                                // Optionally, you can reload the bundles or remove the deleted bundle from the UI
-                                displayBundles(); // Reload the bundles after deletion
+                                displayBundles();
                             } else {
                                 console.error('Failed to delete bundle');
                             }
@@ -100,117 +130,42 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
     
-
-    // Function to open the edit form for a bundle
-function openEditForm(bundleId) {
-    // Fetch bundle data for editing
-    fetch(`/bundles/${bundleId}`)
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        } else {
-            throw new Error("Failed to fetch bundle data");
-        }
-    })
-    .then(bundleData => {
-        // Populate form fields with bundle data
-        document.getElementById("bundleId").value = bundleId;
-        document.getElementById("bundleName").value = bundleData.name;
-        document.getElementById("bundleDescription").value = bundleData.description;
-        document.getElementById("bundlePrice").value = bundleData.price;
-        // Show the modal for editing bundle
-        bundleModal.classList.remove("hidden");
-        // Change modal title to indicate editing
-        document.getElementById("bundleModalTitle").textContent = "Edit Bundle";
-    })
-    .catch(error => {
-        console.error("Error:", error);
-    });
-}
-
-// Handle form submission for editing bundle
-bundlesForm.addEventListener("submit", async function(event) {
+    
+// Handle form submission for creating bundle
+bundlesForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     // Retrieve form data
     const formData = new FormData(bundlesForm);
-    const bundleId = formData.get('bundleId'); // Get the ID of the bundle
+
+    // Collect IDs of selected products
+    const selectedProducts = Array.from(productList.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+    // Add selected products to form data
+    formData.append('products', selectedProducts);
+
+    // Convert formData to JSON
+    const formDataJSON = Object.fromEntries(formData.entries());
 
     try {
-        // Send form data to server to edit the bundle
-        const response = await fetch(`/bundles/${bundleId}`, {
-            method: "PUT",
-            body: formData
+        // Send form data to server to create a new bundle
+        const response = await fetch("/cbundles", {
+            method: "POST",
+            body: JSON.stringify(formDataJSON), // Convert to JSON
+            headers: {
+                'Content-Type': 'application/json' // Specify content type
+            }
         });
+
         if (response.ok) {
-            console.log('Bundle updated successfully');
-            // Optionally, you can reload the bundles or update the edited bundle in the UI
-            displayBundles(); // Reload the bundles after updating
-            // Close the modal after updating
-            bundleModal.classList.add("hidden");
+            window.location.reload(); // Reload the page to reflect changes
         } else {
-            console.error("Failed to update bundle");
+            console.error("Failed to create bundle");
         }
     } catch (error) {
         console.error("Error:", error);
     }
 });
-
-    
-    function openEditForm(bundleId) {
-        // Example function to open the edit form with the bundle ID
-        console.log("Opening edit form for bundle ID:", bundleId);
-        // You can implement your logic to open the edit form here
-    }    
-
-    // Handle form submission for creating/editing bundle
-    bundlesForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
-
-        // Retrieve form data
-        const formData = new FormData(bundlesForm);
-        const bundleId = formData.get('bundleId'); // Get the ID of the bundle (if editing)
-
-        // Collect IDs of selected products
-        const selectedProducts = Array.from(productList.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
-
-        // Add selected products to form data
-        formData.append('products', selectedProducts);
-
-        // Convert formData to JSON
-        const formDataJSON = Object.fromEntries(formData.entries());
-
-        try {
-            // Send form data to server to create or edit a bundle
-            let response;
-            if (bundleId) {
-                response = await fetch(`/ebundles/${bundleId}`, {
-                    method: "PUT",
-                    body: JSON.stringify(formDataJSON), // Convert to JSON
-                    headers: {
-                        'Content-Type': 'application/json' // Specify content type
-                    }
-                });
-            } else {
-                // If creating, send a POST request
-                response = await fetch("/cbundles", {
-                    method: "POST",
-                    body: JSON.stringify(formDataJSON), // Convert to JSON
-                    headers: {
-                        'Content-Type': 'application/json' // Specify content type
-                    }
-                });
-            }
-
-            if (response.ok) {
-                window.location.reload(); // Reload the page to reflect changes
-            } else {
-                console.error("Failed to create/edit bundle");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    });
 
 
 
@@ -264,6 +219,8 @@ bundlesForm.addEventListener("submit", async function(event) {
     // Show modal when "Create New Bundle" button is clicked
     createBundleBtn.addEventListener("click", function () {
         bundleModal.classList.remove("hidden");
+        createBundleSubmitBtn.classList.remove("hidden");
+        updateBundleSubmitBtn.classList.add("hidden");
         // Reset modal title to default for creating new bundle
         document.getElementById("bundleModalTitle").textContent = "Create New Bundle";
         // Reset bundle ID in form data

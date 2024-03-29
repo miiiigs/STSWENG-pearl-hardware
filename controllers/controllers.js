@@ -109,29 +109,7 @@ const controller = {
         } catch {
             res.sendStatus(400);
         }
-    },
-
-    deleteBundle: async function (req, res) {
-        try {
-            const bundleId = req.params.id; // Extract bundle ID from request parameters
-    
-            // Delete the bundle with the provided ID
-            const deletedBundle = await cBundles.findByIdAndDelete(bundleId);
-    
-            if (!deletedBundle) {
-                // If the bundle with the provided ID does not exist, return a 404 status
-                return res.status(404).json({ message: 'Bundle not found' });
-            }
-    
-            console.log("Deleted Bundle:", deletedBundle);
-    
-            res.status(200).json({ message: 'Bundle deleted successfully' });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
-        }
-    },
-    
+    }, 
 
     BundlesPage: async function (req, res) {
         try {
@@ -200,11 +178,33 @@ const controller = {
     },
     
 
+    deleteBundle: async function (req, res) {
+        try {
+            const bundleId = req.params.id; // Extract bundle ID from request parameters
+    
+            // Delete the bundle with the provided ID
+            const deletedBundle = await cBundles.findByIdAndDelete(bundleId);
+    
+            if (!deletedBundle) {
+                // If the bundle with the provided ID does not exist, return a 404 status
+                return res.status(404).json({ message: 'Bundle not found' });
+            }
+    
+            console.log("Deleted Bundle:", deletedBundle);
+    
+            res.status(200).json({ message: 'Bundle deleted successfully' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+
     editBundle: async function (req, res) {
         try {
             // Extract necessary data from the request body
-            const { bundleId, name, description, price, products } = req.body;
-            console.log("Received Data:", { bundleId, name, description, price, products });
+            const bundleId = req.params.id;
+            const {name, description, price, products } = req.body;
+            console.log("Received Data:", {name, description, price, products });
     
             // Convert the products to an array of product IDs
             let productIds;
@@ -233,8 +233,6 @@ const controller = {
         }
     },
     
-    
-
 
     BundlesAllProducts: async (req, res) => {
         try {
