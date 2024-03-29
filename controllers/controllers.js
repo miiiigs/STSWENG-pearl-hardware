@@ -7,6 +7,15 @@ import bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import { Image } from '../model/imageSchema.js';
+import multer from 'multer'; 
+const multerStorage = multer.memoryStorage();
+import { cBundles } from '../model/BundleSchema.js';
+import express from 'express';
+
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const SALT_WORK_FACTOR = 10;
 let currentCategory = "allproducts";
@@ -37,16 +46,19 @@ const controller = {
         }
       },
 
-    getIndex: async function (req, res) {
+      getIndex: async function (req, res) {
         try {
             console.log("USER ID" + req.session.userID);
             //getProducts function
             var product_list = await getProducts();
-
+    
             // sortProducts function
             const sortValue = req.query.sortBy;
             sortProducts(product_list, sortValue);
-
+    
+            // Store sorting option in session
+            req.session.sortOption = sortValue;
+    
             res.render("index", {
                 product_list: product_list,
                 script: './js/index.js',
@@ -97,11 +109,142 @@ const controller = {
         } catch {
             res.sendStatus(400);
         }
+    }, 
+
+    BundlesPage: async function (req, res) {
+        try {
+            if (req.session.userID) {
+                const user = await User.findById(req.session.userID)
+                if (user.isAuthorized == true) {
+                    console.log("AUTHORIZED")
+                    res.render("adminBundles", { // Assuming the view for managing bundles is named "adminBundles"
+                        layout: 'adminBundles',
+                        script: './js/adminBundles.js', // Assuming you have a separate script file for bundle management
+                    });
+                } else {
+                    console.log("UNAUTHORIZED");
+                    res.sendStatus(400);
+                }
+            } else {
+                res.sendStatus(400);
+            }
+        } catch (error) {
+            console.error(error);
+            res.sendStatus(400);
+        }
+    },
+    
+    getAllBundles: async (req, res) => {
+        try {
+            const bundles = await cBundles.find();
+            res.status(200).json(bundles);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+    
+
+    createBundle: async function (req, res) {
+        try {
+            // Extract necessary data from the request body
+            const { name, description, price, products } = req.body;
+            console.log("Received Data:", { name, description, price, products });
+    
+            let productIds;
+            if (Array.isArray(products)) {
+                // If products is already an array, map over it and convert _id to ObjectId
+                productIds = products.map(product => new ObjectId(product._id));
+            } else {
+                // If products is a string separated by commas, split it and convert each ID to ObjectId
+                productIds = products.split(',').map(productId => new ObjectId(productId.trim()));
+}
+    
+            // Create a new bundle with the provided data
+            const newBundle = await cBundles.create({
+                name,
+                description,
+                price,
+                products: productIds  
+            });
+    
+            console.log("New Bundle:", newBundle);
+    
+            res.status(201).json(newBundle);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+    
+
+    deleteBundle: async function (req, res) {
+        try {
+            const bundleId = req.params.id; // Extract bundle ID from request parameters
+    
+            // Delete the bundle with the provided ID
+            const deletedBundle = await cBundles.findByIdAndDelete(bundleId);
+    
+            if (!deletedBundle) {
+                // If the bundle with the provided ID does not exist, return a 404 status
+                return res.status(404).json({ message: 'Bundle not found' });
+            }
+    
+            console.log("Deleted Bundle:", deletedBundle);
+    
+            res.status(200).json({ message: 'Bundle deleted successfully' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
     },
 
+    editBundle: async function (req, res) {
+        try {
+            // Extract necessary data from the request body
+            const bundleId = req.params.id;
+            const {name, description, price, products } = req.body;
+            console.log("Received Data:", {name, description, price, products});
+    
+            // Convert the products to an array of product IDs
+            let productIds;
+            if (Array.isArray(products)) {
+                // If products is already an array, map over it and convert _id to ObjectId
+                productIds = products.map(product => new ObjectId(product._id));
+            } else {
+                // If products is a string separated by commas, split it and convert each ID to ObjectId
+                productIds = products.split(',').map(productId => new ObjectId(productId.trim()));
+            }
+    
+            // Update the bundle with the provided data
+            const updatedBundle = await cBundles.findByIdAndUpdate(bundleId, {
+                name,
+                description,
+                price,
+                products: productIds
+            }, { new: true });
+    
+            console.log("Updated Bundle:", updatedBundle);
+    
+            res.status(200).json(updatedBundle);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+    
+
+    BundlesAllProducts: async (req, res) => {
+        try {
+            const products = await Product.find();
+            res.status(200).json(products);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
 
     getCategory: async function (req, res) {
-
         const category = req.params.category;
         //console.log("CATEGORY " + req.params.category);
         //console.log(currentCategory);
@@ -113,28 +256,28 @@ const controller = {
             currentCategory = category;
         }
         //console.log(req.session.pageIndex);
-
+    
         try {
-
             //getProducts function
             var product_list = await getProducts(category, req);
-
+    
             // sortProducts function
             const sortValue = req.query.sortBy;
             sortProducts(product_list, sortValue);
-
+    
+            // Store sorting option in session
+            req.session.sortOption = sortValue;
+    
             res.render("all_products", {
                 product_list: product_list,
                 category: category,
                 script: '/./js/sort.js',
                 nextPage: req.session.nextPage,
                 prevPage: req.session.prevPage
-
             });
         } catch {
             res.sendStatus(400);
         }
-
     },
 
     changePageStore: async function(req, res){
@@ -214,6 +357,35 @@ const controller = {
                 layout: 'userprofile',
                 user: userData,
                 script: './js/userProfile.js'
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
+    getAdminUserProfile: async function (req, res) {
+        try {
+            
+            const user = await User.findById(req.session.userID);
+            let userData = {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                profilepic: user.profilepic,
+                cart: user.cart,
+                line1: user.line1,
+                line2: user.line2,
+                city: user.city,
+                state: user.state,
+                postalCode: user.postalCode,
+                country: user.country,
+            }
+            console.log(userData);
+            res.render("adminuserprofile", {
+                layout: 'adminuserprofile',
+                user: userData,
+                script: './js/adminuserProfile.js'
             });
         } catch {
             res.sendStatus(400);
@@ -562,6 +734,35 @@ const controller = {
         }
     },
 
+    editAdminProfile: async function (req, res) {
+        try {
+            const user = req.body;
+            const id = req.params.id;
+
+            //console.log(id);
+
+            const updateProfile = await User.findByIdAndUpdate(
+                id,
+                { firstName: user.fname,
+                    lastName: user.lname,
+                    state: user.state,
+                    city: user.city,
+                    postalCode: user.postalCode,
+                    line1: user.line1,
+                    line2: user.line2
+                },   
+            );
+
+            //console.log(updateProfile)
+            
+            res.redirect('/adminuserprofile');
+
+        } catch(error) {
+            res.sendStatus(400);
+            console.error(error);
+        }
+    },
+
     getUserOrderDetails: async function(req, res) {
 
         const orderID = req.params.orderID;
@@ -593,6 +794,18 @@ const controller = {
         }
     },
 
+    adminInsights: async function (req, res) {
+        try {
+    
+            res.render("AdminInsights", {
+                layout: 'Admin_insight'
+            });
+        } catch (error) {
+            console.error(error);
+            res.sendStatus(500); 
+        }
+    },
+    
     getAdminInventory: async function (req, res) {
 
         const category = req.params.category;
@@ -846,6 +1059,7 @@ const controller = {
         res.redirect('/');
     },
 
+
     getUser: async function (req, res) {
         if (req.session.userID) {
             console.log("USER ID" + req.session.userID);
@@ -855,6 +1069,39 @@ const controller = {
             console.log("Failed to get current user");
         }
     },
+
+    updateProfilePic: async (req, res) => {
+        const { id } = req.params; // Updated from userId to id
+        const profilePic = req.file; // Access the uploaded image file
+        if (!profilePic) {
+            return res.status(400).json({ message: 'No image file provided' });
+        }
+    
+        try {
+            // Find the user by ID
+            const user = await User.findById(id); // Updated from userId to id
+            if (!user) {
+                return res.status(404).json({ message: 'User not found' });
+            }
+    
+            // Update the profile picture fields in the user document
+            user.profilepic = {
+                data: profilePic.buffer, // Store the buffer data
+                contentType: profilePic.mimetype // Store the MIME type
+            };
+    
+            // Save the updated user document
+            await user.save();
+    
+            res.status(200).json({ message: 'Profile picture updated successfully' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+
+
+
 	
     //addToCart
     //will add to cart using the product ID (mongodb ID)
@@ -1183,6 +1430,7 @@ const controller = {
             res.sendStatus(400);
         }
     },
+
 
     getAdminCategory: async function (req, res) {
 
@@ -1672,6 +1920,9 @@ async function sortOrders(order_list, sortValue){
         }
     }
 }
+
+
+
 
 
 export default controller;

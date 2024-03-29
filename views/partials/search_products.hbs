@@ -1,0 +1,18 @@
+<!-- So if you see this...you can access the results using the variable `product_list_search`, then render that data. -->
+
+
+
+	<form class="flex flex-row bg-maincolor py-2 px-4 rounded-3xl" id="search_products_query_box" action="/searchProducts" method="get">
+		
+		<input class="bg-maincolor text-white placeholder-white " type="text" placeholder="Search for product" name="product_query" id="product_query" value="{{buffer}}" required >
+		
+		<button class="bg-maincolor"type="submit" id="submitSearch"><img src="/./uploads/search.png"></button>
+	</form>
+
+	<style>
+		#product_query:focus {
+			border: 0px;
+			outline: 0px;
+		}
+	</style>
+	

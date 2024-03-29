@@ -1,0 +1,190 @@
+<style>
+	.rounded-full {
+		border-radius: 50%;
+	}
+
+	.fixed-container {
+		width: 900px;
+		/* Set your desired width */
+		height: 900px;
+		/* Set your desired height */
+	}
+</style>
+
+
+
+
+<div class="container fixed-container flex flex-col items-center justify-center mx-auto w-auto ml-auto mt-12 border border-4 border-maincolor rounded-3xl mb-16">
+    <div class="container mx-auto p-8">
+        <div class="font-Lato p-8">
+            <div class="flex flex-col items-center relative overflow-hidden">
+                <img id="profileImage" src="../uploads/nylon_brush.jpg" alt="{{user.firstName}} {{user.lastName}}" class="rounded-full w-40 h-48">
+            </div>
+            <div class="flex items-center justify-center text-center mt-2">
+                <form id="uploadForm" action="/updateProfilePic/{{user.id}}" method="POST" enctype="multipart/form-data">
+			<input type="file" accept="image/*" id="uploadInput" name="profilePic" class="hidden" onchange="previewImage(event); saveImageToLocal(event);">
+				<label for="uploadInput" class="bg-secondary text-white py-2 px-3 rounded-lg border border-secondary hover:bg-white hover:text-secondary hover:border cursor-pointer">Upload/Change Picture</label>
+			</form>
+            </div>
+
+
+			<div class="text-5xl text-secondary rounded-lg p-5 mt-3 h-14 flex items-center justify-center ">
+				{{user.firstName}} {{user.lastName}}
+			</div>
+
+
+			<div class=" flex items-center justify-center mt-3">
+				<p class="text-secondary text-xl font-bold">Email: </p>
+				<div class="container bg-maincolor text-white rounded p-2 ml-1 text-lg">
+					{{user.email}}
+				</div>
+			</div>
+
+
+			<div class=" mt-6 text-3xl text-secondary flex items-center justify-center ">
+				Admin Details
+			</div>
+
+
+			<div class=" flex items-center justify-center mt-4 ">
+				<p class="text-secondary text-xl font-bold">Name: </p>
+				<div class="container bg-maincolor text-white rounded p-1 ml-1 text-lg">
+					{{user.firstName}} {{user.lastName}}
+				</div>
+			</div>
+
+			<div class=" flex items-center justify-center mt-3">
+				<p class="text-secondary text-xl font-bold">State: </p>
+				<div class="container bg-maincolor text-white rounded p-2 ml-1 text-lg">
+					{{user.state}}
+				</div>
+			</div>
+
+
+			<div class=" flex items-center justify-center mt-3">
+				<p class="text-secondary text-xl font-bold">City: </p>
+				<div class="container bg-maincolor text-white rounded p-2 ml-1 text-lg">
+					{{user.city}}
+				</div>
+			</div>
+
+
+			<div class="mx-10">
+				<div class="font-Lato text-lg text-white mx-auto rounded-lg mt-3 h-14 flex flex-row gap-x-20 items-center justify-center ">
+					<button onclick="openModal()"
+						class="bg-secondary py-2 px-3 w-full rounded-lg flex items-center justify-center border border-secondary hover:bg-white hover:text-secondary hover:border">
+						EDIT
+					</button>
+				</div>
+
+				<div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+					<div class="bg-white p-8 rounded shadow-md w-96">
+
+						<h1 class="text-2xl font-semibold mb-4">Profile Information</h1>
+
+						<form action="/admineditProfile/{{user.id}}" method="POST"
+							enctype="application/x-www-form-urlencoded">
+							<div class="mb-4">
+								<label for="fname" class="block text-sm font-medium text-gray-600">First Name</label>
+								<input type="text" id="fname" name="fname" class="mt-1 p-2 w-full border rounded"
+									value="{{user.firstName}}">
+							</div>
+
+							<div class="mb-4">
+								<label for="lname" class="block text-sm font-medium text-gray-600">Last Name</label>
+								<input type="text" id="lname" name="lname" class="mt-1 p-2 w-full border rounded"
+									value="{{user.lastName}}">
+							</div>
+
+							<div class="mb-4">
+								<label for="state" class="block text-sm font-medium text-gray-600">State</label>
+								<input type="text" id="state" name="state" class="mt-1 p-2 w-full border rounded"
+									value="{{user.state}}">
+							</div>
+
+							<div class="mb-6">
+								<label for="city" class="block text-sm font-medium text-gray-600">City</label>
+								<input type="text" id="city" name="city" class="mt-1 p-2 w-full border rounded"
+									value="{{user.city}}">
+							</div>
+							
+							<div class="mb-6">
+								<label for="line1" class="block text-sm font-medium text-gray-600">Address line
+									1</label>
+								<input type="text" id="line1" name="line1" class="mt-1 p-2 w-full border rounded"
+									value="{{user.line1}}">
+							</div>
+
+							<div class="mb-6">
+								<label for="line2" class="block text-sm font-medium text-gray-600">Address line
+									2</label>
+								<input type="text" id="line2" name="line2" class="mt-1 p-2 w-full border rounded"
+									value="{{user.line2}}">
+							</div>
+
+
+							<div class="mt-4">
+								<button type="submit"
+									class=" rounded hover:bg-maincolor hover:pt-0 hover:text-white  text-maincolor text-2xl font-Lato font-bold ">Submit</button>
+							</div>
+
+							<div class=" mt-6">
+								<button onclick="closeModal()"
+									class="rounded  hover:bg-maincolor hover:pt-0 hover:text-white text-maincolor text-2xl font-Lato font-bold ">Close</button>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+
+			<script>
+				function openModal() {
+					const modal = document.getElementById('modal');
+					modal.classList.remove('hidden');
+				}
+
+				function closeModal() {
+					const modal = document.getElementById('modal');
+					modal.classList.add('hidden');
+				}
+
+				// Function to preview the selected image
+				function previewImage(event) {
+					const input = event.target;
+					if (input.files && input.files[0]) {
+						const reader = new FileReader();
+						reader.onload = function (e) {
+							const profileImage = document.getElementById('profileImage');
+							profileImage.src = e.target.result;
+						}
+						reader.readAsDataURL(input.files[0]);
+					}
+				}
+
+				// Function to save the uploaded image to local storage
+				function saveImageToLocal(event) {
+					const input = event.target;
+					if (input.files && input.files[0]) {
+						const reader = new FileReader();
+						reader.onload = function (e) {
+							localStorage.setItem('profileImage', e.target.result);
+						}
+						reader.readAsDataURL(input.files[0]);
+					}
+				}
+
+				// Function to load the profile image from local storage when the page is loaded
+				window.onload = function () {
+					const profileImage = document.getElementById('profileImage');
+					const savedImage = localStorage.getItem('profileImage');
+					if (savedImage) {
+						profileImage.src = savedImage;
+					}
+				}
+			</script>
+		</div>
+
+	</div>
+
+</div>
