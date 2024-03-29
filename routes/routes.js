@@ -8,6 +8,7 @@ const multerStorage = multer.memoryStorage();
 const upload = multer({ storage: multerStorage });
 
 const router = Router();
+const validateProducts = body('products').isArray();
 
 //BOILERPLATE
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -74,7 +75,7 @@ router.post('/statusChange', controller.statusChange);
 router.post('/changePageStore/:category', controller.changePageStore);
 router.post('/changePageAdminCategory/:category', controller.changePageAdminCategory);
 router.post('/changePageUserPurchases/:category', controller.changePageUserPurchases);
-router.post('/cbundles',body('name').notEmpty(), body('description').notEmpty(), body('price').notEmpty(), controller.createBundle);
+router.post('/cbundles', body('name').notEmpty(), body('description').notEmpty(), body('price').notEmpty(), body('products').notEmpty(), controller.createBundle);
 
 router.post('/addProduct', upload.single('productPic'), body('name').notEmpty(), body('quantity').notEmpty().isNumeric(), body('price').notEmpty(), controller.addProduct);
 router.post('/editProduct', upload.single('productPic'), body('name').notEmpty(), body('quantity').notEmpty().isNumeric(), body('price').notEmpty(), controller.editProduct);

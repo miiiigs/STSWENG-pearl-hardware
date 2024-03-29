@@ -144,19 +144,24 @@ const controller = {
         }
     },
     
+
     createBundle: async function (req, res) {
         try {
-            // Extract necessary data from the request
-            const { name, description, price } = req.body;
-            console.log("Received Data:", { name, description, price });
+            // Extract necessary data from the request body
+            const { name, description, price, products } = req.body;
+            console.log("Received Data:", { name, description, price, products });
+    
+            // Ensure that products is an array and map over it
+            const productIds = Array.isArray(products) ? products.map(product => mongoose.Types.ObjectId(product._id)) : [];
     
             // Create a new bundle with the provided data
             const newBundle = await cBundles.create({
                 name,
                 description,
                 price,
-                // You may need to extract and process additional data here
+                products: productIds // Include the array of product IDs
             });
+    
             console.log("New Bundle:", newBundle);
     
             res.status(201).json(newBundle);
@@ -165,7 +170,6 @@ const controller = {
             res.status(500).json({ message: 'Internal server error' });
         }
     },
-    
     
     /*
     updateBundlePrice: async (req, res) => {

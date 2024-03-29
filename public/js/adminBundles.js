@@ -17,7 +17,7 @@ bundlesForm.addEventListener("submit", async function (event) {
     const selectedProducts = Array.from(productList.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
 
     // Add selected products to form data
-    formData.append('products', selectedProducts.join(','));
+    formData.append('products', selectedProducts);
 
     // Convert formData to JSON
     const formDataJSON = Object.fromEntries(formData.entries());

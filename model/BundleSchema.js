@@ -1,23 +1,23 @@
 import mongoose from 'mongoose';
 
-const bundleSchema =  new mongoose.Schema({
-    bname: {
+const bundleSchema = new mongoose.Schema({
+    name:{
         type: String,
     },
-    bdescription: {
+
+    description:{
         type: String,
     },
-    bprice: {
+
+    price:{
         type: Number,
     },
-    bproducts:
-    {
-        type: mongoose.SchemaTypes.Array,
-        ref: 'products',
-    },
+
+    products: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'products'
+    }],
+    
 });
 
-export const cBundles = new mongoose.model('bundles', bundleSchema);
-
-
-
+export const cBundles = mongoose.model('bundles', bundleSchema);
