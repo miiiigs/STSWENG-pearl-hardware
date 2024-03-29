@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <h2 class="text-lg font-semibold">${bundle.name}</h2>
                     <p class="text-gray-600">${bundle.description}</p>
                     <div class="mt-4">
-                        <p class="text-gray-800 font-bold">Price: ${bundle.price}</p>
+                        <p class="text-gray-800 font-bold">Price: ₱${bundle.price}</p>
                         <button id="editBundleBtn_${bundle._id}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded mt-2 editBundleBtn" data-bundle-id="${bundle._id}">Edit Bundle</button>
                         <button id="deleteBundleBtn_${bundle._id}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded mt-2 deleteBundleBtn" data-bundle-id="${bundle._id}">Delete Bundle</button>
                     </div>

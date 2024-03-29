@@ -204,7 +204,7 @@ const controller = {
             // Extract necessary data from the request body
             const bundleId = req.params.id;
             const {name, description, price, products } = req.body;
-            console.log("Received Data:", {name, description, price, products });
+            console.log("Received Data:", {name, description, price, products});
     
             // Convert the products to an array of product IDs
             let productIds;
