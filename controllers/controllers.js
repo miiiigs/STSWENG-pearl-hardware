@@ -363,6 +363,35 @@ const controller = {
         }
     },
 
+    getAdminUserProfile: async function (req, res) {
+        try {
+            
+            const user = await User.findById(req.session.userID);
+            let userData = {
+                id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                email: user.email,
+                profilepic: user.profilepic,
+                cart: user.cart,
+                line1: user.line1,
+                line2: user.line2,
+                city: user.city,
+                state: user.state,
+                postalCode: user.postalCode,
+                country: user.country,
+            }
+            console.log(userData);
+            res.render("adminuserprofile", {
+                layout: 'adminuserprofile',
+                user: userData,
+                script: './js/adminuserProfile.js'
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
     getUserPurchases: async function (req, res) {
 
         const category = req.params.status;
@@ -698,6 +727,35 @@ const controller = {
             //console.log(updateProfile)
             
             res.redirect('/userprofile');
+
+        } catch(error) {
+            res.sendStatus(400);
+            console.error(error);
+        }
+    },
+
+    editAdminProfile: async function (req, res) {
+        try {
+            const user = req.body;
+            const id = req.params.id;
+
+            //console.log(id);
+
+            const updateProfile = await User.findByIdAndUpdate(
+                id,
+                { firstName: user.fname,
+                    lastName: user.lname,
+                    state: user.state,
+                    city: user.city,
+                    postalCode: user.postalCode,
+                    line1: user.line1,
+                    line2: user.line2
+                },   
+            );
+
+            //console.log(updateProfile)
+            
+            res.redirect('/adminuserprofile');
 
         } catch(error) {
             res.sendStatus(400);

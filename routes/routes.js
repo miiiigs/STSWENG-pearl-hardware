@@ -29,6 +29,7 @@ router.get('/searchProducts', controller.searchProducts);
 
 
 router.get('/userprofile', controller.getUserProfile);
+router.get('/adminuserprofile', controller.getAdminUserProfile);
 router.get('/userpurchases/:status', controller.getUserPurchases);
 router.get('/userorderdetails/:orderID', controller.getUserOrderDetails);
 router.get('/userSearchPurchases', controller.searchUserPurchases);
@@ -83,6 +84,7 @@ router.post('/showProduct', controller.showProduct);
 router.post('/hideProduct', controller.hideProduct);
 router.post('/deleteProduct', controller.deleteProduct);
 router.post('/editProfile/:id', controller.editProfile);
+router.post('/admineditProfile/:id', controller.editAdminProfile);
 router.post('/updateProfilePic/:userId', upload.single('profilePic'), controller.updateProfilePic);
 
 router.put('/ebundles/:id', controller.editBundle);

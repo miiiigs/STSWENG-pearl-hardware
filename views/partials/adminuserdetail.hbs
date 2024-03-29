@@ -18,7 +18,7 @@
     <div class="container mx-auto p-8">
         <div class="font-Lato p-8">
             <div class="flex flex-col items-center relative overflow-hidden">
-                <img id="profileImage" src="../uploads/profpic.jpg" alt="{{user.firstName}} {{user.lastName}}" class="rounded-full w-40 h-48">
+                <img id="profileImage" src="../uploads/nylon_brush.jpg" alt="{{user.firstName}} {{user.lastName}}" class="rounded-full w-40 h-48">
             </div>
             <div class="flex items-center justify-center text-center mt-2">
                 <form id="uploadForm" action="/updateProfilePic/{{user.id}}" method="POST" enctype="multipart/form-data">
@@ -86,16 +86,11 @@
 
 
 			<div class="mx-10">
-				<div
-					class="font-Lato text-lg text-white mx-auto rounded-lg mt-3 h-14 flex flex-row gap-x-20 items-center justify-center ">
+				<div class="font-Lato text-lg text-white mx-auto rounded-lg mt-3 h-14 flex flex-row gap-x-20 items-center justify-center ">
 					<button onclick="openModal()"
 						class="bg-secondary py-2 px-3 w-full rounded-lg flex items-center justify-center border border-secondary hover:bg-white hover:text-secondary hover:border">
 						EDIT
 					</button>
-					<a href="/userpurchases/allOrders"
-						class="bg-secondary py-2 px-3 w-full rounded-lg flex items-center justify-center border border-secondary hover:bg-white hover:text-secondary hover:border">
-						PURCHASES
-					</a>
 				</div>
 
 				<div id="modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -103,7 +98,7 @@
 
 						<h1 class="text-2xl font-semibold mb-4">Profile Information</h1>
 
-						<form action="/editProfile/{{user.id}}" method="POST"
+						<form action="/admineditProfile/{{user.id}}" method="POST"
 							enctype="application/x-www-form-urlencoded">
 							<div class="mb-4">
 								<label for="fname" class="block text-sm font-medium text-gray-600">First Name</label>
