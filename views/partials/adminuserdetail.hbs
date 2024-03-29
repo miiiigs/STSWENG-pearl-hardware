@@ -42,13 +42,20 @@
 
 
 			<div class=" mt-6 text-3xl text-secondary flex items-center justify-center ">
-				Address Details
+				Admin Details
 			</div>
 
 
 			<div class=" flex items-center justify-center mt-4 ">
-				<p class="text-secondary text-xl font-bold">State: </p>
+				<p class="text-secondary text-xl font-bold">Name: </p>
 				<div class="container bg-maincolor text-white rounded p-1 ml-1 text-lg">
+					{{user.firstName}} {{user.lastName}}
+				</div>
+			</div>
+
+			<div class=" flex items-center justify-center mt-3">
+				<p class="text-secondary text-xl font-bold">State: </p>
+				<div class="container bg-maincolor text-white rounded p-2 ml-1 text-lg">
 					{{user.state}}
 				</div>
 			</div>
@@ -60,29 +67,6 @@
 					{{user.city}}
 				</div>
 			</div>
-
-
-			<div class=" flex items-center justify-center mt-3">
-				<p class="text-secondary text-xl font-bold">Postal Code: </p>
-				<div class="container bg-maincolor text-white rounded p-2 ml-1 text-lg">
-					{{user.postalCode}}
-				</div>
-			</div>
-
-			<div class=" flex items-center justify-center mt-3 ">
-				<p class="text-secondary text-xl font-bold">Address Line 1: </p>
-				<div class="container bg-maincolor text-white rounded p-2 ml-1 text-lg">
-					{{user.line1}}
-				</div>
-			</div>
-
-			<div class=" flex items-center justify-center mt-3">
-				<p class="text-secondary text-xl font-bold">Address Line 2: </p>
-				<div class="container bg-maincolor text-white rounded p-2 ml-1 text-lg">
-					{{user.line2}}
-				</div>
-			</div>
-
 
 
 			<div class="mx-10">
@@ -123,14 +107,7 @@
 								<input type="text" id="city" name="city" class="mt-1 p-2 w-full border rounded"
 									value="{{user.city}}">
 							</div>
-
-							<div class="mb-6">
-								<label for="postalCode" class="block text-sm font-medium text-gray-600">Postal
-									Code</label>
-								<input type="number" id="postalCode" name="postalCode"
-									class="mt-1 p-2 w-full border rounded" value="{{user.postalCode}}">
-							</div>
-
+							
 							<div class="mb-6">
 								<label for="line1" class="block text-sm font-medium text-gray-600">Address line
 									1</label>
