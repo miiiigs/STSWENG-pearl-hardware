@@ -85,6 +85,7 @@ router.post('/deleteProduct', controller.deleteProduct);
 router.post('/editProfile/:id', controller.editProfile);
 router.post('/updateProfilePic/:userId', upload.single('profilePic'), controller.updateProfilePic);
 
-//router.put('/bundles/:bundleId', controller.updateBundlePrice);
+router.put('/ebundles/:id', controller.editBundle);
+router.delete('/dbundles/:id', controller.deleteBundle);
 
 export default router;
