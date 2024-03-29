@@ -151,15 +151,21 @@ const controller = {
             const { name, description, price, products } = req.body;
             console.log("Received Data:", { name, description, price, products });
     
-            // Ensure that products is an array and map over it
-            const productIds = Array.isArray(products) ? products.map(product => mongoose.Types.ObjectId(product._id)) : [];
+            let productIds;
+            if (Array.isArray(products)) {
+                // If products is already an array, map over it and convert _id to ObjectId
+                productIds = products.map(product => new ObjectId(product._id));
+            } else {
+                // If products is a string separated by commas, split it and convert each ID to ObjectId
+                productIds = products.split(',').map(productId => new ObjectId(productId.trim()));
+}
     
             // Create a new bundle with the provided data
             const newBundle = await cBundles.create({
                 name,
                 description,
                 price,
-                products: productIds // Include the array of product IDs
+                products: productIds  
             });
     
             console.log("New Bundle:", newBundle);
@@ -170,6 +176,7 @@ const controller = {
             res.status(500).json({ message: 'Internal server error' });
         }
     },
+    
     
     /*
     updateBundlePrice: async (req, res) => {
