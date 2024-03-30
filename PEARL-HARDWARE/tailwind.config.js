@@ -10,6 +10,7 @@ module.exports = {
       'tertiary': '#D9D9D9',
       'dirty-white': '#FFFBFB',
       'white': '#FFFFFF',
+      'gray': '#808080',
 
     },
 

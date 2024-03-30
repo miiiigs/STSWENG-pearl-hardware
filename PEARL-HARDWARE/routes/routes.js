@@ -53,6 +53,8 @@ router.get('/getCartItems', controller.getCartItems)
 router.get('/AdminOrderDetails/:orderID', controller.getOrderDetails)
 router.get('/searchOrders', controller.searchOrders);
 
+router.get('/salestracker', controller.getAdminTracker);
+
 //POSTS
 router.post('/register', body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
     if (await User.findOne({ email: value }).exec()) {

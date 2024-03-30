@@ -610,10 +610,6 @@ video {
   top: 0px;
 }
 
-.top-1{
-  top: 0.25rem;
-}
-
 .top-1\/2{
   top: 50%;
 }
@@ -662,6 +658,11 @@ video {
 .mx-2{
   margin-left: 0.5rem;
   margin-right: 0.5rem;
+}
+
+.mx-4{
+  margin-left: 1rem;
+  margin-right: 1rem;
 }
 
 .mx-5{
@@ -773,6 +774,10 @@ video {
 
 .ml-28{
   margin-left: 7rem;
+}
+
+.ml-40{
+  margin-left: 10rem;
 }
 
 .ml-5{
@@ -1041,6 +1046,10 @@ video {
 
 .w-6{
   width: 1.5rem;
+}
+
+.w-6\/12{
+  width: 50%;
 }
 
 .w-60{
@@ -1758,6 +1767,11 @@ video {
 }
 
 .text-\[\#808080\]{
+  --tw-text-opacity: 1;
+  color: rgb(128 128 128 / var(--tw-text-opacity));
+}
+
+.text-gray{
   --tw-text-opacity: 1;
   color: rgb(128 128 128 / var(--tw-text-opacity));
 }

@@ -644,7 +644,8 @@ const controller = {
             res.sendStatus(400);
         }
     },
-	
+
+
 	//searchInventory
 	//specialized search and sort for Admin
     searchInventory: async function (req, res) {
@@ -1456,6 +1457,16 @@ const controller = {
 
     },
 
+    getAdminTracker: async function (req, res){
+        try {
+            res.render("salestrackerpage", {
+                layout: 'adminTracker',
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    }
+	
 }
 
 async function getProducts(category, req) {
@@ -1640,6 +1651,8 @@ async function sortOrders(order_list, sortValue){
         }
     }
 }
+
+
 
 
 export default controller;
