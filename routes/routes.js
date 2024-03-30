@@ -61,6 +61,8 @@ router.get('/bundleproducts', controller.BundlesAllProducts);
 
 
 
+router.get('/salestracker', controller.getAdminTracker);
+
 //POSTS
 router.post('/register', body('fname').notEmpty(), body('lname').notEmpty(), body('email').notEmpty().isEmail().normalizeEmail().custom(async value => {
     if (await User.findOne({ email: value }).exec()) {
