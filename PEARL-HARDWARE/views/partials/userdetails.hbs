@@ -4,11 +4,17 @@
 	}
 
 	.fixed-container {
-		width: 900px;
-		/* Set your desired width */
-		height: 900px;
-		/* Set your desired height */
+		width: 100%;
+        max-width: 900px; /* Set your desired maximum width */
+        height: auto
+		
 	}
+	
+	 @media screen and (max-width: 768px) {
+        .text-name {
+            font-size: 2rem; /* Adjust the font size as needed */
+        }
+    }
 </style>
 
 
@@ -30,7 +36,7 @@
 					Picture</button>
 			</div>
 
-			<div class="text-5xl text-secondary rounded-lg p-5 mt-3 h-14 flex items-center justify-center ">
+			<div class="text-5xl text-secondary rounded-lg p-5 mt-3 h-14 flex items-center justify-center text-name ">
 				{{user.firstName}} {{user.lastName}}
 			</div>
 
