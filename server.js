@@ -18,7 +18,7 @@ const app = express();
 //const mongodb = process.env.MONGODB_URI;
 //const dbname = process.env.DB_NAME
 const store = new MongoDBStore({
-    uri: "mongodb://0.0.0.0:27017/",
+    uri: "mongodb://127.0.0.1:27017/",
     collection: 'sessions',
 });
 
