@@ -18,6 +18,7 @@ function checkQuantity() { //this function disables the add to cart button until
 }
 
 checkQuantity();
+window.checkQuantity = checkQuantity;
 
 btn.addEventListener('click', async (e) => {
     e.preventDefault();
