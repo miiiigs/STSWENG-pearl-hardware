@@ -670,11 +670,6 @@ video {
   margin-right: 0.5rem;
 }
 
-.mx-4{
-  margin-left: 1rem;
-  margin-right: 1rem;
-}
-
 .mx-5{
   margin-left: 1.25rem;
   margin-right: 1.25rem;
@@ -790,8 +785,8 @@ video {
   margin-left: 7rem;
 }
 
-.ml-40{
-  margin-left: 10rem;
+.ml-4{
+  margin-left: 1rem;
 }
 
 .ml-5{
@@ -800,6 +795,10 @@ video {
 
 .ml-6{
   margin-left: 1.5rem;
+}
+
+.ml-7{
+  margin-left: 1.75rem;
 }
 
 .ml-auto{
@@ -1040,6 +1039,10 @@ video {
 
 .w-32{
   width: 8rem;
+}
+
+.w-4\/12{
+  width: 33.333333%;
 }
 
 .w-40{
