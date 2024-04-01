@@ -1,9 +1,11 @@
 import mongoose from "mongoose";
 
 import { Product } from "./model/productSchema.js";
+import { config } from "dotenv";
+config();
 
 //change this to the env
-mongoose.connect('mongodb://127.0.0.1:27017/pearl_hardware_test', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true});
 
 createProducts();
 console.log("Process can be terminated safely now");
