@@ -8,6 +8,16 @@
         width: 425px;
         height: 100px;
     }
+
+    .grayscale-hover {
+        filter: grayscale(70%);
+        transition: filter 0.2s ease;
+    }
+
+    .grayscale-hover:hover {
+        filter: grayscale(0%);
+    }
+
 </style>
 
 
@@ -39,37 +49,52 @@
     </div> --}}
 
 
-    <div class="grid grid-flow-col gap-4">
-
-        <div class=" ml-5 relative">
-            <img src="../uploads/weldingImg.png" class="first-image" alt="">
-            <div class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-5 font-Inika text-5xl ">
-                Welding Supplies</div>
-        </div>
-
-        <div class="grid grid-flow-row gap-4 relative">
-            <div class="relative">
-                <img src="../uploads/safety.png" class="second-image" alt="">
-                <div class="absolute bottom-0 right-0 text-white p-2 font-Inika text-3xl">Safety Supplies</div>
-            </div>
-
-            <div class="relative">
-                <img src="../uploads/cleaning.png" class="second-image" alt="">
-                <div class="absolute bottom-0 right-0  text-white p-2 font-Inika text-3xl">Cleaning Supplies</div>
-            </div>
-
-            <div class="relative">
-                <img src="../uploads/industrial.png" class="second-image" alt="">
-                <div class="absolute bottom-0 right-0  text-white p-2 font-Inika text-3xl">Industrial Supplies</div>
-            </div>
-
-            <div class="relative">
-                <img src="../uploads/brass.png" class="second-image" alt="">
-                <div class="absolute bottom-0 right-0  text-white p-2 font-Inika text-3xl">Brass Fittings</div>
-            </div>
-
-        </div>
-
+      <div class="grid grid-flow-col gap-4">
+    <div class="ml-5 relative">
+        <form action="/category/welding" method="GET">
+            <button type="submit" class="image-button">
+                <img src="../uploads/weldingImg.png" class="first-image grayscale-hover" alt="">
+            </button>
+        </form>
+        <div class="absolute bottom-0 left-0 bg-black bg-opacity-50 text-white p-5 font-Inika text-5xl">Welding Supplies</div>
     </div>
 
+    <div class="grid grid-flow-row gap-4 relative">
+        <div class="relative">
+            <form action="/category/safety" method="GET">
+                <button type="submit" class="image-button">
+                    <img src="../uploads/safety.png" class="second-image grayscale-hover" alt="">
+                </button>
+            </form>
+            <div class="absolute bottom-0 right-0 text-white p-2 font-Inika text-3xl">Safety Supplies</div>
+        </div>
+
+        <div class="relative">
+            <form action="/category/cleaning" method="GET">
+                <button type="submit" class="image-button">
+                    <img src="../uploads/cleaning.png" class="second-image grayscale-hover" alt="">
+                </button>
+            </form>
+            <div class="absolute bottom-0 right-0 text-white p-2 font-Inika text-3xl">Cleaning Supplies</div>
+        </div>
+
+        <div class="relative">
+            <form action="/category/industrial" method="GET">
+                <button type="submit" class="image-button">
+                    <img src="../uploads/industrial.png" class="second-image grayscale-hover" alt="">
+                </button>
+            </form>
+            <div class="absolute bottom-0 right-0 text-white p-2 font-Inika text-3xl">Industrial Supplies</div>
+        </div>
+
+        <div class="relative">
+            <form action="/category/brassfittings" method="GET">
+                <button type="submit" class="image-button">
+                    <img src="../uploads/brass.png" class="second-image grayscale-hover" alt="">
+                </button>
+            </form>
+            <div class="absolute bottom-0 right-0 text-white p-2 font-Inika text-3xl">Brass Fittings</div>
+        </div>
+    </div>
 </div>
+
