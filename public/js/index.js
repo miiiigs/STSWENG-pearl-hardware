@@ -69,7 +69,7 @@ async function displayDiscountedProducts() {
                     <p>${product.description}</p>
                     <p>Price: ₱${product.price}</p>
                     <p>Discounted Price: ₱${product.discountValue}</p>
-                    <a href="/product/${product._id}" class="btn btn-primary mt-2">View Details</a>
+                    <a href="/product?name=${encodeURIComponent(product.name)}&id=${product.p_id ? product.p_id : product._id}">View Details</a>
                 `;
                 discountedProductsContainer.appendChild(productBox);
             });
