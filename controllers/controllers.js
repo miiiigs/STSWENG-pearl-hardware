@@ -655,7 +655,7 @@ const controller = {
                     break;
                 case 'percent':
                     isDiscounted = true;
-                    dvalue = product.price - (product.dvalue * product.price);
+                    dvalue = product.price - ((product.dvalue / 100) * product.price);
                     break;
             }
 
