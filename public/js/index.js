@@ -1,27 +1,58 @@
 const regLog = document.querySelector('#regLog');
-const myAccount = document.querySelector('#myAccount')
+const myAccount = document.querySelector('#myAccount');
+const bundleContainer = document.querySelector('#bundleContainer');
 
-async function initializeUserStatus(){
-    const response = await fetch('/getUser', {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
+async function initializeUserStatus() {
+    try {
+        // Fetch user status
+        const response = await fetch('/getUser', {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (response.status === 200) {
+            // User is logged in
+            // Show user-related elements (e.g., myAccount)
+            // regLog.style.visibility = "hidden";
+            // myAccount.style.visibility = "visible";      
+        } else if (response.status === 400) {
+            // User is not logged in
+            // Show login/register elements (e.g., regLog)
+            // regLog.style.visibility = "visible";
+            // myAccount.style.visibility = "hidden";
         }
-    })
-
-    //TO THE FRONT END WHO DID THIS:
-    //I AM SORRY
-    //I HAD TO DO HANDLEBARS FOR TESTING MY LOG OUT, AND IT CONFLICTS
-    //WITH THIS APPROACH. I AM SO SORRY
-    if(response.status == 200){
-        //regLog.style.visibility = "hidden";
-        //myAccount.style.visibility = "visible";      
-    }else if(response.status == 400){
-        console.log("failed to get current user")
-        //regLog.style.visibility = "visible";
-        //myAccount.style.visibility = "hidden";
+    } catch (error) {
+        console.error("Failed to get current user:", error);
     }
 }
 
-initializeUserStatus();
+async function displayBundles() {
+    try {
+        const response = await fetch('/bundles');
+        if (response.ok) {
+            const bundles = await response.json();
+            bundles.forEach(bundle => {
+                const bundleBox = document.createElement('div');
+                bundleBox.classList.add('bundle-box'); 
+                bundleBox.innerHTML = `
+                    <h2>${bundle.name}</h2>
+                    <p>${bundle.description}</p>
+                    <p>Price: ₱${bundle.price}</p>
+                    <a href="/bundle/${bundle._id}" class="btn btn-primary mt-2">View Details</a>
+                `;
+                bundleContainer.appendChild(bundleBox);
+            });
+        } else {
+            console.error("Failed to fetch bundles:", response.statusText);
+        }
+    } catch (error) {
+        console.error("Failed to fetch bundles:", error);
+    }
+}
 
+
+// Call functions to initialize user status and display bundles
+initializeUserStatus();
+displayBundles();

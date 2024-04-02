@@ -48,11 +48,13 @@ const controller = {
 
       getIndex: async function (req, res) {
         try {
-            console.log("USER ID" + req.session.userID);
-            //getProducts function
+            // Fetch product data
             var product_list = await getProducts();
     
-            // sortProducts function
+            // Fetch bundle data
+            var bundle_list = await cBundles.find().limit(5); // Adjust limit as needed
+    
+            // Sort products based on query parameter, if provided
             const sortValue = req.query.sortBy;
             sortProducts(product_list, sortValue);
     
@@ -61,14 +63,16 @@ const controller = {
     
             res.render("index", {
                 product_list: product_list,
+                bundle_list: bundle_list,
                 script: './js/index.js',
                 isHomePage: true,
             });
-        } catch {
+        } catch (error) {
+            console.error(error);
             res.sendStatus(400);
         }
     },
-
+    
     getLogin: async function (req, res) {
         try {
             res.render("login", {
@@ -136,13 +140,15 @@ const controller = {
     
     getAllBundles: async (req, res) => {
         try {
-            const bundles = await cBundles.find();
+            const bundles = await cBundles.find().limit(5); // Adjust limit as needed
             res.status(200).json(bundles);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: 'Internal server error' });
         }
     },
+    
+    
     
 
     createBundle: async function (req, res) {
