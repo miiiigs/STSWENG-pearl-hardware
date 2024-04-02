@@ -49,21 +49,24 @@ const controller = {
       getIndex: async function (req, res) {
         try {
             // Fetch product data
-            var product_list = await getProducts();
-    
+            const product_list = await getProducts();
+
             // Fetch bundle data
-            var bundle_list = await cBundles.find().limit(5); // Adjust limit as needed
-    
+            const bundle_list = await cBundles.find().limit(5);
+
+            const discountedProducts = await Product.find({isDiscounted: true, isShown: true });
+
             // Sort products based on query parameter, if provided
             const sortValue = req.query.sortBy;
             sortProducts(product_list, sortValue);
-    
+
             // Store sorting option in session
             req.session.sortOption = sortValue;
-    
+
             res.render("index", {
                 product_list: product_list,
                 bundle_list: bundle_list,
+                discountedProducts: discountedProducts, 
                 script: './js/index.js',
                 isHomePage: true,
             });
@@ -72,7 +75,28 @@ const controller = {
             res.sendStatus(400);
         }
     },
+
+    getAllBundles: async (req, res) => {
+        try {
+            const bundles = await cBundles.find().limit(5);
+            res.status(200).json(bundles);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+
+        getAllDiscountedProducts: async function (req, res) {
+            try {
+                const discountedProducts = await Product.find({ isDiscounted: true, isShown: true });
+                res.status(200).json(discountedProducts);
+            } catch (error) {
+                console.error("Failed to fetch discounted products:", error);
+                res.status(500).send("Internal Server Error");
+            }
+        },
     
+     
     getLogin: async function (req, res) {
         try {
             res.render("login", {
@@ -136,19 +160,8 @@ const controller = {
             console.error(error);
             res.sendStatus(400);
         }
-    },
-    
-    getAllBundles: async (req, res) => {
-        try {
-            const bundles = await cBundles.find().limit(5); // Adjust limit as needed
-            res.status(200).json(bundles);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
-        }
-    },
-    
-    
+    },    
+
     
 
     createBundle: async function (req, res) {

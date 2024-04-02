@@ -52,7 +52,38 @@ async function displayBundles() {
     }
 }
 
+async function displayDiscountedProducts() {
+    try {
+        const response = await fetch('/discountedProducts');
+        if (response.ok) {
+            const discountedProducts = await response.json();
+            const discountedProductsContainer = document.getElementById('discountedProductList');
+            discountedProducts.forEach(product => {
+                const productBox = document.createElement('div');
+                productBox.classList.add('discountedProducts-box');
 
-// Call functions to initialize user status and display bundles
+                
+                // Append product details
+                productBox.innerHTML += `
+                    <h2>${product.name}</h2>
+                    <p>${product.description}</p>
+                    <p>Price: ₱${product.price}</p>
+                    <p>Discounted Price: ₱${product.discountValue}</p>
+                    <a href="/product/${product._id}" class="btn btn-primary mt-2">View Details</a>
+                `;
+                discountedProductsContainer.appendChild(productBox);
+            });
+        } else {
+            console.error("Failed to fetch discounted products:", response.statusText);
+        }
+    } catch (error) {
+        console.error("Failed to fetch discounted products:", error);
+    }
+}
+
+
+
+
+displayDiscountedProducts();
 initializeUserStatus();
 displayBundles();

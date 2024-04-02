@@ -1,24 +1,24 @@
 <style>
-    .first-image {
+.first-image {
         width: 1400px;
         height: 450px;
     }
 
-    .second-image {
+.second-image {
         width: 425px;
         height: 100px;
     }
 
-    .grayscale-hover {
+.grayscale-hover {
         filter: grayscale(70%);
         transition: filter 0.2s ease;
     }
 
-    .grayscale-hover:hover {
+.grayscale-hover:hover {
         filter: grayscale(0%);
     }
 
-    .bundle-box {
+.bundle-box {
     border: 1px solid #ccc;
     border-radius: 10px; 
     padding: 20px;
@@ -50,6 +50,41 @@
 }
 
 .bundle-box a:hover {
+    background-color: #0056b3;
+}
+
+.discountedProducts-box {
+    border: 1px solid #ccc;
+    border-radius: 10px; 
+    padding: 20px;
+    margin: 10px;
+    width: 300px; 
+    height: 250px;
+    display: inline-block;
+    text-align: center; 
+}
+
+.discountedProducts-box h2 {
+    font-size: 1.5rem; 
+    margin-bottom: 10px; 
+}
+
+.discountedProducts-box p {
+    font-size: 1rem; 
+    margin-bottom: 15px; 
+}
+
+.discountedProducts-box a {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.discountedProducts-box a:hover {
     background-color: #0056b3;
 }
 
@@ -134,4 +169,14 @@
 </div>
 
 
-<div id="bundleContainer"></div>
+<div id="bundleContainer"> 
+        <h2>Bundles</h2>
+</div>
+
+<div id="discountedProductsContainer">
+        <h2>Discounted Products</h2>
+        <div id="discountedProductList"></div>
+    </div>
+
+
+

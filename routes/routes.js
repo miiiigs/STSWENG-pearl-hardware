@@ -58,6 +58,7 @@ router.get('/AdminInsights', controller.adminInsights);
 router.get('/bundles', controller.getAllBundles);
 router.get('/bundlespage', controller.BundlesPage);
 router.get('/bundleproducts', controller.BundlesAllProducts);
+router.get('/discountedProducts', controller.getAllDiscountedProducts);
 
 
 
