@@ -99,6 +99,161 @@ const controller = {
         }
     },
 
+    BundlesPage: async function (req, res) {
+        try {
+            if (req.session.userID) {
+                const user = await User.findById(req.session.userID)
+                if (user.isAuthorized == true) {
+                    console.log("AUTHORIZED")
+                    res.render("adminBundles", { // Assuming the view for managing bundles is named "adminBundles"
+                        layout: 'adminBundles',
+                        script: './js/adminBundles.js', // Assuming you have a separate script file for bundle management
+                    });
+                } else {
+                    console.log("UNAUTHORIZED");
+                    res.sendStatus(400);
+                }
+            } else {
+                res.sendStatus(400);
+            }
+        } catch (error) {
+            console.error(error);
+            res.sendStatus(400);
+        }
+    },
+
+    getAllBundles: async (req, res) => {
+        try {
+            const bundles = await cBundles.find();
+            res.status(200).json(bundles);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+    
+    createBundle: async function (req, res) {
+        try {
+            // Extract necessary data from the request body
+            const { name, description, price, products } = req.body;
+            console.log("Received Data:", { name, description, price, products });
+    
+            let productIds;
+            if (Array.isArray(products)) {
+                // If products is already an array, map over it and convert _id to ObjectId
+                productIds = products.map(product => new ObjectId(product._id));
+            } else {
+                // If products is a string separated by commas, split it and convert each ID to ObjectId
+                productIds = products.split(',').map(productId => new ObjectId(productId.trim()));
+}
+    
+            // Create a new bundle with the provided data
+            const newBundle = await cBundles.create({
+                name,
+                description,
+                price,
+                products: productIds  
+            });
+    
+            console.log("New Bundle:", newBundle);
+    
+            res.status(201).json(newBundle);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+    
+
+    deleteBundle: async function (req, res) {
+        try {
+            const bundleId = req.params.id; // Extract bundle ID from request parameters
+    
+            // Delete the bundle with the provided ID
+            const deletedBundle = await cBundles.findByIdAndDelete(bundleId);
+    
+            if (!deletedBundle) {
+                // If the bundle with the provided ID does not exist, return a 404 status
+                return res.status(404).json({ message: 'Bundle not found' });
+            }
+    
+            console.log("Deleted Bundle:", deletedBundle);
+    
+            res.status(200).json({ message: 'Bundle deleted successfully' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+
+    editBundle: async function (req, res) {
+        try {
+            // Extract necessary data from the request body
+            const bundleId = req.params.id;
+            const {name, description, price, products } = req.body;
+            console.log("Received Data:", {name, description, price, products});
+    
+            // Convert the products to an array of product IDs
+            let productIds;
+            if (Array.isArray(products)) {
+                // If products is already an array, map over it and convert _id to ObjectId
+                productIds = products.map(product => new ObjectId(product._id));
+            } else {
+                // If products is a string separated by commas, split it and convert each ID to ObjectId
+                productIds = products.split(',').map(productId => new ObjectId(productId.trim()));
+            }
+    
+            // Update the bundle with the provided data
+            const updatedBundle = await cBundles.findByIdAndUpdate(bundleId, {
+                name,
+                description,
+                price,
+                products: productIds
+            }, { new: true });
+    
+            console.log("Updated Bundle:", updatedBundle);
+    
+            res.status(200).json(updatedBundle);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+    
+
+    BundlesAllProducts: async (req, res) => {
+        try {
+            const products = await Product.find();
+            res.status(200).json(products);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
+
+
+
+    getBundleNavPage: async function (req, res){
+        try {
+            res.render("viewbundles", {
+                layout: 'main',
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
+    getBundleDesc: async function (req, res) {
+        try {
+            res.render("bundleDesc", {
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
+
+
 
     getCategory: async function (req, res) {
 
