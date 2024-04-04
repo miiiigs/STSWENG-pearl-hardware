@@ -7,6 +7,8 @@ import bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import { Image } from '../model/imageSchema.js';
+import { cBundles } from '../model/BundleSchema.js';
+
 
 const SALT_WORK_FACTOR = 10;
 let currentCategory = "allproducts";
@@ -124,7 +126,7 @@ const controller = {
 
     getAllBundles: async (req, res) => {
         try {
-            const bundles = await cBundles.find();
+            const bundles = await cBundles.find().limit(5);
             res.status(200).json(bundles);
         } catch (error) {
             console.error(error);
