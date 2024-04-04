@@ -1,25 +1,26 @@
-<div class="sticky top-0 z-10 bg-maincolor mx-auto my-auto px-5 mt-6 w-[98%] h-14 rounded-[10px_10px_0px_0px]">
 
-    <div class="mx-5 max-w-full px-2 sm:px-6 lg:px-8">
-        <div class="relative flex ">
-            <div class="flex space-x-14 text-white mt-2 px-4 py-3 pt-0">
+
+
+<div class="sticky top-0 z-10 bg-maincolor mx-auto my-auto px-5 mt-6 rounded-[10px_10px_0px_0px]">
+    <div class="mx-auto max-w-full px-2 sm:px-6 lg:px-8">
+        <div class="relative flex">
+            <div class="flex flex-wrap justify-center sm:justify-start space-x-14 sm:space-x-1 text-white py-3">
                 <form action="/" method="GET">
-                    <button type="submit"
-                        class="w-11 h-12 hover:bg-white hover:pt-2 hover:text-maincolor hover:pt-0 font-Lato rounded-t-2xl flex items-center justify-center {{#if isHomePage}}h-12 bg-white text-maincolor {{/if}}">
-                        <img class="w-5" src="../uploads/Home.png" alt="Home Icon" />
+                    <button type="submit" class=" w-11 h-12 flex items-center justify-center hover:bg-white hover:pt-2 hover:text-maincolor hover:pt-0 font-Lato rounded-t-2xl {{#if isHomePage}}bg-white text-maincolor{{/if}}">
+                        <img class=" w-5" src="../uploads/Home.png" alt="Home Icon" />
                     </button>
                 </form>
 
-                <form action="/category/allproducts" method="GET">
+              <form action="/category/allproducts" method="GET">
                     <button type="submit"
-                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'allproducts')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
+                        class=" w-40 h-12 px-4 bg-sky-600 {{#if (eq category 'allproducts')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
                         All Products
                     </button>
                 </form>
 
                 <form action="/category/welding" method="GET">
                     <button type="submit"
-                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'welding')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
+                        class=" w-40 h-12 px-4 bg-sky-600 {{#if (eq category 'welding')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
                         Welding
                     </button>
                 </form>
@@ -27,45 +28,50 @@
 
                 <form action="/category/safety" method="GET">
                     <button type="submit"
-                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'safety')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
+                        class="w-40 h-12 px-4 bg-sky-600 {{#if (eq category 'safety')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
                         Safety
                     </button>
                 </form>
 
                 <form action="/category/cleaning" method="GET">
                     <button type="submit"
-                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'cleaning')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
+                        class="w-40 h-12 px-4 bg-sky-600 {{#if (eq category 'cleaning')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
                         Cleaning
                     </button>
                 </form>
 
                 <form action="/category/industrial" method="GET">
                     <button type="submit"
-                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'industrial')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
+                        class=" w-40 h-12 px-4 bg-sky-600 {{#if (eq category 'industrial')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
                         Industrial
                     </button>
                 </form>
 
                 <form action="/category/brassfittings" method="GET">
                     <button type="submit"
-                        class="w-auto h-12 px-4 bg-sky-600 {{#if (eq category 'brassfittings')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
+                        class=" w-40 h-12 px-4 bg-sky-600 {{#if (eq category 'brassfittings')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
                         Brass Fittings
                     </button>
                 </form>
 
-                <form action="/cart" method="GET">
+                 <form action="/viewbundles" method="GET"> 
                     <button type="submit"
-                        class="w-auto h-12 px-4 bg-sky-600 hover:bg-white hover:pt-2 rounded-tl-lg rounded-tr-lg hover:text-maincolor hover:pt-0 text-white text-2xl font-Lato ml-auto mr-5">
+                        class=" w-40 h-12 px-4 bg-sky-600 {{#if (eq category 'brassfittings')}}bg-white text-maincolor{{else}}hover:bg-white hover:pt-2 hover:text-maincolor text-white{{/if}} rounded-tl-lg rounded-tr-lg hover:pt-0 text-2xl font-Lato">
+                      Bundles
+                    </button>
+                </form>
+
+               
+
+                <form action="/cart" method="GET">
+                    <button type="submit" class=" w-24 h-12 flex items-center justify-center bg-sky-600 hover:bg-white hover:text-maincolor font-Lato rounded-tl-lg rounded-tr-lg">
                         <div class="flex flex-row items-center">
-                            <img class="w-5 mr-2" src="../uploads/cart.png" alt="Cart Icon" />
+                            <img class=" w-6 mr-2" src="../uploads/cart.png" alt="Cart Icon" />
                             My Cart
                         </div>
                     </button>
                 </form>
             </div>
-
-
         </div>
     </div>
-
 </div>

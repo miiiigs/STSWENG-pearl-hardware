@@ -7,15 +7,6 @@ import bcrypt from 'bcrypt';
 import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import { Image } from '../model/imageSchema.js';
-import multer from 'multer'; 
-const multerStorage = multer.memoryStorage();
-import { cBundles } from '../model/BundleSchema.js';
-import express from 'express';
-
-const app = express();
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 const SALT_WORK_FACTOR = 10;
 let currentCategory = "allproducts";
@@ -46,57 +37,26 @@ const controller = {
         }
       },
 
-      getIndex: async function (req, res) {
+    getIndex: async function (req, res) {
         try {
-            // Fetch product data
-            const product_list = await getProducts();
+            console.log("USER ID" + req.session.userID);
+            //getProducts function
+            var product_list = await getProducts();
 
-            // Fetch bundle data
-            const bundle_list = await cBundles.find().limit(5);
-
-            const discountedProducts = await Product.find({isDiscounted: true, isShown: true });
-
-            // Sort products based on query parameter, if provided
+            // sortProducts function
             const sortValue = req.query.sortBy;
             sortProducts(product_list, sortValue);
 
-            // Store sorting option in session
-            req.session.sortOption = sortValue;
-
             res.render("index", {
-                product_list: product_list,
-                bundle_list: bundle_list,
-                discountedProducts: discountedProducts, 
+               product_list: product_list,
                 script: './js/index.js',
                 isHomePage: true,
             });
-        } catch (error) {
-            console.error(error);
+        } catch {
             res.sendStatus(400);
         }
     },
 
-    getAllBundles: async (req, res) => {
-        try {
-            const bundles = await cBundles.find().limit(5);
-            res.status(200).json(bundles);
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
-        }
-    },
-
-        getAllDiscountedProducts: async function (req, res) {
-            try {
-                const discountedProducts = await Product.find({ isDiscounted: true, isShown: true });
-                res.status(200).json(discountedProducts);
-            } catch (error) {
-                console.error("Failed to fetch discounted products:", error);
-                res.status(500).send("Internal Server Error");
-            }
-        },
-    
-     
     getLogin: async function (req, res) {
         try {
             res.render("login", {
@@ -137,7 +97,7 @@ const controller = {
         } catch {
             res.sendStatus(400);
         }
-    }, 
+    },
 
     BundlesPage: async function (req, res) {
         try {
@@ -160,10 +120,18 @@ const controller = {
             console.error(error);
             res.sendStatus(400);
         }
-    },    
+    },
 
+    getAllBundles: async (req, res) => {
+        try {
+            const bundles = await cBundles.find();
+            res.status(200).json(bundles);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    },
     
-
     createBundle: async function (req, res) {
         try {
             // Extract necessary data from the request body
@@ -263,7 +231,32 @@ const controller = {
         }
     },
 
+
+
+    getBundleNavPage: async function (req, res){
+        try {
+            res.render("viewbundles", {
+                layout: 'main',
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
+    getBundleDesc: async function (req, res) {
+        try {
+            res.render("bundleDesc", {
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+
+
+
+
     getCategory: async function (req, res) {
+
         const category = req.params.category;
         //console.log("CATEGORY " + req.params.category);
         //console.log(currentCategory);
@@ -275,28 +268,28 @@ const controller = {
             currentCategory = category;
         }
         //console.log(req.session.pageIndex);
-    
+
         try {
+
             //getProducts function
             var product_list = await getProducts(category, req);
-    
+
             // sortProducts function
             const sortValue = req.query.sortBy;
             sortProducts(product_list, sortValue);
-    
-            // Store sorting option in session
-            req.session.sortOption = sortValue;
-    
+
             res.render("all_products", {
                 product_list: product_list,
                 category: category,
                 script: '/./js/sort.js',
                 nextPage: req.session.nextPage,
                 prevPage: req.session.prevPage
+
             });
         } catch {
             res.sendStatus(400);
         }
+
     },
 
     changePageStore: async function(req, res){
@@ -376,35 +369,6 @@ const controller = {
                 layout: 'userprofile',
                 user: userData,
                 script: './js/userProfile.js'
-            });
-        } catch {
-            res.sendStatus(400);
-        }
-    },
-
-    getAdminUserProfile: async function (req, res) {
-        try {
-            
-            const user = await User.findById(req.session.userID);
-            let userData = {
-                id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                profilepic: user.profilepic,
-                cart: user.cart,
-                line1: user.line1,
-                line2: user.line2,
-                city: user.city,
-                state: user.state,
-                postalCode: user.postalCode,
-                country: user.country,
-            }
-            console.log(userData);
-            res.render("adminuserprofile", {
-                layout: 'adminuserprofile',
-                user: userData,
-                script: './js/adminuserProfile.js'
             });
         } catch {
             res.sendStatus(400);
@@ -655,22 +619,6 @@ const controller = {
         try {
             const pic = req.file;
             const product = req.body;
-            console.log(product);
-            var isDiscounted, dvalue, discountType;
-            discountType = product.discount;
-            switch(discountType) {
-                case 'none':
-                    isDiscounted = false;
-                    break;
-                case 'exact':
-                    isDiscounted = true;
-                    dvalue = product.dvalue;
-                    break;
-                case 'percent':
-                    isDiscounted = true;
-                    dvalue = product.price - ((product.dvalue / 100) * product.price);
-                    break;
-            }
 
             if (pic) {
 
@@ -690,15 +638,10 @@ const controller = {
                         quantity: product.stock,
                         price: product.price,
                         productpic: 'https://pearl-hardware-ph.onrender.com/image/' + imageSave._id,
-                        description: product.description,
-                        isDiscounted: isDiscounted,
-                        discountValue: dvalue,
-                        discountType: discountType,
+                        description: product.description
                     },
                     
                 );
-
-                
             }else{
                 const updateStock = await Product.findByIdAndUpdate(
                     product.id,
@@ -706,16 +649,11 @@ const controller = {
                         type: product.type,
                         quantity: product.stock,
                         price: product.price,
-                        description: product.description,
-                        isDiscounted: isDiscounted,
-                        discountValue: dvalue,
-                        discountType: discountType,
+                        description: product.description
                     },
                     
                 );
-
             }
-            
 
             res.redirect('/adminInventory/' + currentCategory);
 
@@ -746,35 +684,6 @@ const controller = {
             //console.log(updateProfile)
             
             res.redirect('/userprofile');
-
-        } catch(error) {
-            res.sendStatus(400);
-            console.error(error);
-        }
-    },
-
-    editAdminProfile: async function (req, res) {
-        try {
-            const user = req.body;
-            const id = req.params.id;
-
-            //console.log(id);
-
-            const updateProfile = await User.findByIdAndUpdate(
-                id,
-                { firstName: user.fname,
-                    lastName: user.lname,
-                    state: user.state,
-                    city: user.city,
-                    postalCode: user.postalCode,
-                    line1: user.line1,
-                    line2: user.line2
-                },   
-            );
-
-            //console.log(updateProfile)
-            
-            res.redirect('/adminuserprofile');
 
         } catch(error) {
             res.sendStatus(400);
@@ -813,18 +722,6 @@ const controller = {
         }
     },
 
-    adminInsights: async function (req, res) {
-        try {
-    
-            res.render("AdminInsights", {
-                layout: 'Admin_insight'
-            });
-        } catch (error) {
-            console.error(error);
-            res.sendStatus(500); 
-        }
-    },
-    
     getAdminInventory: async function (req, res) {
 
         const category = req.params.category;
@@ -902,7 +799,8 @@ const controller = {
             res.sendStatus(400);
         }
     },
-	
+
+
 	//searchInventory
 	//specialized search and sort for Admin
     searchInventory: async function (req, res) {
@@ -1078,7 +976,6 @@ const controller = {
         res.redirect('/');
     },
 
-
     getUser: async function (req, res) {
         if (req.session.userID) {
             console.log("USER ID" + req.session.userID);
@@ -1088,39 +985,6 @@ const controller = {
             console.log("Failed to get current user");
         }
     },
-
-    updateProfilePic: async (req, res) => {
-        const { id } = req.params; // Updated from userId to id
-        const profilePic = req.file; // Access the uploaded image file
-        if (!profilePic) {
-            return res.status(400).json({ message: 'No image file provided' });
-        }
-    
-        try {
-            // Find the user by ID
-            const user = await User.findById(id); // Updated from userId to id
-            if (!user) {
-                return res.status(404).json({ message: 'User not found' });
-            }
-    
-            // Update the profile picture fields in the user document
-            user.profilepic = {
-                data: profilePic.buffer, // Store the buffer data
-                contentType: profilePic.mimetype // Store the MIME type
-            };
-    
-            // Save the updated user document
-            await user.save();
-    
-            res.status(200).json({ message: 'Profile picture updated successfully' });
-        } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Internal server error' });
-        }
-    },
-
-
-
 	
     //addToCart
     //will add to cart using the product ID (mongodb ID)
@@ -1450,7 +1314,6 @@ const controller = {
         }
     },
 
-
     getAdminCategory: async function (req, res) {
 
         const category = req.params.category;
@@ -1749,6 +1612,16 @@ const controller = {
 
     },
 
+    getAdminTracker: async function (req, res){
+        try {
+            res.render("salestrackerpage", {
+                layout: 'adminTracker',
+            });
+        } catch {
+            res.sendStatus(400);
+        }
+    },
+	
 }
 
 async function getProducts(category, req) {
@@ -1811,10 +1684,7 @@ async function getProducts(category, req) {
                 quantity: resp[i].quantity,
                 productpic: resp[i].productpic,
                 p_id: resp[i]._id,
-                description: resp[i].description,
-                isDiscounted: resp[i].isDiscounted,
-                discountType: resp[i].discountType,
-                discountValue: resp[i].discountValue,
+                description: resp[i].description
             });
         }
     }
@@ -1884,10 +1754,7 @@ async function getProductsAdmin(category, req) {
                 productpic: resp[i].productpic,
                 p_id: resp[i]._id,
                 description: resp[i].description,
-                isShown: resp[i].isShown,
-                isDiscounted: resp[i].isDiscounted,
-                discountType: resp[i].discountType,
-                discountValue: resp[i].discountValue,
+                isShown: resp[i].isShown
             });
     }
     return product_list;
@@ -1939,9 +1806,5 @@ async function sortOrders(order_list, sortValue){
         }
     }
 }
-
-
-
-
 
 export default controller;

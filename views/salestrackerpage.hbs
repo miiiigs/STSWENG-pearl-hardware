@@ -1,0 +1,203 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    .container {
+            margin-top: 30px; /* Adjust as needed */
+        }
+</style>
+   
+
+
+
+        <div class="max-w-full px-2 sm:px-6 lg:px-8 bg-maincolor h-16 mb-6">
+
+            <div class="flex mt-2 justify-center items-center">
+                <div class=" text-white font-Inika text-5xl">
+                    SALES TRACKER
+                </div>
+            </div>
+
+        </div>
+
+   
+    <div class="flex flex-wrap justify-center font-Lato mt-8">
+        <div class="container rounded-lg shadow-md bg-white p-4 w-full sm:w-96 flex justify-between items-center mt-2">
+            
+            <div>
+                <div class=" text-5xl text-maincolor">
+                    1,000
+                </div>
+                <div class=" text-lg text-gray">
+                    Daily Views
+                </div>
+            </div>
+          
+            <img src="../uploads/viewsicon.png" alt="">
+          
+        </div>
+        <div class="container rounded-lg shadow-md bg-white p-4 w-full sm:w-96 ml-7 flex justify-between items-center">
+             
+             <div>
+                <div class=" text-5xl text-maincolor">
+                    14,212
+                </div>
+
+                <div class=" text-lg text-gray">
+                    Sales 
+                </div>
+             </div>
+           
+            <img src="../uploads/cart2.png" alt="">
+        
+        </div>
+
+         <div class="container rounded-lg shadow-md bg-white p-4 w-full sm:w-96 ml-7 flex justify-between items-center">
+          
+                <div>
+                    <div class=" text-5xl text-maincolor">
+                        103
+                    </div>
+                    <div class=" text-lg text-gray">
+                    Refund 
+                    </div>
+                </div>
+                <img src="../uploads/return.png" alt="">
+           
+        </div>
+
+        <div class="container rounded-lg shadow-md bg-white p-4 w-full sm:w-96 ml-7 flex justify-between items-center">
+            
+            <div>
+                <div class=" text-5xl text-maincolor">
+                    &#8369 20,000
+                </div>
+
+                <div class=" text-lg text-gray">
+                    Earnings
+                </div>
+            </div>
+            
+            <img src="../uploads/earnings.png" alt="">
+        
+        </div>
+
+    </div>
+
+
+
+    <div class="flex justify-center mt-8">
+
+        {{!-- chart for bestselling products --}}
+        <div class="rounded-lg shadow-md bg-white p-4 w-4/12 ml-4 mt-7 flex justify-between items-center">
+        
+        <canvas id="myChart1"></canvas>
+        <script>
+            var ctx = document.getElementById('myChart1').getContext('2d');
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Industrial Boots', 'Wire', 'Pipe Fittings'],
+                    datasets: [{
+                        label: 'Top 3 Best Selling Products',
+                        data: [170, 200, 126],
+                        backgroundColor: [
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Best Selling Products',
+                            font: {
+                                family: 'Arial', 
+                                size: 30, 
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+        </div>
+
+
+        {{!-- chart for monthly sales earnings --}}
+        <div class="rounded-lg shadow-md bg-white p-4 w-6/12 ml-4 mt-7 flex justify-between items-center">
+
+        <canvas id="myChart2"></canvas>
+
+        <script>
+            
+            var ctx = document.getElementById('myChart2').getContext('2d');
+
+            new Chart(ctx,{
+                type: 'line', 
+                data: {
+                    labels: [ 
+                    'January', 
+                    'February', 
+                    'March', 
+                    'April', 
+                    'May', 
+                    'June', 
+                    'July', 
+                    'August', 
+                    'September', 
+                    'October', 
+                    'November', 
+                    'December', 
+                    ],
+                    datasets: [{
+                        label: 'Monthly Sales',
+                        data: [20000, 10230, 40219, 39100, 54002, 11211, 40112,
+                                21781, 13182, 11231, 12134, 79003],
+                        fill: false,
+                        borderColor: 'rgb(9, 128, 211)',
+                        tension: 0.1
+                    }]
+                },
+
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Monthly Sales',
+                            font: {
+                                family: 'Arial', 
+                                size: 30, 
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                }
+
+            });
+            
+
+        </script>
+
+        </div>
+
+    </div>

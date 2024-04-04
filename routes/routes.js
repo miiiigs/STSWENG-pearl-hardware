@@ -29,7 +29,7 @@ router.get('/searchProducts', controller.searchProducts);
 
 
 router.get('/userprofile', controller.getUserProfile);
-router.get('/adminuserprofile', controller.getAdminUserProfile);
+// router.get('/adminuserprofile', controller.getAdminUserProfile);
 router.get('/userpurchases/:status', controller.getUserPurchases);
 router.get('/userorderdetails/:orderID', controller.getUserOrderDetails);
 router.get('/userSearchPurchases', controller.searchUserPurchases);
@@ -53,12 +53,17 @@ router.get('/admin', controller.getAdmin);
 router.get('/getCartItems', controller.getCartItems)
 router.get('/AdminOrderDetails/:orderID', controller.getOrderDetails)
 router.get('/searchOrders', controller.searchOrders);
-router.get('/AdminInsights', controller.adminInsights);
+//router.get('/AdminInsights', controller.adminInsights);
+
+router.get('/salestracker', controller.getAdminTracker);
 
 router.get('/bundles', controller.getAllBundles);
 router.get('/bundlespage', controller.BundlesPage);
 router.get('/bundleproducts', controller.BundlesAllProducts);
-router.get('/discountedProducts', controller.getAllDiscountedProducts);
+
+//for temporary use (bundles page)
+router.get('/viewbundles', controller.getBundleNavPage);
+router.get('/bundledescription', controller.getBundleDesc);
 
 
 
@@ -85,8 +90,8 @@ router.post('/showProduct', controller.showProduct);
 router.post('/hideProduct', controller.hideProduct);
 router.post('/deleteProduct', controller.deleteProduct);
 router.post('/editProfile/:id', controller.editProfile);
-router.post('/admineditProfile/:id', controller.editAdminProfile);
-router.post('/updateProfilePic/:userId', upload.single('profilePic'), controller.updateProfilePic);
+// router.post('/admineditProfile/:id', controller.editAdminProfile);
+// router.post('/updateProfilePic/:userId', upload.single('profilePic'), controller.updateProfilePic);
 
 router.put('/ebundles/:id', controller.editBundle);
 router.delete('/dbundles/:id', controller.deleteBundle);
